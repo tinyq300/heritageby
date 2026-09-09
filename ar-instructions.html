@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция AR - Евфросиния Полоцкая</title>
+    <link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --burgundy: #8B1538;
+            --gold: #D4AF37;
+            --cream: #F5F0E8;
+            --white: #FFFFFF;
+            --charcoal: #2C2C2C;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--burgundy), #A52A2A);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+        }
+        
+        h1 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+        
+        .step {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            color: var(--charcoal);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .step h2 {
+            font-family: 'Philosopher', sans-serif;
+            color: var(--burgundy);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .step p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .marker-preview {
+            width: 100%;
+            max-width: 400px;
+            border: 4px solid var(--gold);
+            border-radius: 12px;
+            margin: 1.5rem auto;
+            display: block;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        
+        .tips {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 2rem 0;
+        }
+        
+        .tips h3 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tips ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .tips li {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            padding-left: 2rem;
+            position: relative;
+        }
+        
+        .tips li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .btn-start {
+            display: inline-block;
+            background: var(--burgundy);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 2rem auto;
+            display: block;
+            width: fit-content;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 16px rgba(139, 21, 56, 0.4);
+        }
+        
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 21, 56, 0.6);
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+        
+        .warning strong {
+            color: #856404;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .step h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 Как использовать AR</h1>
+            <div class="subtitle">Инструкция по работе с портретом Евфросинии Полоцкой</div>
+        </header>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <h2>Откройте фото на другом устройстве</h2>
+            <p>
+                Откройте файл <strong>efra.jpg</strong> (портрет Евфросинии Полоцкой) на компьютере, планшете или другом телефоне. 
+                Можно также <strong>распечатать</strong> изображение на бумаге формата A4 или больше.
+            </p>
+            <img src="efra.jpg" alt="Евфросиния Полоцкая" class="marker-preview">
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <h2>Перейдите в AR режим</h2>
+            <p>
+                В галерее найдите портрет Евфросинии Полоцкой и нажмите на кнопку <strong>"📱 AR Опыт"</strong>. 
+                Или нажмите кнопку ниже, чтобы сразу перейти к AR.
+            </p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <h2>Разрешите доступ к камере</h2>
+            <p>
+                Когда браузер запросит доступ к камере, нажмите <strong>"Разрешить"</strong>. 
+                Без доступа к камере AR не будет работать.
+            </p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <h2>Наведите камеру на портрет</h2>
+            <p>
+                Держите телефон так, чтобы портрет Евфросинии полностью попадал в кадр камеры. 
+                Держите устройство на расстоянии <strong>20-50 см</strong> от изображения.
+            </p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            <h2>Наслаждайтесь 3D опытом!</h2>
+            <p>
+                Когда система распознает изображение, над портретом появится 3D-модель с красивыми эффектами:
+            </p>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li>🎨 Вращающаяся 3D модель</li>
+                <li>✨ Золотые светящиеся частицы</li>
+                <li>💫 Византийские кольца</li>
+                <li>✝️ Священный крест</li>
+                <li>📜 Имя и даты жизни</li>
+            </ul>
+        </div>
+
+        <div class="tips">
+            <h3>💡 Советы для лучшей работы AR</h3>
+            <ul>
+                <li>Используйте хорошее освещение - избегайте тёмных комнат</li>
+                <li>Держите изображение ровно, без наклонов</li>
+                <li>Убедитесь, что весь портрет попадает в кадр</li>
+                <li>Не закрывайте изображение руками или другими предметами</li>
+                <li>Держите камеру стабильно, избегайте резких движений</li>
+                <li>Если модель не появляется, попробуйте отойти чуть дальше или приблизиться</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Важно:</strong><br>
+            AR работает только через <strong>HTTPS</strong> (защищённое соединение). 
+            Убедитесь, что сайт загружен на хостинг с SSL-сертификатом (GitHub Pages, Netlify и др.).
+        </div>
+
+        <a href="ar-euphrosyne.html" class="btn-start">🚀 Запустить AR сейчас →</a>
+
+        <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: white; border-radius: 16px;">
+            <h3 style="font-family: 'Philosopher', sans-serif; color: var(--burgundy); margin-bottom: 1rem;">
+                Нужна помощь?
+            </h3>
+            <p style="font-size: 1.1rem;">
+                Если AR не работает, проверьте:<br>
+                ✓ Доступ к камере разрешён<br>
+                ✓ Используется HTTPS<br>
+                ✓ Хорошее освещение<br>
+                ✓ Изображение чёткое и ровное
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>AR Просмотр: Ефросиния Полоцкая</title>
+
+    <!-- Библиотеки -->
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a0a1f 0%, #2d1537 100%);
+        }
+
+        /* Анимированный фон с частицами */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.8), transparent);
+            border-radius: 50%;
+            animation: float 15s infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1.5);
+            }
+        }
+
+        /* Верхняя панель с градиентом */
+        .ar-ui {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: linear-gradient(135deg, rgba(139, 21, 56, 0.95), rgba(180, 30, 70, 0.95));
+            color: white;
+            padding: 18px 30px;
+            border-radius: 30px;
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            width: 85%;
+            max-width: 400px;
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(139, 21, 56, 0.4),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                            0 0 20px rgba(255, 215, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 32px rgba(139, 21, 56, 0.6),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                            0 0 40px rgba(255, 215, 0, 0.5);
+            }
+        }
+
+        .ar-ui-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .ar-ui-subtitle {
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.95;
+            font-family: sans-serif;
+        }
+
+        /* Индикатор поиска маркера */
+        .marker-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .scan-frame {
+            width: 250px;
+            height: 250px;
+            border: 3px solid rgba(255, 215, 0, 0.6);
+            border-radius: 20px;
+            position: relative;
+            animation: scan-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scan-pulse {
+            0%, 100% {
+                border-color: rgba(255, 215, 0, 0.6);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            }
+            50% {
+                border-color: rgba(255, 215, 0, 1);
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        .scan-frame::before,
+        .scan-frame::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #FFD700;
+        }
+
+        .scan-frame::before {
+            top: -3px;
+            left: -3px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .scan-frame::after {
+            bottom: -3px;
+            right: -3px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .scan-text {
+            margin-top: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            animation: fade-in-out 2s ease-in-out infinite;
+        }
+
+        @keyframes fade-in-out {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Кнопка возврата */
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: linear-gradient(135deg, #ffffff, #f5f5f5);
+            color: #8B1538;
+            padding: 14px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(139, 21, 56, 0.2);
+        }
+
+        .back-btn:active {
+            transform: translateX(-50%) translateY(2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Индикатор загрузки */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0a1f 0%, #2d1537 100%);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 215, 0, 0.2);
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: white;
+            font-size: 18px;
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Загрузочный экран -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+        <div class="loading-text">Загрузка AR...</div>
+    </div>
+
+    <!-- Анимированные частицы -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Верхняя информационная панель -->
+    <div class="ar-ui">
+        <div class="ar-ui-title">✨ Крест Ефросинии Полоцкой ✨</div>
+        <div class="ar-ui-subtitle">
+            Используйте один палец для вращения<br>
+            и два пальца для масштабирования
+        </div>
+    </div>
+
+    <!-- Индикатор поиска маркера -->
+    <div class="marker-indicator" id="markerIndicator">
+        <div class="scan-frame"></div>
+        <div class="scan-text">📱 Наведите камеру на маркер</div>
+    </div>
+
+    <!-- Кнопка возврата -->
+    <a href="gallery.html" class="back-btn">← Вернуться в галерею</a>
+
+    <!-- AR Сцена с улучшенным освещением -->
+    <a-scene 
+        embedded 
+        vr-mode-ui="enabled: false" 
+        arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.9;"
+        gesture-detector 
+        id="scene"
+        renderer="colorManagement: true; physicallyCorrectLights: true;">
+
+        <a-marker 
+            type="pattern" 
+            url="pattern-efra.patt" 
+            raycaster="objects: .clickable" 
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+            id="marker">
+
+            <!-- Основная модель креста с улучшенным освещением -->
+            <a-entity id="model" 
+                      gltf-model="url(sample.glb)" 
+                      scale="0.5 0.5 0.5" 
+                      class="clickable" 
+                      gesture-handler
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 20000; easing: linear">
+            </a-entity>
+
+            <!-- Направленное освещение (солнечный свет) -->
+            <a-light type="directional" 
+                     color="#FFF" 
+                     intensity="1.5" 
+                     position="2 4 2"
+                     castShadow="true">
+            </a-light>
+
+            <!-- Заполняющий свет -->
+            <a-light type="ambient" 
+                     color="#FFE5CC" 
+                     intensity="1.2">
+            </a-light>
+
+            <!-- Точечный свет сверху (золотое свечение) -->
+            <a-light type="point" 
+                     color="#FFD700" 
+                     intensity="2.0" 
+                     position="0 3 0"
+                     distance="5">
+            </a-light>
+
+            <!-- Точечные огни вокруг креста для мерцающего эффекта -->
+            <a-light type="point" 
+                     color="#FFAA00" 
+                     intensity="1.5" 
+                     position="1.5 1 1.5"
+                     distance="3"
+                     animation="property: intensity; from: 1.5; to: 2.5; dir: alternate; loop: true; dur: 1500">
+            </a-light>
+
+            <a-light type="point" 
+                     color="#FFAA00" 
+                     intensity="1.5" 
+                     position="-1.5 1 -1.5"
+                     distance="3"
+                     animation="property: intensity; from: 1.5; to: 2.5; dir: alternate; loop: true; dur: 1800; delay: 200">
+            </a-light>
+
+            <!-- Мерцающие частицы вокруг креста -->
+            <a-entity id="particles-container">
+                <!-- Золотые частицы -->
+                <a-sphere color="#FFD700" 
+                          radius="0.02" 
+                          position="0.3 0.5 0.2"
+                          material="emissive: #FFD700; emissiveIntensity: 2; metalness: 1"
+                          animation="property: position; to: 0.3 1.5 0.2; dir: alternate; loop: true; dur: 3000; easing: easeInOutSine">
+                </a-sphere>
+                
+                <a-sphere color="#FFD700" 
+                          radius="0.02" 
+                          position="-0.3 0.5 -0.2"
+                          material="emissive: #FFD700; emissiveIntensity: 2; metalness: 1"
+                          animation="property: position; to: -0.3 1.5 -0.2; dir: alternate; loop: true; dur: 3500; easing: easeInOutSine; delay: 500">
+                </a-sphere>
+
+                <a-sphere color="#FFA500" 
+                          radius="0.02" 
+                          position="0.2 0.3 -0.3"
+                          material="emissive: #FFA500; emissiveIntensity: 2; metalness: 1"
+                          animation="property: position; to: 0.2 1.3 -0.3; dir: alternate; loop: true; dur: 4000; easing: easeInOutSine; delay: 1000">
+                </a-sphere>
+
+                <a-sphere color="#FFD700" 
+                          radius="0.02" 
+                          position="-0.2 0.4 0.3"
+                          material="emissive: #FFD700; emissiveIntensity: 2; metalness: 1"
+                          animation="property: position; to: -0.2 1.4 0.3; dir: alternate; loop: true; dur: 3200; easing: easeInOutSine; delay: 700">
+                </a-sphere>
+            </a-entity>
+
+            <!-- Светящийся ореол вокруг креста -->
+            <a-ring color="#FFD700" 
+                    radius-inner="0.4" 
+                    radius-outer="0.6" 
+                    position="0 0.5 -0.1"
+                    rotation="-90 0 0"
+                    material="shader: flat; opacity: 0.3; transparent: true"
+                    animation="property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear"
+                    animation__scale="property: scale; from: 1 1 1; to: 1.2 1.2 1.2; dir: alternate; loop: true; dur: 2000; easing: easeInOutSine">
+            </a-ring>
+
+        </a-marker>
+
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // Создание анимированных частиц на фоне
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Скрытие индикатора поиска при обнаружении маркера
+        const marker = document.querySelector('#marker');
+        const markerIndicator = document.getElementById('markerIndicator');
+        
+        marker.addEventListener('markerFound', () => {
+            markerIndicator.style.display = 'none';
+            console.log('Маркер обнаружен!');
+        });
+        
+        marker.addEventListener('markerLost', () => {
+            markerIndicator.style.display = 'block';
+            console.log('Маркер потерян');
+        });
+
+        // Скрытие загрузочного экрана
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                createParticles();
+            }, 1500);
+        });
+
+        // Дополнительная обработка загрузки модели
+        const scene = document.querySelector('a-scene');
+        scene.addEventListener('loaded', () => {
+            console.log('AR сцена загружена');
+        });
+    </script>
+</body>
+
+</html>

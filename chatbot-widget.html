@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Беседа с Евфросинией</title>
+    <!-- Заглушка фавиконки -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --burgundy: #8B1538;
+            --cream: #F5F0E8;
+            --gold: #D4AF37;
+            --text-dark: #2C2C2C;
+            --white: #FFFFFF;
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow: 0 10px 30px rgba(139, 21, 56, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: transparent;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: end;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .chat-widget {
+            background: var(--glass);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 20px;
+            border: 1px solid rgba(139, 21, 56, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(139, 21, 56, 0.1);
+            position: relative;
+            background: rgba(245, 240, 232, 0.9);
+            z-index: 10;
+        }
+
+        .chat-header h2 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 1.4rem;
+            color: var(--burgundy);
+            font-weight: 700;
+        }
+
+        .chat-header p {
+            font-size: 0.9rem;
+            color: var(--gold);
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        .settings-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--burgundy);
+            opacity: 0.5;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .settings-btn:hover { opacity: 1; transform: rotate(90deg); }
+
+        .settings-panel {
+            display: none;
+            background: var(--cream);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-family: sans-serif;
+        }
+        .settings-panel.active { display: block; }
+        .settings-panel input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d4c5b0;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+        .settings-panel label { font-size: 12px; color: var(--burgundy); font-weight: bold; }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 85%;
+            animation: fadeIn 0.4s ease;
+        }
+        .message.bot { align-self: flex-start; }
+        .message.user { align-self: flex-end; }
+
+        .message-content {
+            padding: 1rem 1.4rem;
+            border-radius: 18px;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .message.bot .message-content {
+            background: var(--white);
+            color: var(--text-dark);
+            border: 1px solid rgba(139, 21, 56, 0.05);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, var(--burgundy), #a52a2a);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing {
+            font-size: 0.9rem;
+            color: var(--gold);
+            padding-left: 2rem;
+            margin-bottom: 10px;
+            display: none;
+            font-style: italic;
+        }
+        .typing.active { display: block; }
+
+        .chat-input-area {
+            padding: 1.5rem;
+            background: var(--white);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            background: var(--cream);
+            padding: 8px;
+            border-radius: 40px;
+            border: 1px solid rgba(139, 21, 56, 0.1);
+        }
+
+        #messageInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            outline: none;
+        }
+
+        #sendButton {
+            background: var(--burgundy);
+            color: var(--white);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        #sendButton:hover { transform: scale(1.1); }
+        #sendButton svg { width: 20px; height: 20px; fill: white; margin-left: 3px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(139, 21, 56, 0.2); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="chat-widget">
+    <div class="chat-header">
+        <h2>Евфросиния</h2>
+        <p>Голос сквозь века</p>
+        <button class="settings-btn" onclick="toggleSettings()" title="Настройки">⚙️</button>
+    </div>
+
+    <div class="settings-panel" id="settingsPanel">
+        <label>OpenRouter API Key:</label>
+        <input type="password" id="apiToken" placeholder="sk-or-...">
+        <div style="margin-top: 8px; font-size: 11px; color: #666;">
+            Возьмите бесплатный ключ на <a href="https://openrouter.ai/" target="_blank" style="color: var(--burgundy);">openrouter.ai</a>.
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+            <div class="message-content">
+                Мир тебе, путник. Я — Евфросиния. Спрашивай, и я отвечу мудростью, дарованной мне свыше.
+            </div>
+        </div>
+    </div>
+
+    <div class="typing" id="typingIndicator">Евфросиния пишет...</div>
+
+    <div class="chat-input-area">
+        <div class="input-group">
+            <input type="text" id="messageInput" placeholder="Ваш вопрос..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button id="sendButton" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // === ЛИЧНОСТЬ НЕЙРОСЕТИ ===
+    const SYSTEM_PROMPT = `
+    Ты играешь роль Евфросинии Полоцкой, святой просветительницы 12 века.
+    Твоя личность:
+    1. Ты говоришь на русском языке, немного старомодно ("ибо", "чадо", "ведаю"), но понятно.
+    2. Ты мудрая, добрая и спокойная.
+    3. Твои темы: книги, переписывание летописей, вера, Полоцк, строительство храмов.
+    4. Ты НЕ знаешь про интернет и телефоны.
+    5. Отвечай кратко (2-3 предложения).
+    `;
+
+    // === СПИСОК МОДЕЛЕЙ (ОБНОВЛЕННЫЙ) ===
+    // Ставим первой ту, что ты нашел. Остальные - на подстраховку.
+    const MODELS = [
+        "meta-llama/llama-3.2-3b-instruct:free",           // Твой выбор, легкая Llama
+        "google/gemini-2.0-flash-thinking-exp:free",       // Google Experimental
+        "google/gemini-2.0-flash-lite-preview-02-05:free", // Google Lite
+        "deepseek/deepseek-r1:free",                       // Deepseek (если повезет)
+        "arcee-ai/trinity-large-preview:free"              // Тоже из твоего списка
+    ];
+
+    function toggleSettings() {
+        document.getElementById('settingsPanel').classList.toggle('active');
+    }
+
+    function addMessage(sender, text) {
+        const chatMessages = document.getElementById('chatMessages');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}`;
+        
+        // Очистка от "мыслей" моделей (блок <think> от deepseek и других)
+        if (sender === 'bot') {
+            text = text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+            // Убираем возможные кавычки в начале и конце
+            text = text.replace(/^["']|["']$/g, '');
+        }
+
+        msgDiv.innerHTML = `<div class="message-content">${text}</div>`;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTyping(show) {
+        const indicator = document.getElementById('typingIndicator');
+        if (show) indicator.classList.add('active');
+        else indicator.classList.remove('active');
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        const apiKey = document.getElementById('apiToken').value.trim();
+
+        if (!text) return;
+
+        // Если ключа нет
+        if (!apiKey) {
+            alert('Пожалуйста, вставьте OpenRouter API Key в настройки (шестеренка).');
+            toggleSettings();
+            return;
+        }
+
+        addMessage('user', text);
+        input.value = '';
+        showTyping(true);
+        document.getElementById('sendButton').disabled = true;
+
+        let success = false;
+
+        // Перебор моделей
+        for (const modelName of MODELS) {
+            try {
+                console.log(`Пробую модель: ${modelName}`);
+                
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${apiKey}`,
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": window.location.href, 
+                        "X-Title": "History Bot"              
+                    },
+                    body: JSON.stringify({
+                        "model": modelName,
+                        "messages": [
+                            { "role": "system", "content": SYSTEM_PROMPT },
+                            { "role": "user", "content": text }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    console.warn(`Ошибка ${response.status} от ${modelName}:`, errText);
+                    continue; // Пробуем следующую
+                }
+
+                const data = await response.json();
+
+                if (data.choices && data.choices.length > 0) {
+                    const botText = data.choices[0].message.content;
+                    showTyping(false);
+                    addMessage('bot', botText);
+                    success = true;
+                    break; // Успех! Выходим из цикла
+                } else {
+                    console.warn(`Пустой ответ от ${modelName}`);
+                }
+
+            } catch (error) {
+                console.warn(`Сбой сети/кода с моделью ${modelName}:`, error);
+            }
+        }
+
+        if (!success) {
+            showTyping(false);
+            addMessage('bot', "Прости, чадо. Небесные сферы сегодня молчат (Серверы перегружены или ошибка сети).");
+        }
+
+        document.getElementById('sendButton').disabled = false;
+    }
+
+    // Автосохранение ключа
+    window.addEventListener('load', () => {
+        const savedToken = localStorage.getItem('openrouter_key');
+        if (savedToken) document.getElementById('apiToken').value = savedToken;
+        
+        document.getElementById('apiToken').addEventListener('input', (e) => {
+            localStorage.setItem('openrouter_key', e.target.value.trim());
+        });
+    });
+</script>
+
+</body>
+</html>

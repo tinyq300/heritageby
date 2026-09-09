@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>AR Просмотр: Космическая Ракета Марины Василевской</title>
+
+    <!-- 1. Библиотеки A-Frame и AR.js -->
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Philosopher:wght@700&family=Cormorant+Garamond:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #070B19 0%, #0F172A 50%, #1E1B4B 100%);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Анимированные космические частицы / звёзды */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: radial-gradient(circle, #60A5FA, rgba(255, 255, 255, 0.9), transparent);
+            border-radius: 50%;
+            animation: float-star 12s infinite linear;
+            opacity: 0;
+        }
+
+        @keyframes float-star {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0.5);
+            }
+            15% {
+                opacity: 0.9;
+            }
+            85% {
+                opacity: 0.9;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.4);
+            }
+        }
+
+        /* Верхняя панель (Космический стиль) */
+        .ar-ui {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 27, 75, 0.95));
+            color: #FFFFFF;
+            padding: 16px 28px;
+            border-radius: 28px;
+            text-align: center;
+            width: 88%;
+            max-width: 420px;
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.35),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            backdrop-filter: blur(10px);
+            animation: cosmic-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes cosmic-glow {
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(14, 165, 233, 0.3),
+                            0 0 20px rgba(96, 165, 250, 0.2);
+                border-color: rgba(96, 165, 250, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 35px rgba(14, 165, 233, 0.55),
+                            0 0 35px rgba(56, 189, 248, 0.4);
+                border-color: rgba(147, 197, 253, 0.8);
+            }
+        }
+
+        .ar-ui-title {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #F0F9FF;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+            letter-spacing: 0.5px;
+        }
+
+        .ar-ui-subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            color: #BAE6FD;
+            line-height: 1.4;
+        }
+
+        /* Рамка сканирования маркера */
+        .marker-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .scan-frame {
+            width: 240px;
+            height: 240px;
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            border-radius: 20px;
+            position: relative;
+            animation: scan-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scan-pulse {
+            0%, 100% {
+                border-color: rgba(56, 189, 248, 0.4);
+                box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+            }
+            50% {
+                border-color: rgba(56, 189, 248, 0.9);
+                box-shadow: 0 0 40px rgba(56, 189, 248, 0.5);
+            }
+        }
+
+        .scan-frame::before,
+        .scan-frame::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border: 3px solid #38BDF8;
+        }
+
+        .scan-frame::before {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 12px;
+        }
+
+        .scan-frame::after {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 12px;
+        }
+
+        .scan-text {
+            margin-top: 18px;
+            color: #F0F9FF;
+            font-size: 15px;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(56, 189, 248, 0.5);
+            animation: fade-text 2s ease-in-out infinite;
+        }
+
+        @keyframes fade-text {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Кнопка возврата в галерею */
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+            color: #FFFFFF;
+            padding: 14px 34px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(2, 132, 199, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(125, 211, 252, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:active {
+            transform: translateX(-50%) translateY(2px);
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+        }
+
+        /* Загрузочный экран */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #0F172A 0%, #030712 100%);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.6s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .rocket-loader {
+            font-size: 48px;
+            animation: rocket-bounce 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rocket-bounce {
+            0%, 100% { transform: translateY(0) rotate(-45deg); }
+            50% { transform: translateY(-15px) rotate(-45deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: #F0F9FF;
+            font-size: 19px;
+            font-family: 'Philosopher', sans-serif;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Экран загрузки -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="rocket-loader">🚀</div>
+        <div class="loading-text">Загрузка космического модуля...</div>
+    </div>
+
+    <!-- Фоновые космические частицы -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Информационная плашка -->
+    <div class="ar-ui">
+        <div class="ar-ui-title">🚀 Ракета Марины Василевской 🚀</div>
+        <div class="ar-ui-subtitle">
+            Вращайте модель одним пальцем<br>
+            и масштабируйте двумя пальцами
+        </div>
+    </div>
+
+    <!-- Индикатор поиска маркера -->
+    <div class="marker-indicator" id="markerIndicator">
+        <div class="scan-frame"></div>
+        <div class="scan-text">📱 Наведите камеру на маркер</div>
+    </div>
+
+    <!-- Кнопка возврата -->
+    <a href="gallery.html" class="back-btn">← Вернуться в галерею</a>
+
+    <!-- AR Сцена (Webcam + Gesture handler + 3D модель ракеты) -->
+    <a-scene 
+        embedded 
+        vr-mode-ui="enabled: false" 
+        arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.8;"
+        gesture-detector 
+        id="scene"
+        renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true;">
+
+        <!-- Маркер Марины Василевской -->
+        <a-marker 
+            type="pattern" 
+            url="pattern-mari.patt" 
+            raycaster="objects: .clickable" 
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+            id="marker">
+
+            <!-- 3D Модель Ракеты с плавным вращением и масштабированием жестами -->
+            <a-entity id="rocketModel" 
+                      gltf-model="url(rocket.glb)" 
+                      scale="0.12 0.12 0.12" 
+                      position="0 0.1 0" 
+                      class="clickable" 
+                      gesture-handler="minScale: 0.03; maxScale: 0.5"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 16000; easing: linear">
+            </a-entity>
+
+            <!-- Основной направленный космический свет (Солнце) -->
+            <a-light type="directional" 
+                     color="#FFFFFF" 
+                     intensity="1.8" 
+                     position="3 6 3"
+                     castShadow="true">
+            </a-light>
+
+            <!-- Заполняющий рассеянный свет космического пространства -->
+            <a-light type="ambient" 
+                     color="#C7D2FE" 
+                     intensity="1.3">
+            </a-light>
+
+            <!-- Пульсирующее свечение реактивного сопла (пламя ракеты) -->
+            <a-light type="point" 
+                     color="#F97316" 
+                     intensity="2.8" 
+                     position="0 0.05 0"
+                     distance="4"
+                     animation="property: intensity; from: 2.2; to: 3.5; dir: alternate; loop: true; dur: 400">
+            </a-light>
+
+            <!-- Вторичный голубоватый свет ионизации плазмы -->
+            <a-light type="point" 
+                     color="#38BDF8" 
+                     intensity="1.8" 
+                     position="0 0.2 0"
+                     distance="3"
+                     animation="property: intensity; from: 1.2; to: 2.4; dir: alternate; loop: true; dur: 600; delay: 100">
+            </a-light>
+
+            <!-- Светящееся орбитальное кольцо под ракетой -->
+            <a-ring color="#38BDF8" 
+                    radius-inner="0.45" 
+                    radius-outer="0.55" 
+                    position="0 0.02 0"
+                    rotation="-90 0 0"
+                    material="shader: flat; opacity: 0.6; transparent: true"
+                    animation="property: rotation; to: -90 360 0; loop: true; dur: 8000; easing: linear"
+                    animation__scale="property: scale; from: 1 1 1; to: 1.15 1.15 1.15; dir: alternate; loop: true; dur: 2000; easing: easeInOutSine">
+            </a-ring>
+
+            <!-- Внешнее звездное кольцо -->
+            <a-ring color="#818CF8" 
+                    radius-inner="0.65" 
+                    radius-outer="0.70" 
+                    position="0 0.01 0"
+                    rotation="-90 0 0"
+                    material="shader: flat; opacity: 0.35; transparent: true"
+                    animation="property: rotation; to: -90 -360 0; loop: true; dur: 12000; easing: linear">
+            </a-ring>
+
+            <!-- Мерцающие космические микросферы вокруг корабля -->
+            <a-entity id="space-sparkles">
+                <a-sphere color="#38BDF8" 
+                          radius="0.015" 
+                          position="0.35 0.6 0.25"
+                          material="emissive: #38BDF8; emissiveIntensity: 2"
+                          animation="property: position; to: 0.35 1.6 0.25; dir: alternate; loop: true; dur: 2800; easing: easeInOutSine">
+                </a-sphere>
+                <a-sphere color="#F43F5E" 
+                          radius="0.015" 
+                          position="-0.3 0.4 -0.3"
+                          material="emissive: #F43F5E; emissiveIntensity: 2"
+                          animation="property: position; to: -0.3 1.4 -0.3; dir: alternate; loop: true; dur: 3200; easing: easeInOutSine; delay: 400">
+                </a-sphere>
+                <a-sphere color="#FBBF24" 
+                          radius="0.015" 
+                          position="0.25 0.3 -0.35"
+                          material="emissive: #FBBF24; emissiveIntensity: 2"
+                          animation="property: position; to: 0.25 1.5 -0.35; dir: alternate; loop: true; dur: 3600; easing: easeInOutSine; delay: 800">
+                </a-sphere>
+            </a-entity>
+
+        </a-marker>
+
+        <!-- Камера сцены -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // Создание фоновых звезд
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const count = 35;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 12 + 's';
+                p.style.animationDuration = (10 + Math.random() * 8) + 's';
+                particlesContainer.appendChild(p);
+            }
+        }
+
+        // Обработка маркера (скрывать / показывать рамку сканера)
+        const marker = document.querySelector('#marker');
+        const markerIndicator = document.getElementById('markerIndicator');
+
+        marker.addEventListener('markerFound', () => {
+            markerIndicator.style.display = 'none';
+        });
+
+        marker.addEventListener('markerLost', () => {
+            markerIndicator.style.display = 'block';
+        });
+
+        // Скрытие загрузчика
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                createParticles();
+            }, 1200);
+        });
+    </script>
+</body>
+
+</html>

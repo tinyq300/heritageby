@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аллея Славы – Вечные Образы</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Библиотека для генерации QR кодов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --burgundy: #8B1538;
+            --deep-red: #A52A2A;
+            --cream: #F5F0E8;
+            --gold: #D4AF37;
+            --white: #FFFFFF;
+            --charcoal: #2C2C2C;
+            --soft-gray: #E8E4DC;
+            --font-display: 'Philosopher', sans-serif;
+            --font-body: 'Cormorant Garamond', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--cream);
+            color: var(--charcoal);
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: relative;
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--deep-red) 100%);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.3);
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .back-link {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--white);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--white);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: var(--white);
+            color: var(--burgundy);
+        }
+
+        /* --- GALLERY GRID --- */
+        .gallery-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .intro-text {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--charcoal);
+        }
+
+        .portraits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .portrait-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.4s, box-shadow 0.4s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .portrait-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 48px rgba(139, 21, 56, 0.25);
+        }
+
+        .portrait-container {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            overflow: hidden;
+            background: var(--soft-gray);
+        }
+
+        .portrait-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: sepia(0.1) contrast(1.05);
+        }
+
+        .portrait-card:hover .portrait-image {
+            transform: scale(1.05);
+            filter: sepia(0) contrast(1);
+        }
+
+        .quote-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(139, 21, 56, 0.95) 0%, rgba(139, 21, 56, 0.8) 60%, transparent 100%);
+            color: var(--white);
+            padding: 3rem 1.5rem 1.5rem;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .portrait-card:hover .quote-overlay {
+            transform: translateY(0);
+        }
+
+        .quote-text {
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-block {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .heroine-name {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            color: var(--burgundy);
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .heroine-years {
+            font-size: 1rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .view-details-btn {
+            display: inline-block;
+            padding: 0.7rem 1.8rem;
+            background: var(--burgundy);
+            color: var(--white);
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        /* --- КНОПКИ ДЕЙСТВИЙ --- */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-chat {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+        }
+
+        .btn-ar {
+            background: linear-gradient(135deg, var(--gold), #b8860b);
+            color: var(--charcoal);
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* --- MODAL --- */
+        .detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .detail-modal.active {
+            display: block;
+        }
+
+        .detail-content {
+            max-width: 1000px;
+            margin: 3rem auto;
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .detail-header {
+            position: relative;
+            background: linear-gradient(135deg, var(--burgundy), var(--deep-red));
+            color: var(--white);
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-main {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2.5rem;
+            padding: 3rem;
+        }
+
+        .detail-portrait {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .artifacts-section {
+            margin-top: 2rem;
+        }
+
+        .artifacts-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .artifact-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid var(--soft-gray);
+        }
+
+        .artifact-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .biography-section {
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .detail-quote {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--cream);
+            border-left: 5px solid var(--gold);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--burgundy);
+        }
+
+        /* --- CHAT OVERLAY --- */
+        .chat-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-overlay.active {
+            display: flex;
+        }
+
+        .chat-window {
+            width: 90%;
+            max-width: 500px;
+            height: 80vh;
+            background: var(--white);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: zoomIn 0.3s;
+        }
+
+        .chat-header-bar {
+            background: var(--cream);
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #fafafa;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            animation: fadeIn 0.3s;
+        }
+
+        .message-content {
+            word-wrap: break-word;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #eee;
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--burgundy);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-input-box {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+
+        .chat-input-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+        }
+
+        .chat-send-btn {
+            background: var(--burgundy);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .typing-indicator {
+            font-size: 0.9rem;
+            color: var(--gold);
+            padding: 5px 20px;
+            font-style: italic;
+            display: none;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        /* --- QR & MARKER OVERLAY (UPDATED) --- */
+        .qr-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            /* Темный фон для контраста */
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-overlay.active {
+            display: flex;
+        }
+
+        .qr-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: zoomIn 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-view,
+        .marker-view {
+            transition: opacity 0.3s;
+        }
+
+        .marker-view {
+            display: none;
+        }
+
+        /* Скрыто по умолчанию */
+
+        .qr-placeholder {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .marker-image-preview {
+            width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+            border: 4px solid var(--gold);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: #eee;
+        }
+
+        .switch-btn {
+            background: var(--charcoal);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .switch-btn:hover {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+
+        .mobile-link-btn {
+            display: block;
+            margin-top: 15px;
+            padding: 10px;
+            background: transparent;
+            color: #666;
+            text-decoration: underline;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .detail-main {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-content {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="back-link">← На главную</a>
+        <h1>Аллея Славы</h1>
+        <div class="subtitle">Интерактивный пантеон героинь Беларуси</div>
+    </header>
+
+    <div class="gallery-container">
+        <p class="intro-text">
+            Перед вами — ожившая история. Наведите курсор на портрет героини, чтобы услышать её голос, или нажмите
+            «Узнать больше», чтобы изучить её биографию и цифровые артефакты.
+        </p>
+
+        <div class="portraits-grid" id="mainGrid">
+            <!-- Карточки будут сгенерированы JS -->
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЕТАЛЕЙ -->
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-content">
+            <div class="detail-header">
+                <button class="close-modal" onclick="closeDetailModal()">×</button>
+                <h2 id="detailName"></h2>
+                <div id="detailYears"></div>
+            </div>
+            <div class="detail-main">
+                <div>
+                    <img id="detailPortrait" src="" alt="" class="detail-portrait">
+
+                    <!-- Кнопки действий -->
+                    <div class="action-buttons">
+                        <button class="action-btn btn-chat" onclick="startChat()">
+                            💬 Беседа с ней
+                        </button>
+                        <button class="action-btn btn-ar" onclick="showARcode()">
+                            📱 3D / AR Опыт
+                        </button>
+                    </div>
+
+                    <div class="artifacts-section">
+                        <h3 style="font-family: var(--font-display); margin-bottom: 1rem; color: var(--burgundy);">
+                            Артефакты
+                        </h3>
+                        <div class="artifacts-gallery" id="artifactsGallery">
+                            <!-- Заглушки артефактов -->
+                        </div>
+                    </div>
+                </div>
+                <div class="biography-section">
+                    <h3>Биография</h3>
+                    <div id="detailBiography"></div>
+                    <div class="detail-quote" id="detailQuote"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ОКНО ЧАТА -->
+    <div class="chat-overlay" id="chatOverlay">
+        <div class="chat-window">
+            <div class="chat-header-bar">
+                <span
+                    style="font-weight:bold; color:var(--burgundy); font-family: var(--font-display); font-size: 1.2rem;"
+                    id="chatTitle">Чат</span>
+                <div>
+                    <button onclick="closeChat()"
+                        style="background:none; border:none; cursor:pointer; font-size:1.5rem; color: #666;">×</button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="typing-indicator" id="typingIndicator">Пишет...</div>
+
+            <div class="chat-input-box">
+                <input type="text" id="chatInput" placeholder="Ваш вопрос..."
+                    onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="chat-send-btn" id="sendButton" onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ОКНО QR КОДА / МАРКЕРА -->
+    <div class="qr-overlay" id="qrOverlay">
+        <div class="qr-card">
+            <button onclick="closeQR()"
+                style="position:absolute; top:15px; right:20px; border:none; background:none; font-size:1.8rem; cursor:pointer; color:#333; z-index: 10;">×</button>
+
+            <!-- РЕЖИМ 1: QR КОД -->
+            <div id="qrView" class="qr-view">
+                <h3
+                    style="color:var(--burgundy); font-family:var(--font-display); font-size: 1.6rem; margin-bottom:5px;">
+                    Шаг 1: Сканируй</h3>
+                <p style="color:#666; font-size:0.95rem;">Наведи камеру телефона на этот код</p>
+
+                <div id="qrPlace" class="qr-placeholder"></div>
+
+                <button class="switch-btn" onclick="toggleMarkerMode(true)">
+                    👁️ Шаг 2: Показать фото (Маркер)
+                </button>
+
+                <a href="#" id="mobileLink" class="mobile-link-btn">🔗 Открыть ссылку вручную</a>
+            </div>
+
+            <!-- РЕЖИМ 2: МАРКЕР (ФОТО) -->
+            <div id="markerView" class="marker-view">
+                <h3
+                    style="color:var(--burgundy); font-family:var(--font-display); font-size: 1.6rem; margin-bottom:5px;">
+                    Шаг 2: Наводи</h3>
+                <p style="color:#666; font-size:0.95rem;">Направь телефон на это изображение</p>
+
+                <img id="markerImageFull" src="" alt="Маркер" class="marker-image-preview">
+
+                <button class="switch-btn" onclick="toggleMarkerMode(false)">
+                    ↩ Вернуться к QR коду
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        //  НАСТРОЙКИ (КЛЮЧ)
+        // ==========================================
+        const OPENROUTER_API_KEY = "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";
+
+        const MODELS = [
+            "meta-llama/llama-3.2-3b-instruct:free",
+            "google/gemini-2.0-flash-thinking-exp:free",
+            "google/gemini-2.0-flash-lite-preview-02-05:free",
+            "deepseek/deepseek-r1:free",
+            "arcee-ai/trinity-large-preview:free"
+        ];
+
+        // ==========================================
+        //  ДАННЫЕ ГЕРОИНЬ
+        // ==========================================
+        const heroines = {
+            euphrosyne: {
+                name: 'Евфросиния Полоцкая',
+                years: 'ок. 1104–1167',
+                img: 'efra.jpg',
+                markerImg: 'efra-marker.jpg',
+                quote: '«Не жалейте своих сокровищ на просвещение и благотворительность, ибо только так мы можем оставить след в вечности.»',
+                bio: 'Княжна, первая восточнославянская просветительница, основательница монастырей, школ и библиотек. Канонизирована как святая покровительница Беларуси.',
+                arLink: 'ar-view.html',
+                prompt: 'Ты играешь роль Евфросинии Полоцкой, святой просветительницы 12 века. Твоя личность: мудрая, добрая, спокойная. Твои темы: книги, просвещение, вера, Полоцк. Отвечай кратко (2-3 предложения).'
+            },
+            anastasia: {
+                name: 'Анастасия Слуцкая',
+                years: 'ок. 1500–1554',
+                img: 'sluc.jpg',
+                quote: '«Сила женщины не меньше, чем сила мужчины, когда дело касается защиты родной земли.»',
+                bio: 'Княгиня, защитница Слуцкого княжества от татарских набегов. Символ мужества, несгибаемой воли и полководческого таланта.',
+                arLink: 'ar-view.html',
+                prompt: 'Ты — княгиня Анастасия Слуцкая, воительница и правительница. Говори твердо, уверенно. Ты защищала родную землю. Отвечай кратко.'
+            },
+            barbara: {
+                name: 'Барбара Радзивилл',
+                years: '1520–1551',
+                img: 'barb.jpg',
+                quote: '«Настоящая любовь побеждает все преграды, даже если она должна закончиться трагедией.»',
+                bio: 'Королева польская и великая княгиня литовская, одна из самых романтических и трагических фигур эпохи. Покровительница искусств.',
+                arLink: 'ar-view.html',
+                prompt: 'Ты — Барбара Радзивилл, королева. Ты романтична, полна достоинства, говоришь о любви и идеалах эпохи Возрождения.'
+            },
+            franciszka: {
+                name: 'Франциска Урсула Радзивилл',
+                years: '1705–1753',
+                img: 'fran.jpg',
+                quote: '«Театр – это зеркало жизни, и каждая женщина имеет право держать его в своих руках.»',
+                bio: 'Первая женщина-драматург в истории белорусской и польской литературы, основательница домашнего театра в Несвижском замке.',
+                prompt: 'Ты — Франциска Урсула Радзивилл, драматург и просветительница. Ты обожаешь театр, искусство и литературу. Говори возвышенно и вдохновенно.'
+            },
+            tetka: {
+                name: 'Алоиза Пашкевич (Тётка)',
+                years: '1876–1916',
+                img: 'alai.jpg',
+                quote: '«Язык – это душа народа, и мы должны сохранить его для будущих поколений.»',
+                bio: 'Одна из основательниц современной белорусской литературы, поэтесса, писательница, общественно-политическая деятельница и педагог.',
+                prompt: 'Ты — Алоиза Пашкевич (Тётка). Ты борешься за просвещение народа, родной язык и культуру. Говори энергично и пламенно.'
+            },
+            galina: {
+                name: 'Галина Горецкая',
+                years: '1910–1988',
+                img: 'gali.jpg',
+                quote: '«Театр – это место, где рождается душа народа.»',
+                bio: 'Выдающаяся актриса, одна из основоположниц белорусского национального театрального искусства в БССР, народная артистка БССР.',
+                prompt: 'Ты — Галина Горецкая, выдающаяся актриса. Рассказывай о становлении белорусского театра, ролях и преданности сцене.'
+            },
+            vera: {
+                name: 'Вера Хорева',
+                years: '1923–1943',
+                img: 'vera.jpg',
+                quote: '«Свобода дороже всего, и я готова отдать за неё свою жизнь.»',
+                bio: 'Подпольщица, секретарь Минского подпольного горкома комсомола. Казнена нацистами. Герой Советского Союза (посмертно).',
+                prompt: 'Ты — Вера Хорева, героическая подпольщица Минска. Ты решительная, смелая, беззаветно любишь Родину.'
+            },
+            mariya: {
+                name: 'Мария Осипова',
+                years: '1908–1999',
+                img: 'mari_osip.jpg',
+                quote: '«Я сделала то, что должна была сделать. За Родину, за народ.»',
+                bio: 'Участница минского подполья, руководитель операции по ликвидации гауляйтера Вильгельма Кубе. Герой Советского Союза.',
+                prompt: 'Ты — Мария Осипова, руководитель подпольной группы. Ты мужественна, рассудительна, организовала сложнейшие операции подполья.'
+            },
+            zinaida: {
+                name: 'Зинаида Туснолобова-Марченко',
+                years: '1920–1980',
+                img: 'zina.jpg',
+                quote: '«Боль и страдания не могут сломить дух человека, если у него есть вера в победу.»',
+                bio: 'Санинструктор, спасшая с поля боя 128 раненых бойцов. Перенесла тяжелейшие ранения и стала символом несокрушимого человеческого духа. Герой Советского Союза.',
+                prompt: 'Ты — Зинаида Туснолобова-Марченко. Твоя жизнь — подвиг стойкости, доброты и жизнелюбия. Учи людей никогда не сдаваться.'
+            },
+            sofya: {
+                name: 'Софья Ковалевская',
+                years: '1850–1891',
+                img: 'sofy.jpeg',
+                quote: '«Математика – это поэзия логических идей, и каждая женщина может стать её творцом.»',
+                bio: 'Выдающийся математик, первая в мире женщина – профессор математики. Родовое имение Полибино находилось в Витебской губернии.',
+                prompt: 'Ты — Софья Ковалевская, всемирно известный математик. Ты веришь в науку, логику, творчество и женское равноправие.'
+            },
+            nadezhda: {
+                name: 'Надежда Ходасевич-Леже',
+                years: '1904–1982',
+                img: 'nade.jpg',
+                quote: '«Искусство не имеет границ, и каждый человек может найти в нём свою свободу.»',
+                bio: 'Художница-авангардистка мирового масштаба, муза Фернана Леже. Родилась на Витебщине, создала национальный музей во Франции.',
+                prompt: 'Ты — Надежда Ходасевич-Леже, художница. Ты видишь мир через экспрессию форм и цветов, пропагандируешь гуманизм и искусство.'
+            },
+            stanyuta: {
+                name: 'Стефания Станюта',
+                years: '1905–2000',
+                img: 'stanyuta.jpg',
+                quote: '«Жизнь коротка, а искусство и добро, которое мы оставляем людям, — вечны.»',
+                bio: 'Народная артистка СССР и БССР, великая легенда белорусского театра и мирового кино. Более полувека отдала Купаловской сцене, сыграла свыше 60 киноролей («Прощание», «Белые Росы»).',
+                prompt: 'Ты — Стефания Станюта, великая белорусская актриса. Ты говоришь тепло, мудро, делишься любовью к искусству, театру и родной земле.'
+            },
+            kulakovskaya: {
+                name: 'Тамара Кулаковская',
+                years: '1919–1986',
+                img: 'kulakovskaya.jpg',
+                quote: '«Земля щедро благодарит человека, когда к ней относятся с научным знанием и бережной заботой.»',
+                bio: 'Член-корреспондент АН БССР, доктор сельскохозяйственных наук, профессор, директор БелНИИ почвоведения и агрохимии, создатель научной школы плодородия почв.',
+                prompt: 'Ты — Тамара Кулаковская, выдающийся ученый в области почвоведения и агрохимии. Ты рассказываешь о плодородии земли и научном подходе.'
+            },
+            hotyleva: {
+                name: 'Любовь Хотылёва',
+                years: '1928–2024',
+                img: 'hotyleva.jpg',
+                quote: '«Научный поиск требует беззаветной преданности истине и стремления принести реальную пользу своей земле.»',
+                bio: 'Академик НАН Беларуси, генетик-селекционер, многолетний директор Института генетики и цитологии, создательница высокоурожайных сортов растений («Немига-2»).',
+                prompt: 'Ты — Любовь Хотылёва, академик, генетик. Ты веришь в научный прогресс, силу генетики и селекции на благо продовольственной безопасности.'
+            },
+            zaharevich: {
+                name: 'Мария Захаревич',
+                years: 'род. 1936',
+                img: 'zaharevich.jpg',
+                quote: '«Сцэна — гэта маё жыццё. Служыць роднаму тэатру і народу — найвышэйшае шчасце для артыста.»',
+                bio: 'Народная артистка Беларуси, прима Национального академического театра им. Янки Купалы. Создала незабываемую галерею национальных женских образов.',
+                prompt: 'Ты — Мария Захаревич, Народная артистка Беларуси. Ты воплощение белорусской души и классического театра. Говори вдохновенно и сердечно.'
+            },
+            kochanova: {
+                name: 'Наталья Кочанова',
+                years: 'род. 1960',
+                img: 'kochanova.jpg',
+                quote: '«Главная ценность нашего государства — это люди, их благополучие, мир и согласие на родной земле.»',
+                bio: 'Председатель Совета Республики Национального собрания Республики Беларусь (с 2019 года), экс-Глава Администрации Президента, видный государственный деятель.',
+                prompt: 'Ты — Наталья Ивановна Кочанова, Председатель Совета Республики Беларуси. Ты говоришь спокойно, взвешенно, подчеркиваешь заботу о людях и стабильность государства.'
+            },
+            yermoshina: {
+                name: 'Лидия Ермошина',
+                years: 'род. 1953',
+                img: 'yermoshina.jpg',
+                quote: '«Закон и справедливость — это основа стабильности и уверенности общества в завтрашнем дне.»',
+                bio: 'Председатель Центральной избирательной комиссии Республики Беларусь (1996–2021), заслуженный юрист Республики Беларусь, руководила избирательной системой страны четверть века.',
+                prompt: 'Ты — Лидия Михайловна Ермошина, юрист и государственный деятель. Говори профессионально, с выдержкой, подчеркивай верховенство закона.'
+            },
+            shchetkina: {
+                name: 'Марианна Щёткина',
+                years: 'род. 1958',
+                img: 'shchetkina.jpg',
+                quote: '«Забота о человеке, поддержка семьи и социальная справедливость — непреходящие ориентиры сильного государства.»',
+                bio: 'Министр труда и социальной защиты Республики Беларусь (2009–2016), зам. Председателя Совета Республики, многолетний лидер Белорусского союза женщин.',
+                prompt: 'Ты — Марианна Щёткина, государственный и общественный деятель. Твои главные темы: социальная поддержка семьи, материнства, женское движение.'
+            },
+            pavlyuchenko: {
+                name: 'Наталия Павлюченко',
+                years: 'род. 1977',
+                img: 'pavlyuchenko.jpg',
+                quote: '«Социальная политика — это живая работа с людьми и ради людей, где важен каждый конкретный человек.»',
+                bio: 'Министр труда и социальной защиты (2024–2026), член Совета Республики, председатель Постоянной комиссии по образованию, науке, культуре и социальному развитию.',
+                prompt: 'Ты — Наталия Павлюченко, министр и сенатор. Говори современно, конструктивно, о развитии социальной сферы и поддержке граждан.'
+            },
+            drobyshevskaya: {
+                name: 'Инесса Дробышевская',
+                years: 'род. 1947',
+                img: 'drobyshevskaya.jpg',
+                quote: '«Служение здоровью человека — это благородное призвание и высочайшая ответственность врача.»',
+                bio: 'Министр здравоохранения Беларуси (1994–1997), доктор медицинских наук, профессор, организатор онкологической службы Гомельщины и депутат парламента.',
+                prompt: 'Ты — Инесса Дробышевская, врач-онколог, профессор и экс-министр здравоохранения. Рассказывай о развитии медицины и служении людям.'
+            },
+            ananich: {
+                name: 'Лилия Ананич',
+                years: 'род. 1960',
+                img: 'ananich.jpg',
+                quote: '«Информационное пространство страны должно созидать, объединять общество и защищать национальные ценности.»',
+                bio: 'Министр информации Республики Беларусь (2014–2017), депутат Палаты представителей, внесла фундаментальный вклад в развитие национального медиапространства и книгоиздания.',
+                prompt: 'Ты — Лилия Ананич, государственный деятель и журналист. Ты говоришь о силе слова, национальной культуре, книгоиздании и информационной безопасности.'
+            },
+            morgunova: {
+                name: 'Елена Моргунова',
+                years: 'назн. 2025',
+                img: 'morgunova.jpg',
+                quote: '«Стандарты качества и инновационные технологии — залог надежности и глобальной конкурентоспособности отечественной продукции.»',
+                bio: 'Председатель Государственного комитета по стандартизации Республики Беларусь, председатель Электротехнического комитета, лидер цифровизации технического регулирования.',
+                prompt: 'Ты — Елена Моргунова, председатель Госстандарта Беларуси. Говори профессионально о качестве, передовых стандартах, цифровизации и технологиях.'
+            },
+            marina: {
+                name: 'Марина Василевская',
+                years: 'род. 1990',
+                img: 'mari.jpg',
+                markerImg: 'mari-marker.jpg',
+                arLink: 'ar-view-vasilevskaya.html',
+                quote: '«Космос объединяет и вдохновляет. Этот полёт — достижение и гордость всего белорусского народа.»',
+                bio: 'Первая женщина-космонавт суверенной Беларуси, Герой Беларуси (2024), совершившая исторический полет на Международную космическую станцию на корабле «Союз МС-25».',
+                prompt: 'Ты — Марина Василевская, космонавт, Герой Беларуси. Ты видела Землю из иллюминатора МКС. Говори с вдохновением о полете, науке и красоте космоса.'
+            },
+            darya: {
+                name: 'Дарья Домрачева',
+                years: 'род. 1986',
+                img: 'dary.jpg',
+                quote: '«Победа — это результат веры в себя, упорства и ежедневного труда.»',
+                bio: 'Четырёхкратная олимпийская чемпионка по биатлону, первая женщина — Герой Беларуси, одна из величайших спортсменок в мировой истории.',
+                prompt: 'Ты — Дарья Домрачева, олимпийская чемпионка и Герой Беларуси. Ты знаешь цену победе, мотивируешь на спорт, стойкость и целеустремленность.'
+            },
+            aleynikova: {
+                name: 'Ольга Алейникова',
+                years: 'род. 1951',
+                img: 'aleynikova.jpg',
+                quote: '«Каждая спасенная детская жизнь — это победа науки, милосердия и упорного труда врачей.»',
+                bio: 'Член-корреспондент НАН Беларуси, доктор медицинских наук, профессор. Основоположник детской онкологии, гематологии и трансплантации в Беларуси, создатель РНПЦ ДОГИ.',
+                prompt: 'Ты — Ольга Алейникова, выдающийся детский онкогематолог, спасшая тысячи детских жизней. Говори с теплом, заботой и научной основательностью.'
+            },
+            kolomiyets: {
+                name: 'Эмилия Коломиец',
+                years: 'род. 1949',
+                img: 'kolomiyets.jpg',
+                quote: '«Биотехнологии — это экологическое будущее планеты и основа здорового развития сельского хозяйства.»',
+                bio: 'Член-корреспондент НАН Беларуси, микробиолог, биотехнолог, Заслуженный деятель науки Республики Беларусь, многолетний директор Института микробиологии НАНБ.',
+                prompt: 'Ты — Эмилия Коломиец, выдающийся микробиолог и биотехнолог. Рассказывай о микромире, экологических препаратах и науке будущего.'
+            },
+            rublevskaya: {
+                name: 'Людмила Рублевская',
+                years: 'род. 1965',
+                img: 'rublevskaya.jpg',
+                quote: '«Гісторыя — гэта не сухія даты, гэта жывыя чалавечыя лёсы, каханне, мужнасць і таямніцы мінулага.»',
+                bio: 'Белорусская писательница, поэтесса, журналист, литературный критик, автор более 50 книг, в том числе знаменитой саги о Прантише Вырвиче. Лауреат Национальной литературной премии.',
+                prompt: 'Ты — Людмила Рублевская, писательница и поэтесса. Ты оживляешь шляхетскую и народную историю Беларуси через приключения, тайны и романтику.'
+            },
+            lisitskaya: {
+                name: 'Тамара Лисицкая',
+                years: 'род. 1974',
+                img: 'lisitskaya.jpg',
+                quote: '«Творчество — это искренний диалог со зрителем и читателем, умение делиться светом и эмоциями.»',
+                bio: 'Белорусская теле- и радиоведущая, телережиссёр, писательница, сценарист. Автор и ведущая рейтинговой программы «12 или На ночь глядя», автор серии современных романов.',
+                prompt: 'Ты — Тамара Лисицкая, телеведущая и писательница. Ты общаешься открыто, остроумно, с юмором и душевностью.'
+            },
+            irina: {
+                name: 'Ирина Богданович',
+                years: '1957–2024',
+                img: 'irin.jpg',
+                quote: '«Библиотека — это фундамент будущего нашей культуры и сокровищница знаний нации.»',
+                bio: 'Директор Национальной библиотеки Беларуси (2000–2024), заслуженный работник культуры. Руководила строительством и становлением знаменитого «алмаза» знаний.',
+                prompt: 'Ты — Ирина Богданович, хранитель знаний и книг. Рассказывай о Национальной библиотеке Беларуси и величии книжного наследия.'
+            }
+        };
+
+        let currentHeroineId = null;
+        let qrcodeObj = null;
+
+        // --- ГЕНЕРАЦИЯ СЕТКИ ---
+        const grid = document.getElementById('mainGrid');
+        Object.keys(heroines).forEach(id => {
+            const h = heroines[id];
+            const card = document.createElement('div');
+            card.className = 'portrait-card';
+            card.onclick = () => openDetailModal(id);
+            card.innerHTML = `
+                <div class="portrait-container">
+                    <img src="${h.img}" alt="${h.name}" class="portrait-image">
+                    <div class="quote-overlay"><div class="quote-text">${h.quote}</div></div>
+                </div>
+                <div class="info-block">
+                    <div class="heroine-name">${h.name}</div>
+                    <div class="heroine-years">${h.years}</div>
+                    <button class="view-details-btn">Узнать больше →</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // --- МОДАЛЬНЫЕ ОКНА ---
+        function openDetailModal(id) {
+            currentHeroineId = id;
+            const h = heroines[id];
+            document.getElementById('detailName').textContent = h.name;
+            document.getElementById('detailYears').textContent = h.years;
+            document.getElementById('detailBiography').innerHTML = `<p>${h.bio}</p>`;
+            document.getElementById('detailQuote').textContent = h.quote;
+            document.getElementById('detailPortrait').src = h.img;
+
+            // Артефакты
+            if (id === 'marina') {
+                document.getElementById('artifactsGallery').innerHTML = `
+                    <div class="artifact-item" style="cursor:pointer;" onclick="showARcode()"><div style="background:linear-gradient(135deg, #0f172a, #1e1b4b); height:100%; display:flex; align-items:center; justify-content:center; color:#38bdf8; font-size:2rem;">🚀</div><div class="artifact-label">Ракета «Союз МС-25» (3D)</div></div>
+                    <div class="artifact-item"><div style="background:linear-gradient(135deg, #0f172a, #1e1b4b); height:100%; display:flex; align-items:center; justify-content:center; color:#facc15; font-size:2rem;">⭐</div><div class="artifact-label">Звезда Героя Беларуси</div></div>
+                `;
+            } else if (id === 'euphrosyne') {
+                document.getElementById('artifactsGallery').innerHTML = `
+                    <div class="artifact-item" style="cursor:pointer;" onclick="showARcode()"><div style="background:linear-gradient(135deg, #2d1537, #1a0a1f); height:100%; display:flex; align-items:center; justify-content:center; color:#ffd700; font-size:2rem;">✝️</div><div class="artifact-label">Крест Евфросинии (3D)</div></div>
+                    <div class="artifact-item"><div style="background:linear-gradient(135deg, #2d1537, #1a0a1f); height:100%; display:flex; align-items:center; justify-content:center; color:#ffd700; font-size:2rem;">📜</div><div class="artifact-label">Полоцкая летопись</div></div>
+                `;
+            } else {
+                document.getElementById('artifactsGallery').innerHTML = `
+                    <div class="artifact-item"><div style="background:#eee; height:100%; display:flex; align-items:center; justify-content:center; color:#999">Документ</div><div class="artifact-label">Личный архив</div></div>
+                    <div class="artifact-item"><div style="background:#ddd; height:100%; display:flex; align-items:center; justify-content:center; color:#999">Предмет</div><div class="artifact-label">Реликвия</div></div>
+                `;
+            }
+
+            document.getElementById('detailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- ЛОГИКА AR / QR / МАРКЕР ---
+        function showARcode() {
+            const h = heroines[currentHeroineId];
+            if (!h) return;
+
+            const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+            const targetUrl = baseUrl + (h.arLink || 'ar-view.html');
+
+            document.getElementById('qrOverlay').classList.add('active');
+
+            // Сбрасываем вид (показываем QR первым)
+            toggleMarkerMode(false);
+
+            // Устанавливаем картинку маркера
+            const markerImgEl = document.getElementById('markerImageFull');
+            // Если есть специальный маркер (markerImg), используем его, иначе обычное фото
+            markerImgEl.src = h.markerImg || h.img;
+
+            // Генерируем QR
+            const container = document.getElementById('qrPlace');
+            container.innerHTML = '';
+            qrcodeObj = new QRCode(container, {
+                text: targetUrl,
+                width: 200,
+                height: 200,
+                colorDark: "#8B1538",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            document.getElementById('mobileLink').href = targetUrl;
+        }
+
+        function toggleMarkerMode(showMarker) {
+            const qrView = document.getElementById('qrView');
+            const markerView = document.getElementById('markerView');
+            if (showMarker) {
+                qrView.style.display = 'none';
+                markerView.style.display = 'block';
+            } else {
+                markerView.style.display = 'none';
+                qrView.style.display = 'block';
+            }
+        }
+
+        function closeQR() { document.getElementById('qrOverlay').classList.remove('active'); }
+
+        // --- ЛОГИКА ЧАТА ---
+        function startChat() {
+            const h = heroines[currentHeroineId];
+            document.getElementById('chatTitle').textContent = `Беседа: ${h.name}`;
+            document.getElementById('chatOverlay').classList.add('active');
+            document.getElementById('chatMessages').innerHTML = '';
+            addMessage('bot', `Приветствую тебя. Я — ${h.name}. Спрашивай, и я отвечу.`);
+        }
+
+        function closeChat() { document.getElementById('chatOverlay').classList.remove('active'); }
+
+        function showTyping(show) {
+            const indicator = document.getElementById('typingIndicator');
+            if (show) indicator.classList.add('active');
+            else indicator.classList.remove('active');
+        }
+
+        function addMessage(sender, text) {
+            const chatBox = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+
+            if (sender === 'bot') {
+                text = text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+                text = text.replace(/^["']|["']$/g, '');
+            }
+
+            msgDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            const btn = document.getElementById('sendButton');
+
+            if (!text) return;
+
+            addMessage('user', text);
+            input.value = '';
+            showTyping(true);
+            btn.disabled = true;
+
+            const h = heroines[currentHeroineId];
+            const currentSystemPrompt = h.prompt || "Ты историческая личность Беларуси. Отвечай мудро.";
+            let success = false;
+
+            for (const modelName of MODELS) {
+                try {
+                    console.log(`Пробую модель: ${modelName}`);
+
+                    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                            "Content-Type": "application/json",
+                            "HTTP-Referer": window.location.href,
+                            "X-Title": "History Bot"
+                        },
+                        body: JSON.stringify({
+                            "model": modelName,
+                            "messages": [
+                                { "role": "system", "content": currentSystemPrompt },
+                                { "role": "user", "content": text }
+                            ]
+                        })
+                    });
+
+                    if (!response.ok) continue;
+
+                    const data = await response.json();
+
+                    if (data.choices && data.choices.length > 0) {
+                        const botText = data.choices[0].message.content;
+                        showTyping(false);
+                        addMessage('bot', botText);
+                        success = true;
+                        break;
+                    }
+                } catch (error) {
+                    console.warn(`Сбой:`, error);
+                }
+            }
+
+            if (!success) {
+                showTyping(false);
+                addMessage('bot', "Прости, чадо. Небесные сферы молчат. Попробуй позже.");
+            }
+
+            btn.disabled = false;
+        }
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('detailModal')) closeDetailModal();
+            if (event.target == document.getElementById('chatOverlay')) closeChat();
+            if (event.target == document.getElementById('qrOverlay')) closeQR();
+        }
+    </script>
+</body>
+
+</html>
