@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вечные Образы: Наследие Женщин Беларуси</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        :root {
+            --burgundy: #8B1538;
+            --deep-red: #A52A2A;
+            --cream: #F5F0E8;
+            --gold: #D4AF37;
+            --dark-green: #2F4F2F;
+            --white: #FFFFFF;
+            --charcoal: #2C2C2C;
+            --soft-gray: #E8E4DC;
+            --font-display: 'Philosopher', sans-serif;
+            --font-body: 'Cormorant Garamond', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--cream);
+            color: var(--charcoal);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 21, 56, 0.02) 2px, rgba(139, 21, 56, 0.02) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(139, 21, 56, 0.02) 2px, rgba(139, 21, 56, 0.02) 4px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            position: relative;
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--deep-red) 100%);
+            color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.3);
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255, 255, 255, 0.03) 20px, rgba(255, 255, 255, 0.03) 40px);
+            animation: slidePattern 60s linear infinite;
+        }
+
+        @keyframes slidePattern {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(40px, 40px);
+            }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .year-badge {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            background: var(--gold);
+            color: var(--charcoal);
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        nav a {
+            font-family: var(--font-display);
+            text-decoration: none;
+            color: var(--charcoal);
+            font-size: 1.1rem;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--burgundy);
+            transition: width 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--burgundy);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+        .intro-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .intro-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: var(--burgundy);
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-section p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--charcoal);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .timeline-section {
+            margin-bottom: 4rem;
+        }
+
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-header h2 {
+            font-family: var(--font-display);
+            font-size: 2.8rem;
+            color: var(--burgundy);
+            margin-bottom: 1rem;
+        }
+
+        .timeline-header p {
+            font-size: 1.2rem;
+            color: var(--charcoal);
+            opacity: 0.8;
+        }
+
+        .timeline-container {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--burgundy), var(--gold));
+            border-radius: 2px;
+        }
+
+        .timeline-period {
+            position: relative;
+            margin-bottom: 4rem;
+            animation: slideInTimeline 0.8s ease-out both;
+        }
+
+        .timeline-period:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .timeline-period:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .timeline-period:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .timeline-period:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .timeline-period:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .timeline-period:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .timeline-period:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        @keyframes slideInTimeline {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-period:nth-child(odd) .period-content {
+            margin-right: 55%;
+            text-align: right;
+        }
+
+        .timeline-period:nth-child(even) .period-content {
+            margin-left: 55%;
+            text-align: left;
+        }
+
+        .period-marker {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--gold);
+            border: 4px solid var(--white);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px var(--burgundy);
+            z-index: 10;
+        }
+
+        .period-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .period-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(139, 21, 56, 0.2);
+        }
+
+        .period-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            color: var(--burgundy);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .period-dates {
+            font-size: 1rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .period-description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            opacity: 0.85;
+        }
+
+        .women-list {
+            margin-top: 1.5rem;
+        }
+
+        .woman-card {
+            background: var(--soft-gray);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid var(--burgundy);
+        }
+
+        .woman-card:hover {
+            background: var(--cream);
+            transform: translateX(5px);
+            box-shadow: 0 4px 16px rgba(139, 21, 56, 0.15);
+        }
+
+        .woman-name {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--burgundy);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .woman-years {
+            font-size: 0.95rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .woman-description {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--charcoal);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            /* Затемнение чуть мягче */
+            backdrop-filter: blur(5px);
+            /* Размытие фона для глубины */
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 40px 20px;
+            /* Отступы от краев экрана, чтобы не липло */
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            /* Начинаем сверху, но с отступом */
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            max-width: 700px;
+            /* Чуть сузили для стройности */
+            width: 100%;
+            border-radius: 24px;
+            /* Более плавные углы */
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            margin: auto;
+            /* Центрирование */
+            animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--burgundy), var(--deep-red));
+            color: var(--white);
+            padding: 3rem 2.5rem 2rem;
+            /* Увеличили отступы сверху */
+            text-align: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.4);
+            transform: rotate(90deg);
+        }
+
+        .chronicle-header {
+            background: linear-gradient(135deg, var(--gold), var(--burgundy));
+        }
+
+        .modal-body {
+            padding: 2.5rem;
+            /* Хороший "воздух" внутри */
+            background: var(--white);
+        }
+
+        .modal-name {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+
+        .modal-years {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .modal-description {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+        }
+
+        .modal-quote {
+            padding: 2rem;
+            background: var(--cream);
+            border-left: 5px solid var(--gold);
+            border-radius: 0 16px 16px 0;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--burgundy);
+            position: relative;
+        }
+
+        .modal-quote::before {
+            content: '“';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 4rem;
+            color: var(--gold);
+            opacity: 0.3;
+            font-family: serif;
+        }
+
+        #modalImage {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 16px;
+            /* Скругляем саму фотку */
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            /* Легкая тень под фото */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            padding: 3rem;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: var(--burgundy);
+            margin-bottom: 1.5rem;
+        }
+
+        .section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--charcoal);
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .chronicle-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--burgundy);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+            background: var(--white);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .cta-button,
+        .submit-button {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            background: var(--burgundy);
+            color: var(--white);
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 6px 20px rgba(139, 21, 56, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .cta-button:hover,
+        .submit-button:hover {
+            background: var(--deep-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(139, 21, 56, 0.4);
+        }
+
+        footer {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 968px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .timeline-period:nth-child(odd) .period-content,
+            .timeline-period:nth-child(even) .period-content {
+                margin-left: 10%;
+                margin-right: 10%;
+                text-align: left;
+            }
+
+            .timeline-line {
+                left: 2rem;
+            }
+
+            .period-marker {
+                left: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .timeline-header h2,
+            .section h2 {
+                font-size: 2rem;
+            }
+
+            .modal-content {
+                margin: 1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Чат-бот виджет стили */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: none;
+        }
+
+        #chatbot-container.open {
+            display: block;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        #chatbot-toggle.hidden {
+            display: none;
+        }
+
+        .chatbot-close-btn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 35px;
+            height: 35px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: transform 0.2s;
+        }
+
+        .chatbot-close-btn:hover {
+            transform: scale(1.1);
+            background: #ff6b81;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Вечные Образы</h1>
+            <div class="subtitle">Наследие Женщин Беларуси</div>
+            <div class="year-badge">ГОД БЕЛОРУССКОЙ ЖЕНЩИНЫ • 2026</div>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#intro">О проекте</a></li>
+            <li><a href="#timeline">Линия Времени</a></li>
+            <li><a href="gallery.html">Аллея Славы</a></li>
+            <li><a href="#chronicles">Народная Летопись</a></li>
+            <li><a href="education.html">Урок в будущее</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Текст из PDF стр. 4 -->
+        <section id="intro" class="section">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+                <!-- Текстовая часть -->
+                <div>
+                    <h2>Добро пожаловать в пространство «Вечных Образов»</h2>
+                    <p>
+                        Перед вами – живая история силы, мудрости и созидательной энергии.
+                        Здесь оживают судьбы женщин, чья отвага, талант и преданность делу веками создавали Беларусь.
+                        Это не просто архив. Это мост между эпохами, на котором вы сможете прикоснуться к подлинным
+                        документам и артефактам,
+                        побеседовать с великими соотечественницами через диалоговый ИИ, шагнуть в их эпоху с помощью
+                        виртуальной реальности,
+                        вписать историю своей семьи в народную летопись.
+                    </p>
+                    <p>
+                        Исследуйте «Линию Времени», чтобы выбрать путь. Или сразу начните путешествие с «Аллеи Славы».
+                        Наследие ждет своего хранителя. Ваше путешествие начинается сейчас.
+                    </p>
+                </div>
+
+                <!-- Видео справа -->
+                <div
+                    style="position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.15);">
+                    <!-- ЗАМЕНИТЕ URL_ВАШЕГО_ВИДЕО на ссылку YouTube или путь к вашему видео -->
+                    <!-- Для YouTube: используйте embed ссылку, например: https://www.youtube.com/embed/VIDEO_ID -->
+                    <!-- Для локального видео: используйте <video> тег с вашим файлом -->
+
+                    <!-- Вариант 1: YouTube видео -->
+                    <!-- <iframe width="100%" height="315" src="URL_ВАШЕГО_ВИДЕО" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 16px;"></iframe> -->
+
+                    <!-- Вариант 2: Локальное видео -->
+                    <video width="100%" controls style="border-radius: 16px;">
+                        <source src="efraanim.mp4" type="video/mp4">
+                        Ваш браузер не поддерживает видео.
+                    </video>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Описание из PDF стр. 2 -->
+        <section id="timeline" class="timeline-section">
+            <div class="section-title-box" style="text-align:center;">
+                <h2>Линия Времени</h2>
+                <p>Основной навигатор по эпохам и судьбам</p>
+            </div>
+
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+
+                <!-- 1. Княжества и ВКЛ -->
+                <div class="timeline-period">
+                    <div class="period-marker"></div>
+                    <div class="period-content">
+                        <div class="period-title">Княжества и Великое Княжество Литовское</div>
+                        <div class="period-dates">XII – XVI вв.</div>
+                        <div class="period-description">Время формирования национальной идентичности.</div>
+                        <div class="women-list">
+                            <div class="woman-card" onclick="openModal('euphrosyne')">
+                                <div class="woman-name">Евфросиния Полоцкая</div>
+                                <div class="woman-years">ок. 1104–1167</div>
+                                <div class="woman-description">Княжна, первая восточнославянская просветительница,
+                                    основательница монастырей, школ и библиотек. Канонизирована как святая.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('anastasia')">
+                                <div class="woman-name">Анастасия Слуцкая</div>
+                                <div class="woman-years">ок. 1500–1554</div>
+                                <div class="woman-description">Княгиня, защитница Слуцкого княжества от татарских
+                                    набегов. Символ мужества и способности женщины к управлению в военное время.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Речь Посполитая -->
+                <div class="timeline-period">
+                    <div class="period-marker"></div>
+                    <div class="period-content">
+                        <div class="period-title">Речь Посполитая</div>
+                        <div class="period-dates">XVI – конец XVIII вв.</div>
+                        <div class="period-description">Эпоха культурного расцвета.</div>
+                        <div class="women-list">
+                            <div class="woman-card" onclick="openModal('barbara')">
+                                <div class="woman-name">Барбара Радзивилл</div>
+                                <div class="woman-years">1520–1551</div>
+                                <div class="woman-description">Королева польская и великая княгиня литовская, одна из
+                                    самых романтических и трагических фигур эпохи. Объект культурного мифа и
+                                    покровительница искусств.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('franciszka')">
+                                <div class="woman-name">Франциска Урсула Радзивилл</div>
+                                <div class="woman-years">1705–1753</div>
+                                <div class="woman-description">Первая женщина-драматург в истории белорусской и польской
+                                    литературы, писала на польском языке. Основательница домашнего театра в Несвиже.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Российская империя -->
+                <div class="timeline-period">
+                    <div class="period-marker"></div>
+                    <div class="period-content">
+                        <div class="period-title">Российская империя</div>
+                        <div class="period-dates">конец XVIII – 1917 гг.</div>
+                        <div class="period-description">Время национального возрождения.</div>
+                        <div class="women-list">
+                            <div class="woman-card" onclick="openModal('tetka')">
+                                <div class="woman-name">Алоиза Пашкевич (Тётка)</div>
+                                <div class="woman-years">1876–1916</div>
+                                <div class="woman-description">Одна из основательниц современной белорусской литературы,
+                                    поэтесса, писательница, общественно-политическая деятельница.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Межвоенный период -->
+                <div class="timeline-period">
+                    <div class="period-marker"></div>
+                    <div class="period-content">
+                        <div class="period-title">Межвоенный период (Западная Беларусь / БССР)</div>
+                        <div class="period-dates">1921–1939 гг.</div>
+                        <div class="period-description">Время формирования национального театрального искусства.</div>
+                        <div class="women-list">
+                            <div class="woman-card" onclick="openModal('galina')">
+                                <div class="woman-name">Галина Горецкая</div>
+                                <div class="woman-years">1910–1988</div>
+                                <div class="woman-description">Актриса, одна из основоположниц белорусского
+                                    национального театрального искусства в БССР, народная артистка БССР.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. ВОВ -->
+                <div class="timeline-period">
+                    <div class="period-marker"></div>
+                    <div class="period-content">
+                        <div class="period-title">Великая Отечественная война</div>
+                        <div class="period-dates">1941–1945 гг.</div>
+                        <div class="period-description">Время невыразимого героизма женщин, отдавших жизнь за свободу
+                            Родины.</div>
+                        <div class="women-list">
+                            <div class="woman-card" onclick="openModal('vera')">
+                                <div class="woman-name">Вера Хорева</div>
+                                <div class="woman-years">1923–1943</div>
+                                <div class="woman-description">Подпольщица, секретарь Минского подпольного горкома
+                                    комсомола. Казнена нацистами. Герой Советского Союза (посмертно).</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('mariya')">
+                                <div class="woman-name">Мария Осипова</div>
+                                <div class="woman-years">1908–1999</div>
+                                <div class="woman-description">Участница минского подполья, руководитель операции по
+                                    ликвидации гауляйтера Вильгельма Кубе. Герой Советского Союза.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('zinaida')">
+                                <div class="woman-name">Зинаида Туснолобова-Марченко</div>
+                                <div class="woman-years">1920–1980</div>
+                                <div class="woman-description">Санинструктор, вынесла с поля боя 128 раненых бойцов.
+                                    После тяжелого ранения и ампутации конечностей стала символом мужества. Герой
+                                    Советского Союза.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Советский период -->
+                <div class="timeline-period">
+                    <div class="period-marker"></div>
+                    <div class="period-content">
+                        <div class="period-title">Послевоенное восстановление и советский период</div>
+                        <div class="period-dates">1945–1991 гг.</div>
+                        <div class="period-description">Время культурного возрождения, выдающихся научных достижений и признания талантов.</div>
+                        <div class="women-list">
+                            <div class="woman-card" onclick="openModal('stanyuta')">
+                                <div class="woman-name">Стефания Станюта</div>
+                                <div class="woman-years">1905–2000</div>
+                                <div class="woman-description">Народная артистка СССР и БССР, легендарная актриса театра и кино, символ белорусской сцены.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('kulakovskaya')">
+                                <div class="woman-name">Тамара Кулаковская</div>
+                                <div class="woman-years">1919–1986</div>
+                                <div class="woman-description">Член-корреспондент АН БССР, доктор сельскохозяйственных наук, почвовед, агрохимик, директор Института почвоведения и агрохимии.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('hotyleva')">
+                                <div class="woman-name">Любовь Хотылёва</div>
+                                <div class="woman-years">1928–2024</div>
+                                <div class="woman-description">Академик НАН Беларуси, генетик, директор Института генетики и цитологии, создательница высокоурожайных сортов растений.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('zaharevich')">
+                                <div class="woman-name">Мария Захаревич</div>
+                                <div class="woman-years">род. 1936</div>
+                                <div class="woman-description">Народная артистка Беларуси, прима Национального академического театра имени Янки Купалы.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('nadezhda')">
+                                <div class="woman-name">Надежда Ходасевич-Леже</div>
+                                <div class="woman-years">1904–1982</div>
+                                <div class="woman-description">Художница-авангардистка, муза Фернана Леже. Родилась в д. Осетище Витебской губернии. Создала музей имени мужа во Франции.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('sofya')">
+                                <div class="woman-name">Софья Ковалевская</div>
+                                <div class="woman-years">1850–1891</div>
+                                <div class="woman-description">Выдающийся математик, первая в мире женщина – профессор математики. Родовое имение Полибино находилось в Витебской губернии.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Современность -->
+                <div class="timeline-period">
+                    <div class="period-marker"></div>
+                    <div class="period-content">
+                        <div class="period-title">Современная независимая Беларусь</div>
+                        <div class="period-dates">с 1991 г.</div>
+                        <div class="period-description">Время новых достижений, государственного строительства, науки, культуры и мирового признания.</div>
+                        <div class="women-list">
+                            <!-- Государственное управление -->
+                            <div class="woman-card" onclick="openModal('kochanova')">
+                                <div class="woman-name">Наталья Кочанова</div>
+                                <div class="woman-years">род. 1960</div>
+                                <div class="woman-description">Председатель Совета Республики Национального собрания Республики Беларусь, видный государственный деятель.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('yermoshina')">
+                                <div class="woman-name">Лидия Ермошина</div>
+                                <div class="woman-years">род. 1953</div>
+                                <div class="woman-description">Председатель Центральной избирательной комиссии Республики Беларусь (1996–2021), заслуженный юрист Республики Беларусь.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('shchetkina')">
+                                <div class="woman-name">Марианна Щёткина</div>
+                                <div class="woman-years">род. 1958</div>
+                                <div class="woman-description">Министр труда и социальной защиты (2009–2016), зам. Председателя Совета Республики, председатель Белорусского союза женщин.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('pavlyuchenko')">
+                                <div class="woman-name">Наталия Павлюченко</div>
+                                <div class="woman-years">род. 1977</div>
+                                <div class="woman-description">Министр труда и социальной защиты (2024–2026), член Совета Республики, председатель Постоянной комиссии.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('drobyshevskaya')">
+                                <div class="woman-name">Инесса Дробышевская</div>
+                                <div class="woman-years">род. 1947</div>
+                                <div class="woman-description">Министр здравоохранения Беларуси (1994–1997), доктор медицинских наук, профессор.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('ananich')">
+                                <div class="woman-name">Лилия Ананич</div>
+                                <div class="woman-years">род. 1960</div>
+                                <div class="woman-description">Министр информации Республики Беларусь (2014–2017), депутат Палаты представителей, общественный деятель.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('morgunova')">
+                                <div class="woman-name">Елена Моргунова</div>
+                                <div class="woman-years">назн. 2025</div>
+                                <div class="woman-description">Председатель Государственного комитета по стандартизации Республики Беларусь, председатель Электротехнического комитета.</div>
+                            </div>
+
+                            <!-- Космос и спорт -->
+                            <div class="woman-card" onclick="openModal('marina')">
+                                <div class="woman-name">Марина Василевская</div>
+                                <div class="woman-years">род. 1990</div>
+                                <div class="woman-description">Первая женщина-космонавт суверенной Беларуси, Герой Беларуси, участница экспедиции на МКС (2024).</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('darya')">
+                                <div class="woman-name">Дарья Домрачева</div>
+                                <div class="woman-years">род. 1986</div>
+                                <div class="woman-description">Четырёхкратная олимпийская чемпионка по биатлону, Герой Беларуси, легенда мирового спорта.</div>
+                            </div>
+
+                            <!-- Наука и медицина -->
+                            <div class="woman-card" onclick="openModal('aleynikova')">
+                                <div class="woman-name">Ольга Алейникова</div>
+                                <div class="woman-years">род. 1951</div>
+                                <div class="woman-description">Член-корреспондент НАН Беларуси, онкогематолог, основоположник детской онкологии и гематологии в Беларуси.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('kolomiyets')">
+                                <div class="woman-name">Эмилия Коломиец</div>
+                                <div class="woman-years">род. 1949</div>
+                                <div class="woman-description">Член-корреспондент НАН Беларуси, микробиолог, биотехнолог, директор Института микробиологии НАНБ.</div>
+                            </div>
+
+                            <!-- Культура, литература и просвещение -->
+                            <div class="woman-card" onclick="openModal('rublevskaya')">
+                                <div class="woman-name">Людмила Рублевская</div>
+                                <div class="woman-years">род. 1965</div>
+                                <div class="woman-description">Писательница, поэтесса, литературный критик, автор популярных исторических романов и детективов.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('lisitskaya')">
+                                <div class="woman-name">Тамара Лисицкая</div>
+                                <div class="woman-years">род. 1974</div>
+                                <div class="woman-description">Телеведущая, телережиссёр, писательница, радиоведущая, сценарист.</div>
+                            </div>
+                            <div class="woman-card" onclick="openModal('irina')">
+                                <div class="woman-name">Ирина Богданович</div>
+                                <div class="woman-years">1957–2024</div>
+                                <div class="woman-description">Директор Национальной библиотеки Беларуси (2000–2024), заслуженный работник культуры.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Закрытие timeline-container -->
+        </section> <!-- Закрытие section -->
+
+        <section id="gallery" class="section">
+            <h2>Аллея Славы</h2>
+            <p>
+                Это персональные, наполненные технологиями залы для каждой героини, где оживают портреты, а документы
+                превращаются в интерактивные истории. Платформа формирует целостный, визуально богатый и технологически
+                продвинутый пантеон белорусских женщин.
+            </p>
+            <a href="gallery.html" class="cta-button">Исследовать галерею</a>
+        </section>
+
+        <section id="chronicles" class="section">
+            <h2>Народная Летопись</h2>
+            <p>
+                Краудсорсинговый архив семейных подвигов. Раздел превращает каждого пользователя в соавтора, собирая
+                бесценный пласт семейной, локальной истории, тем самым создавая живую, растущую коллективную память
+                нации.
+            </p>
+            <button class="cta-button" onclick="openChronicleModal()">Добавить свою историю</button>
+        </section>
+
+        <section id="education" class="section">
+            <h2>Урок в будущее</h2>
+            <p>
+                Образовательный хаб для учителей и учеников. Интеграция платформы в образовательный процесс через
+                готовые методические комплексы, виртуальные уроки и экскурсии.
+            </p>
+            <a href="education.html" class="cta-button">Начать обучение</a>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2026 Вечные Образы: Наследие Женщин Беларуси</p>
+        <p>Год белорусской женщины</p>
+    </footer>
+
+    <!-- Модальное окно для Женщин -->
+    <div class="modal" id="modal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+
+            <div class="modal-header">
+                <div class="modal-name" id="modalName"></div>
+                <div class="modal-years" id="modalYears"></div>
+            </div>
+
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="">
+
+                <div class="modal-description" id="modalDescription"></div>
+
+                <div class="modal-quote">
+                    <span id="modalQuote"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для Летописи -->
+    <div class="modal" id="chronicleModal">
+        <div class="modal-content">
+            <div class="modal-header chronicle-header">
+                <button class="modal-close" onclick="closeChronicleModal()">×</button>
+                <div class="modal-name">Народная летопись</div>
+                <div class="modal-years">Добавить историю</div>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; font-style: italic;">
+                    Чтобы добавить историю, авторизуйтесь. Заполните форму: имя, годы, место. Напишите рассказ.
+                </p>
+                <form id="chronicleForm" class="chronicle-form" onsubmit="submitChronicle(event)">
+                    <div style="display: none; visibility: hidden;">
+                        <label>Не заполняйте это поле</label>
+                        <input type="text" name="spam_check" id="spam_check">
+                    </div>
+                    <div class="form-group">
+                        <label for="heroineName">Имя и фамилия героини</label>
+                        <input type="text" id="heroineName" name="heroine_name" placeholder="Например: Анна Ивановна"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="storyText">История</label>
+                        <textarea id="storyText" name="story" rows="6"
+                            placeholder="Расскажите о её жизни и поступках..." required
+                            style="resize: none;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Ваш Email (для связи)</label>
+                        <input type="email" id="userEmail" name="user_email" placeholder="vash_email@example.com"
+                            required>
+                    </div>
+                    <p style="font-size: 1.1rem; color: #666; margin-bottom: 1rem;">
+                        * Ваша история будет проверена редактором в течение 3-5 рабочих дней. С Вами свяжутся для
+                        получения дополнительной информации.
+                    </p>
+                    <div style="text-align: center;">
+                        <button type="submit" class="submit-button" id="submitBtn">Отправить на модерацию</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const womenData = {
+            euphrosyne: { name: 'Евфросиния Полоцкая', years: 'ок. 1104–1167', description: 'Княжна, первая восточнославянская просветительница, основательница монастырей, школ и библиотек. Канонизирована как святая.', quote: '«Не жалейте своих сокровищ на просвещение и благотворительность, ибо только так мы можем оставить след в вечности.»' },
+            anastasia: { name: 'Анастасия Слуцкая', years: 'ок. 1500–1554', description: 'Княгиня, защитница Слуцкого княжества от татарских набегов. Символ мужества и способности женщины к управлению в военное время.', quote: '«Сила женщины не меньше, чем сила мужчины, когда дело касается защиты родной земли.»' },
+            barbara: { name: 'Барбара Радзивилл', years: '1520–1551', description: 'Королева польская и великая княгиня литовская, одна из самых романтических и трагических фигур эпохи. Объект культурного мифа и покровительница искусств.', quote: '«Настоящая любовь побеждает все преграды, даже если она должна закончиться трагедией.»' },
+            franciszka: { name: 'Франциска Урсула Радзивилл', years: '1705–1753', description: 'Первая женщина-драматург в истории белорусской и польской литературы, писала на польском языке. Основательница домашнего театра в Несвиже.', quote: '«Театр – это зеркало жизни, и каждая женщина имеет право держать его в своих руках.»' },
+            tetka: { name: 'Алоиза Пашкевич (Тётка)', years: '1876–1916', description: 'Одна из основательниц современной белорусской литературы, поэтесса, писательница, общественно-политическая деятельница.', quote: '«Язык – это душа народа, и мы должны сохранить его для будущих поколений.»' },
+            galina: { name: 'Галина Горецкая', years: '1910–1988', description: 'Актриса, одна из основоположниц белорусского национального театрального искусства в БССР, народная артистка БССР.', quote: '«Театр – это место, где рождается душа народа.»' },
+            vera: { name: 'Вера Хорева', years: '1923–1943', description: 'Подпольщица, секретарь Минского подпольного горкома комсомола. Казнена нацистами. Герой Советского Союза (посмертно).', quote: '«Свобода дороже всего, и я готова отдать за неё свою жизнь.»' },
+            mariya: { name: 'Мария Осипова', years: '1908–1999', description: 'Участница минского подполья, руководитель операции по ликвидации гауляйтера Вильгельма Кубе. Герой Советского Союза.', quote: '«Я сделала то, что должна была сделать. За Родину, за народ.»' },
+            zinaida: { name: 'Зинаида Туснолобова-Марченко', years: '1920–1980', description: 'Санинструктор, вынесла с поля боя 128 раненых бойцов. После тяжелого ранения и ампутации конечностей стала символом мужества. Герой Советского Союза.', quote: '«Боль и страдания не могут сломить дух человека, если у него есть вера в победу.»' },
+            sofya: { name: 'Софья Ковалевская', years: '1850–1891', description: 'Выдающийся математик, первая в мире женщина – профессор математики. Родовое имение Полибино находилось в Витебской губернии.', quote: '«Математика – это поэзия логических идей, и каждая женщина может стать её творцом.»' },
+            nadezhda: { name: 'Надежда Ходасевич-Леже', years: '1904–1982', description: 'Художница-авангардистка, муза Фернана Леже. Родилась в д. Осетище Витебской губернии. Сохраняла и пропагандировала наследие мужа, создав музей его имени во Франции.', quote: '«Искусство не имеет границ, и каждый человек может найти в нём свою свободу.»' },
+            stanyuta: { name: 'Стефания Михайловна Станюта', years: '1905–2000', description: 'Народная артистка СССР и БССР, легендарная актриса театра и кино. Более полувека отдала сцене Национального академического театра им. Янки Купалы, сыграла свыше 60 ярких ролей в кино («Прощание», «Белые Росы»). Символ мудрости и душевной щедрости белорусской культуры.', quote: '«Жизнь коротка, а искусство и добро, которое мы оставляем людям, — вечны.»' },
+            kulakovskaya: { name: 'Тамара Никандровна Кулаковская', years: '1919–1986', description: 'Член-корреспондент АН БССР, доктор сельскохозяйственных наук, профессор, Заслуженный деятель науки БССР. С 1969 по 1980 год — директор Белорусского НИИ почвоведения и агрохимии. Создала научные основы регулирования плодородия почв и минерального питания растений.', quote: '«Земля щедро благодарит человека, когда к ней относятся с научным знанием и бережной заботой.»' },
+            hotyleva: { name: 'Любовь Владимировна Хотылёва', years: '1928–2024', description: 'Академик НАН Беларуси, доктор биологических наук, профессор, Заслуженный деятель науки БССР. Долгие годы возглавляла Институт генетики и цитологии НАНБ. Создательница высокоурожайных сортов растений (в том числе тритикале «Немига-2»).', quote: '«Научный поиск требует беззаветной преданности истине и стремления принести реальную пользу своей земле.»' },
+            zaharevich: { name: 'Мария Георгиевна Захаревич', years: 'род. 1936', description: 'Народная артистка Беларуси, прима Национального академического театра имени Янки Купалы. Родилась в деревне Новоселки Мядельского района. Более 60 лет отдала Купаловской сцене, лауреат Государственной премии, награждена медалью Франциска Скорины.', quote: '«Сцэна — гэта маё жыццё. Служыць роднаму тэатру і народу — найвышэйшае шчасце для артыста.»' },
+            kochanova: { name: 'Наталья Ивановна Кочанова', years: 'род. 1960', description: 'Председатель Совета Республики Национального собрания Республики Беларусь (с 2019 года, переизбрана в 2024 году). Занимала посты председателя Новополоцкого горисполкома, Заместителя Премьер-министра и Главы Администрации Президента Республики Беларусь. Награждена орденами Отечества III степени, Дружбы, Крестом преподобной Евфросинии Полоцкой.', quote: '«Главная ценность нашего государства — это люди, их благополучие, мир и согласие на родной земле.»' },
+            yermoshina: { name: 'Лидия Михайловна Ермошина', years: 'род. 1953', description: 'Председатель Центральной избирательной комиссии Республики Беларусь (1996–2021), заслуженный юрист Республики Беларусь. Родилась в Слуцке. Руководила организацией и проведением ключевых электоральных кампаний и референдумов страны на протяжении четверти века.', quote: '«Закон и справедливость — это основа стабильности и уверенности общества в завтрашнем дне.»' },
+            shchetkina: { name: 'Марианна Акиндиновна Щёткина', years: 'род. 1958', description: 'Министр труда и социальной защиты Республики Беларусь (2009–2016), заместитель Председателя Совета Республики, кандидат социологических наук. Долгое время возглавляла ОО «Белорусский союз женщин». Награждена орденом Почета.', quote: '«Забота о человеке, поддержка семьи и социальная справедливость — непреходящие ориентиры сильного государства.»' },
+            pavlyuchenko: { name: 'Наталия Викторовна Павлюченко', years: 'род. 1977', description: 'Министр труда и социальной защиты Республики Беларусь (2024–2026), член Совета Республики восьмого созыва, председатель Постоянной комиссии по образованию, науке, культуре и социальному развитию. Член ОО «Белорусский союз женщин».', quote: '«Социальная политика — это живая работа с людьми и ради людей, где важен каждый конкретный человек.»' },
+            drobyshevskaya: { name: 'Инесса Михайловна Дробышевская', years: 'род. 1947', description: 'Министр здравоохранения Республики Беларусь (1994–1997), доктор медицинских наук, профессор. Занимала должность главного врача Гомельского областного онкологического диспансера, председатель комиссии по социальным вопросам Палаты представителей.', quote: '«Служение здоровью человека — это благородное призвание и высочайшая ответственность врача.»' },
+            ananich: { name: 'Лилия Станиславовна Ананич', years: 'род. 1960', description: 'Министр информации Республики Беларусь (2014–2017), депутат Палаты представителей, общественный деятель. Внесла весомый вклад в развитие национальной прессы, книгоиздания и информационного поля. Почетный профессор Института журналистики БГУ.', quote: '«Информационное пространство страны должно созидать, объединять общество и защищать национальные ценности.»' },
+            morgunova: { name: 'Елена Моргунова', years: 'назн. 2025', description: 'Председатель Государственного комитета по стандартизации Республики Беларусь (назначена в 2025 году), председатель Электротехнического комитета. Активно развивает цифровизацию систем технического регулирования и стандартизации в рамках СНГ.', quote: '«Стандарты качества и инновационные технологии — залог надежности и глобальной конкурентоспособности отечественной продукции.»' },
+            marina: { name: 'Марина Витальевна Василевская', years: 'род. 1990', description: 'Первая женщина-космонавт в истории суверенной Беларуси, Герой Беларуси (2024), космонавт-испытатель. 23 марта 2024 года отправилась в космический полет на МКС в составе экипажа ТПК «Союз МС-25». Заместитель председателя по общественной деятельности ОО «Белорусский фонд мира».', quote: '«Космос объединяет и вдохновляет. Этот полёт — достижение и гордость всего белорусского народа.»' },
+            darya: { name: 'Дарья Домрачева', years: 'род. 1986', description: 'Биатлонистка, четырехкратная олимпийская чемпионка, Герой Беларуси. Одна из самых титулованных биатлонисток в мировой истории спорта.', quote: '«Успех приходит к тем, кто верит в себя и не сдается.»' },
+            aleynikova: { name: 'Ольга Витальевна Алейникова', years: 'род. 1951', description: 'Член-корреспондент НАН Беларуси (2009), доктор медицинских наук, профессор. Основоположник детской онкологии, гематологии и иммунологии в Беларуси, многолетний директор РНПЦ детской онкологии, гематологии и иммунологии. Член Международного общества детских онкологов (SIOP).', quote: '«Каждая спасенная детская жизнь — это победа науки, милосердия и упорного труда врачей.»' },
+            kolomiyets: { name: 'Эмилия Ивановна Коломиец', years: 'род. 1949', description: 'Микробиолог, биотехнолог, член-корреспондент НАН Беларуси (2004), доктор биологических наук, профессор, Заслуженный деятель науки Республики Беларусь. Многолетний директор Института микробиологии НАНБ и генеральный директор ГНПО «Химический синтез и биотехнологии».', quote: '«Биотехнологии — это экологическое будущее планеты и основа здорового развития сельского хозяйства.»' },
+            rublevskaya: { name: 'Людмила Ивановна Рублевская', years: 'род. 1965', description: 'Белорусская писательница, поэтесса, журналист, литературный критик. Автор более 50 книг (исторические романы, сага о Прантише Вырвиче, пьесы, стихи). Член Союза писателей Беларуси, лауреат Национальной литературной премии.', quote: '«Гісторыя — гэта не сухія даты, гэта жывыя чалавечыя лёсы, каханне, мужнасць і таямніцы мінулага.»' },
+            lisitskaya: { name: 'Тамара Григорьевна Лисицкая', years: 'род. 1974', description: 'Белорусская теле- и радиоведущая, телережиссёр, сценарист, популярная писательница. Ведущая ночного телепроекта «12 или На ночь глядя», автор серии современных романов.', quote: '«Творчество — это искренний диалог со зрителем и читателем, умение делиться светом и эмоциями.»' },
+            irina: { name: 'Ирина Богданович', years: '1957–2024', description: 'Директор Национальной библиотеки Беларуси (2000–2024), заслуженный работник культуры. Руководила строительством и становлением нового здания библиотеки как современного культурного центра страны.', quote: '«Книги – это сокровища, которые мы должны сохранить для будущих поколений.»' }
+        };
+
+        function openModal(womanId) {
+            const woman = womenData[womanId];
+            if (!woman) return;
+
+            document.getElementById('modalName').textContent = woman.name;
+            document.getElementById('modalYears').textContent = woman.years;
+            document.getElementById('modalDescription').textContent = woman.description;
+            document.getElementById('modalQuote').textContent = woman.quote;
+
+            // Обработка изображения
+            const modalImage = document.getElementById('modalImage');
+            const imageMap = {
+                'euphrosyne': 'efra.jpg',
+                'anastasia': 'sluc.jpg',
+                'barbara': 'barb.jpg',
+                'franciszka': 'fran.jpg',
+                'tetka': 'alai.jpg',
+                'galina': 'gali.jpg',
+                'vera': 'vera.jpg',
+                'mariya': 'mari_osip.jpg',
+                'zinaida': 'zina.jpg',
+                'sofya': 'sofy.jpeg',
+                'nadezhda': 'nade.jpg',
+                'darya': 'dary.jpg',
+                'irina': 'irin.jpg',
+                'marina': 'mari.jpg',
+                'stanyuta': 'stanyuta.jpg',
+                'kulakovskaya': 'kulakovskaya.jpg',
+                'hotyleva': 'hotyleva.jpg',
+                'zaharevich': 'zaharevich.jpg',
+                'kochanova': 'kochanova.jpg',
+                'yermoshina': 'yermoshina.jpg',
+                'shchetkina': 'shchetkina.jpg',
+                'pavlyuchenko': 'pavlyuchenko.jpg',
+                'drobyshevskaya': 'drobyshevskaya.jpg',
+                'ananich': 'ananich.jpg',
+                'morgunova': 'morgunova.jpg',
+                'rublevskaya': 'rublevskaya.jpg',
+                'lisitskaya': 'lisitskaya.jpg',
+                'kolomiyets': 'kolomiyets.jpg',
+                'aleynikova': 'aleynikova.jpg'
+            };
+
+            if (imageMap[womanId] && imageMap[womanId] !== '') {
+                modalImage.src = imageMap[womanId];
+                modalImage.alt = woman.name;
+                modalImage.style.display = 'block';
+            } else {
+                modalImage.style.display = 'none';
+            }
+
+            document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openChronicleModal() {
+            document.getElementById('chronicleModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeChronicleModal() {
+            document.getElementById('chronicleModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.addEventListener('click', function (e) {
+            const modal = document.getElementById('modal');
+            const chronicleModal = document.getElementById('chronicleModal');
+            if (e.target === modal) closeModal();
+            if (e.target === chronicleModal) closeChronicleModal();
+        });
+
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.timeline-period').forEach(period => observer.observe(period));
+
+        (function () { emailjs.init("Z1bxKqTKyDrwHdGmM"); })();
+
+        function submitChronicle(event) {
+            event.preventDefault();
+            const spamCheck = document.getElementById('spam_check').value;
+            if (spamCheck) return;
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.textContent;
+            const templateParams = { heroine_name: document.getElementById('heroineName').value, story: document.getElementById('storyText').value, user_email: document.getElementById('userEmail').value };
+            btn.textContent = "Отправка...";
+            btn.disabled = true;
+            emailjs.send('service_ms1ybwv', 'template_26dz3eo', templateParams).then(function () {
+                btn.textContent = "Отправлено!";
+                setTimeout(() => { alert("Спасибо! Ваша история получена."); document.getElementById('chronicleForm').reset(); closeChronicleModal(); btn.textContent = originalText; btn.disabled = false; }, 1000);
+            }, function (error) {
+                console.error('FAILED...', error);
+                btn.textContent = "Ошибка";
+                alert("Ошибка соединения.");
+                setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2000);
+            });
+        }
+    </script>
+
+    <button id="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+    <div id="chatbot-container">
+        <button class="chatbot-close-btn" onclick="toggleChatbot()">×</button>
+        <iframe src="chatbot-widget.html" width="450" height="600" frameborder="0"
+            style="border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);"></iframe>
+    </div>
+    <script>
+        function toggleChatbot() {
+            const container = document.getElementById('chatbot-container');
+            const toggle = document.getElementById('chatbot-toggle');
+            if (container.classList.contains('open')) { container.classList.remove('open'); toggle.classList.remove('hidden'); }
+            else { container.classList.add('open'); toggle.classList.add('hidden'); }
+        }
+    </script>
+</body>
+
+</html>
