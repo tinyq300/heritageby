@@ -28,7 +28,7 @@
             color: #FFFFFF;
         }
 
-        /* Анимированные космические звезды (для 3D режима) */
+        /* Анимированные космические звезды */
         .particles {
             position: fixed;
             top: 0;
@@ -354,7 +354,7 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.5s ease;
         }
 
         .loading-overlay.hidden {
@@ -469,8 +469,12 @@
         embedded 
         vr-mode-ui="enabled: false" 
         arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.8;"
-        id="scene"
-        renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true;">
+        id="scene">
+
+        <!-- ЯРКОЕ ВСЕСТОРОННЕЕ ОСВЕЩЕНИЕ СЦЕНЫ (чтобы текстуры всегда сияли) -->
+        <a-entity light="type: ambient; color: #FFFFFF; intensity: 1.6"></a-entity>
+        <a-entity light="type: directional; color: #FFFFFF; intensity: 2.2" position="4 7 5"></a-entity>
+        <a-entity light="type: directional; color: #BAE6FD; intensity: 1.2" position="-4 -2 -3"></a-entity>
 
         <!-- 1. AR Маркер Марины Василевской -->
         <a-marker 
@@ -482,55 +486,42 @@
             id="arMarker">
             
             <a-entity id="arRig">
-                <!-- Интерактивный узел ракеты (по умолчанию расположен на маркере) -->
-                <a-entity id="rocketAssembly" position="0 0.1 0">
+                <!-- Узел ракеты: начальная ориентация носом ВВЕРХ (-90 deg по X для вертикального маркера) -->
+                <a-entity id="rocketAssembly" position="0 0.1 0" rotation="-90 0 0">
                     
-                    <!-- 3D Модель ракеты (вращается и масштабируется) -->
+                    <!-- 3D Модель ракеты «Союз МС-25» с детальной текстурой -->
                     <a-entity id="rocketModel" 
                               gltf-model="url(rocket.glb)" 
-                              scale="0.12 0.12 0.12" 
+                              scale="0.13 0.13 0.13" 
                               position="0 0 0" 
                               rotation="0 0 0">
                     </a-entity>
 
-                    <!-- Основной направленный космический свет (Солнце) -->
-                    <a-light type="directional" 
-                             color="#FFFFFF" 
-                             intensity="2.2" 
-                             position="4 7 4">
-                    </a-light>
-
-                    <!-- Заполняющий рассеянный космический свет -->
-                    <a-light type="ambient" 
-                             color="#C7D2FE" 
-                             intensity="1.5">
-                    </a-light>
-
-                    <!-- Пульсирующее свечение реактивного сопла (пламя ракеты) -->
+                    <!-- Оранжево-пламенная подсветка сопла -->
                     <a-light id="engineFlameLight"
                              type="point" 
                              color="#F97316" 
-                             intensity="3.2" 
+                             intensity="3.0" 
                              position="0 0.05 0"
-                             distance="4.5">
+                             distance="4.0">
                     </a-light>
 
-                    <!-- Голубое свечение ионизации плазмы -->
+                    <!-- Голубоватое свечение ионизации плазмы -->
                     <a-light type="point" 
                              color="#38BDF8" 
                              intensity="2.0" 
-                             position="0 0.2 0"
+                             position="0 0.25 0"
                              distance="3.5">
                     </a-light>
 
-                    <!-- Светящееся орбитальное кольцо под ракетой -->
+                    <!-- Светящееся орбитальное кольцо у основания ракеты -->
                     <a-ring id="orbitRing"
                             color="#38BDF8" 
                             radius-inner="0.45" 
                             radius-outer="0.55" 
                             position="0 0.02 0"
                             rotation="-90 0 0"
-                            material="shader: flat; opacity: 0.65; transparent: true">
+                            material="shader: flat; opacity: 0.75; transparent: true">
                     </a-ring>
 
                     <!-- Внешнее звездное кольцо -->
@@ -540,7 +531,7 @@
                             radius-outer="0.70" 
                             position="0 -0.01 0"
                             rotation="-90 0 0"
-                            material="shader: flat; opacity: 0.4; transparent: true">
+                            material="shader: flat; opacity: 0.5; transparent: true">
                     </a-ring>
 
                     <!-- Мерцающие космические искры вокруг корабля -->
@@ -566,20 +557,20 @@
         </a-marker>
 
         <!-- 2. Студийный риг для 3D режима (перед камерой в свободном космосе) -->
-        <a-entity id="studioRig" position="0 -0.35 -2.4" rotation="0 0 0" visible="false"></a-entity>
+        <a-entity id="studioRig" position="0 -0.4 -2.5" rotation="0 0 0" visible="false"></a-entity>
 
-        <!-- Камера сцены -->
-        <a-entity camera look-controls="enabled: false" position="0 0 0"></a-entity>
+        <!-- Камера сцены (чистая A-Frame камера для корректной работы AR.js) -->
+        <a-entity camera></a-entity>
     </a-scene>
 
     <script>
         // =================================================================
-        // КОНТРОЛЛЕР ИНТЕРАКТИВНОСТИ: ВРАЩЕНИЕ, ПРИБЛИЖЕНИЕ И ОТДАЛЕНИЕ
+        // КОНТРОЛЛЕР ИНТЕРАКТИВНОСТИ: ВРАЩЕНИЕ, ЗУМ И ПОЗИЦИЯ
         // =================================================================
         class RocketInteractiveController {
             constructor() {
-                this.modelEl = document.getElementById('rocketModel');
                 this.assemblyEl = document.getElementById('rocketAssembly');
+                this.modelEl = document.getElementById('rocketModel');
                 this.arRig = document.getElementById('arRig');
                 this.studioRig = document.getElementById('studioRig');
                 this.touchSurface = document.getElementById('touchSurface');
@@ -588,14 +579,18 @@
                 this.markerIndicator = document.getElementById('markerIndicator');
 
                 // Параметры масштаба (зума)
-                this.baseScale = 0.12;
-                this.currentScale = 0.12;
-                this.minScale = 0.03; // Уменьшение до 25%
-                this.maxScale = 0.42; // Приближение до 350%
+                this.baseScale = 0.13;
+                this.currentScale = 0.13;
+                this.minScale = 0.035; // Уменьшение до 25%
+                this.maxScale = 0.45;  // Приближение до 350%
 
                 // Параметры вращения
-                this.rotX = 0; // Наклон вверх/вниз
-                this.rotY = 0; // Поворот вокруг оси
+                // В AR режиме стартуем носом ВВЕРХ (-90° по X), в 3D режиме носом ВВЕРХ (0° по X)
+                const urlParams = new URLSearchParams(window.location.search);
+                this.currentMode = urlParams.get('mode') === '3d' ? '3d' : 'ar';
+                
+                this.rotX = this.currentMode === 'ar' ? -90 : 0;
+                this.rotY = 0;
                 this.autoRotate = true;
                 this.autoRotateSpeed = 22; // градусов в секунду
 
@@ -603,13 +598,9 @@
                 this.isPointerDown = false;
                 this.activePointers = new Map();
                 this.initialPinchDistance = 0;
-                this.scaleAtPinchStart = 0.12;
+                this.scaleAtPinchStart = 0.13;
                 this.inactivityTimer = null;
                 this.lastTime = performance.now();
-
-                // Текущий режим: 'ar' (по умолчанию) или '3d'
-                const urlParams = new URLSearchParams(window.location.search);
-                this.currentMode = urlParams.get('mode') === '3d' ? '3d' : 'ar';
 
                 this.init();
             }
@@ -624,9 +615,19 @@
                 // Колесико мыши для зума на ПК
                 this.touchSurface.addEventListener('wheel', this.onWheel.bind(this), { passive: false });
 
-                // Слушатель загрузки 3D модели для мгновенного применения масштаба
+                // Гарантированная яркость текстур при загрузке модели
                 if (this.modelEl) {
                     this.modelEl.addEventListener('model-loaded', () => {
+                        const mesh = this.modelEl.getObject3D('mesh');
+                        if (mesh) {
+                            mesh.traverse((node) => {
+                                if (node.isMesh && node.material) {
+                                    node.material.metalness = 0.05;
+                                    node.material.roughness = 0.45;
+                                    node.material.needsUpdate = true;
+                                }
+                            });
+                        }
                         this.applyTransform();
                     });
                 }
@@ -655,7 +656,7 @@
                     btn3D.classList.add('active');
                     btnAR.classList.remove('active');
                     if (indicator) indicator.style.display = 'none';
-                    instructionSubtitle.textContent = '3D Космос: свободно вертите и приближайте/отдаляйте ракету';
+                    instructionSubtitle.textContent = '3D Космос: ракета смотрит вверх, свободно вертите и приближайте';
 
                     // Переносим ракету в риг свободного космоса перед камерой
                     this.studioRig.appendChild(this.assemblyEl);
@@ -663,18 +664,26 @@
                     this.assemblyEl.setAttribute('position', '0 0 0');
                     this.assemblyEl.setAttribute('visible', 'true');
 
+                    // В 3D режиме ракета стоит вертикально (X = 0)
+                    this.rotX = 0;
+                    this.applyTransform();
+
                     if (videoEl) videoEl.style.display = 'none';
                     document.body.style.backgroundColor = '#030712';
                     document.body.style.background = 'radial-gradient(circle at center, #0B1120 0%, #030712 100%)';
                 } else {
                     btnAR.classList.add('active');
                     btn3D.classList.remove('active');
-                    instructionSubtitle.textContent = 'AR Камера: наведите на маркер Василевской, вертите и масштабируйте';
+                    instructionSubtitle.textContent = 'AR Камера: наведите на маркер Василевской (ракета смотрит вверх)';
 
                     // Переносим ракету обратно на маркер
                     this.arRig.appendChild(this.assemblyEl);
                     this.studioRig.setAttribute('visible', 'false');
                     this.assemblyEl.setAttribute('position', '0 0.1 0');
+
+                    // В AR режиме на вертикальном маркере ракета смотрит вверх (X = -90°)
+                    this.rotX = -90;
+                    this.applyTransform();
 
                     if (videoEl) videoEl.style.display = 'block';
                     document.body.style.background = 'transparent';
@@ -709,15 +718,13 @@
                 const currentPos = { x: e.clientX, y: e.clientY };
 
                 if (this.activePointers.size === 1) {
-                    // ОДИН ПАЛЕЦ / МЫШКА: Вращение по горизонтали и вертикали
+                    // ОДИН ПАЛЕЦ / МЫШКА: Свободное вращение по всем осям
                     const dx = currentPos.x - prevPos.x;
                     const dy = currentPos.y - prevPos.y;
 
                     this.rotY += dx * 0.45;
                     this.rotX += dy * 0.35;
 
-                    // Ограничение наклона по вертикали от -50° до +65°
-                    this.rotX = Math.max(-50, Math.min(65, this.rotX));
                     this.applyTransform();
                 } else if (this.activePointers.size >= 2) {
                     // ДВА ПАЛЬЦА: Зум (Pinch-to-zoom)
@@ -794,11 +801,12 @@
             }
 
             resetView() {
-                this.rotX = 0;
+                // Сброс в начальную позицию: носом ВВЕРХ
+                this.rotX = this.currentMode === 'ar' ? -90 : 0;
                 this.rotY = 0;
                 this.setScale(this.baseScale);
                 this.applyTransform();
-                this.showZoomFeedback("Сброс вида ↺");
+                this.showZoomFeedback("Сброс вида (вверх) ↺");
             }
 
             // Установка масштаба ракеты
@@ -820,14 +828,17 @@
 
             // Применение текущих углов вращения и масштаба
             applyTransform() {
-                if (!this.modelEl || !this.modelEl.object3D) return;
+                if (!this.assemblyEl || !this.assemblyEl.object3D) return;
 
                 const s = this.currentScale;
-                this.modelEl.object3D.scale.set(s, s, s);
+                if (this.modelEl && this.modelEl.object3D) {
+                    this.modelEl.object3D.scale.set(s, s, s);
+                }
 
+                // Вращаем весь интерактивный блок ракеты вместе с огнем и кольцами
                 const radX = (this.rotX * Math.PI) / 180;
                 const radY = (this.rotY * Math.PI) / 180;
-                this.modelEl.object3D.rotation.set(radX, radY, 0);
+                this.assemblyEl.object3D.rotation.set(radX, radY, 0);
             }
 
             // Кадр анимации (60 FPS)
@@ -842,7 +853,7 @@
                     this.applyTransform();
                 }
 
-                // Плавное вращение орбитальных колец и пламени
+                // Плавное вращение орбитальных колец и пламени сопла
                 const orbitRing = document.getElementById('orbitRing');
                 const outerRing = document.getElementById('outerRing');
                 const flameLight = document.getElementById('engineFlameLight');
@@ -870,6 +881,7 @@
         // Создание фоновых звезд
         function createParticles() {
             const container = document.getElementById('particles');
+            if (!container) return;
             const count = 40;
             for (let i = 0; i < count; i++) {
                 const p = document.createElement('div');
@@ -905,7 +917,7 @@
                 const loader = document.getElementById('loadingOverlay');
                 if (loader) loader.classList.add('hidden');
                 createParticles();
-            }, 800);
+            }, 600);
         });
     </script>
 </body>
