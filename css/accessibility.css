@@ -1,0 +1,557 @@
+/* ==========================================================================
+   РЕЖИМ ДЛЯ СЛАБОВИДЯЩИХ (ACCESSIBILITY MODE / WCAG 2.1 AA)
+   Проект «Вечные Образы: Наследие Женщин Беларуси»
+   ========================================================================== */
+
+/* --- Плавающая кнопка быстрого включения режима --- */
+#a11y-trigger-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99998;
+    background: #000000;
+    color: #FFFFFF;
+    border: 2px solid #FFD700;
+    border-radius: 30px;
+    padding: 11px 22px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+    transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+    text-decoration: none;
+    user-select: none;
+}
+
+#a11y-trigger-btn:hover,
+#a11y-trigger-btn:focus-visible {
+    background: #FFD700;
+    color: #000000;
+    border-color: #000000;
+    outline: 3px solid #000000;
+    outline-offset: 2px;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 600px) {
+    #a11y-trigger-btn {
+        bottom: 16px;
+        right: 16px;
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+}
+
+/* Скрываем триггер, когда панель уже открыта */
+body.a11y-active #a11y-trigger-btn {
+    display: none !important;
+}
+
+/* --- Верхняя панель инструментов доступности --- */
+#a11y-toolbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999999;
+    padding: 10px 18px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+body.a11y-active #a11y-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Сдвиг страницы вниз, чтобы панель не перекрывала шапку */
+body.a11y-active {
+    padding-top: 68px !important;
+}
+
+@media (max-width: 960px) {
+    body.a11y-active {
+        padding-top: 120px !important;
+    }
+}
+
+/* Блоки внутри панели инструментов */
+.a11y-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   ЗАЩИЩЕННЫЕ СТИЛИ ПАНЕЛИ ИНСТРУМЕНТОВ (ВЫСОКАЯ СПЕЦИФИЧНОСТЬ)
+   ========================================================================== */
+#a11y-toolbar {
+    background: #18181B !important;
+    color: #FFFFFF !important;
+    border-bottom: 3px solid #FFD700 !important;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.65) !important;
+}
+
+#a11y-toolbar,
+#a11y-toolbar * {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-transform: none !important;
+}
+
+#a11y-toolbar .a11y-group-label {
+    color: #FFD700 !important;
+    background: transparent !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    margin-right: 4px !important;
+    letter-spacing: 0.5px !important;
+}
+
+#a11y-toolbar .a11y-btn {
+    background: #27272A !important;
+    color: #FFFFFF !important;
+    border: 2px solid #52525B !important;
+    border-radius: 6px !important;
+    padding: 6px 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    text-decoration: none !important;
+}
+
+#a11y-toolbar .a11y-btn:hover {
+    background: #3F3F46 !important;
+    border-color: #FFD700 !important;
+    color: #FFD700 !important;
+}
+
+#a11y-toolbar .a11y-btn:focus-visible {
+    outline: 3px solid #FFD700 !important;
+    outline-offset: 2px !important;
+}
+
+#a11y-toolbar .a11y-btn.active {
+    background: #FFD700 !important;
+    color: #000000 !important;
+    border-color: #FFFFFF !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7) !important;
+}
+
+#a11y-toolbar .a11y-close-btn {
+    background: #DC2626 !important;
+    color: #FFFFFF !important;
+    border-color: #991B1B !important;
+    padding: 6px 16px !important;
+}
+
+#a11y-toolbar .a11y-close-btn:hover {
+    background: #B91C1C !important;
+    border-color: #EF4444 !important;
+    color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   ОТКЛЮЧЕНИЕ ФОНОВЫХ ГРАДИЕНТОВ И ДЕКОРАЦИЙ
+   ========================================================================== */
+body.a11y-active::before,
+body.a11y-active header::before,
+body.a11y-active *::before,
+body.a11y-active *::after {
+    background-image: none !important;
+}
+
+body.a11y-active header {
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================================
+   ТЕМА 1: ЧЕРНЫМ ПО БЕЛОМУ (White/Black — по умолчанию в режиме доступности)
+   ========================================================================== */
+body.a11y-active.a11y-theme-wb,
+body.a11y-active.a11y-theme-wb *:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    background-color: #FFFFFF !important;
+    background-image: none !important;
+    color: #000000 !important;
+    border-color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+body.a11y-active.a11y-theme-wb header {
+    background: #FFFFFF !important;
+    border-bottom: 3px solid #000000 !important;
+}
+
+body.a11y-active.a11y-theme-wb a:not(#a11y-toolbar *) {
+    color: #0000EE !important;
+    text-decoration: underline !important;
+    font-weight: 700 !important;
+}
+
+body.a11y-active.a11y-theme-wb button:not(#a11y-toolbar *),
+body.a11y-active.a11y-theme-wb .action-btn,
+body.a11y-active.a11y-theme-wb .cta-button,
+body.a11y-active.a11y-theme-wb .view-details-btn,
+body.a11y-active.a11y-theme-wb .filter-btn,
+body.a11y-active.a11y-theme-wb .quiz-btn,
+body.a11y-active.a11y-theme-wb .btn-start,
+body.a11y-active.a11y-theme-wb .header-a11y-btn,
+body.a11y-active.a11y-theme-wb .map-link-btn,
+body.a11y-active.a11y-theme-wb .nav-gallery-link,
+body.a11y-active.a11y-theme-wb .back-link {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+}
+
+body.a11y-active.a11y-theme-wb button:not(#a11y-toolbar *):hover,
+body.a11y-active.a11y-theme-wb .action-btn:hover,
+body.a11y-active.a11y-theme-wb .view-details-btn:hover,
+body.a11y-active.a11y-theme-wb .filter-btn:hover,
+body.a11y-active.a11y-theme-wb .quiz-btn:hover,
+body.a11y-active.a11y-theme-wb .btn-start:hover,
+body.a11y-active.a11y-theme-wb .header-a11y-btn:hover,
+body.a11y-active.a11y-theme-wb .map-link-btn:hover,
+body.a11y-active.a11y-theme-wb .nav-gallery-link:hover,
+body.a11y-active.a11y-theme-wb .back-link:hover {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   ТЕМА 2: БЕЛЫМ ПО ЧЕРНОМУ (Black/White — ночная инверсная)
+   ========================================================================== */
+body.a11y-active.a11y-theme-bw,
+body.a11y-active.a11y-theme-bw *:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    background-color: #000000 !important;
+    background-image: none !important;
+    color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+body.a11y-active.a11y-theme-bw header {
+    background: #000000 !important;
+    border-bottom: 3px solid #FFFFFF !important;
+}
+
+body.a11y-active.a11y-theme-bw a:not(#a11y-toolbar *) {
+    color: #FFFF00 !important;
+    text-decoration: underline !important;
+    font-weight: 700 !important;
+}
+
+body.a11y-active.a11y-theme-bw button:not(#a11y-toolbar *),
+body.a11y-active.a11y-theme-bw .action-btn,
+body.a11y-active.a11y-theme-bw .cta-button,
+body.a11y-active.a11y-theme-bw .view-details-btn,
+body.a11y-active.a11y-theme-bw .filter-btn,
+body.a11y-active.a11y-theme-bw .quiz-btn,
+body.a11y-active.a11y-theme-bw .btn-start,
+body.a11y-active.a11y-theme-bw .header-a11y-btn,
+body.a11y-active.a11y-theme-bw .map-link-btn,
+body.a11y-active.a11y-theme-bw .nav-gallery-link,
+body.a11y-active.a11y-theme-bw .back-link {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #FFFFFF !important;
+}
+
+body.a11y-active.a11y-theme-bw button:not(#a11y-toolbar *):hover,
+body.a11y-active.a11y-theme-bw .action-btn:hover,
+body.a11y-active.a11y-theme-bw .view-details-btn:hover,
+body.a11y-active.a11y-theme-bw .filter-btn:hover,
+body.a11y-active.a11y-theme-bw .quiz-btn:hover,
+body.a11y-active.a11y-theme-bw .btn-start:hover,
+body.a11y-active.a11y-theme-bw .header-a11y-btn:hover,
+body.a11y-active.a11y-theme-bw .map-link-btn:hover,
+body.a11y-active.a11y-theme-bw .nav-gallery-link:hover,
+body.a11y-active.a11y-theme-bw .back-link:hover {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+}
+
+/* ==========================================================================
+   ТЕМА 3: ЖЕЛТЫМ ПО ТЕМНО-СИНЕМУ (Blue/Yellow — медицинский спектр при катаракте)
+   ========================================================================== */
+body.a11y-active.a11y-theme-by,
+body.a11y-active.a11y-theme-by *:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    background-color: #071529 !important;
+    background-image: none !important;
+    color: #FFFF00 !important;
+    border-color: #FFFF00 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+body.a11y-active.a11y-theme-by header {
+    background: #071529 !important;
+    border-bottom: 3px solid #FFFF00 !important;
+}
+
+body.a11y-active.a11y-theme-by a:not(#a11y-toolbar *) {
+    color: #00FFFF !important;
+    text-decoration: underline !important;
+    font-weight: 700 !important;
+}
+
+body.a11y-active.a11y-theme-by button:not(#a11y-toolbar *),
+body.a11y-active.a11y-theme-by .action-btn,
+body.a11y-active.a11y-theme-by .cta-button,
+body.a11y-active.a11y-theme-by .view-details-btn,
+body.a11y-active.a11y-theme-by .filter-btn,
+body.a11y-active.a11y-theme-by .quiz-btn,
+body.a11y-active.a11y-theme-by .btn-start,
+body.a11y-active.a11y-theme-by .header-a11y-btn,
+body.a11y-active.a11y-theme-by .map-link-btn,
+body.a11y-active.a11y-theme-by .nav-gallery-link,
+body.a11y-active.a11y-theme-by .back-link {
+    background-color: #071529 !important;
+    color: #FFFF00 !important;
+    border: 2px solid #FFFF00 !important;
+}
+
+body.a11y-active.a11y-theme-by button:not(#a11y-toolbar *):hover,
+body.a11y-active.a11y-theme-by .action-btn:hover,
+body.a11y-active.a11y-theme-by .view-details-btn:hover,
+body.a11y-active.a11y-theme-by .filter-btn:hover,
+body.a11y-active.a11y-theme-by .quiz-btn:hover,
+body.a11y-active.a11y-theme-by .btn-start:hover,
+body.a11y-active.a11y-theme-by .header-a11y-btn:hover,
+body.a11y-active.a11y-theme-by .map-link-btn:hover,
+body.a11y-active.a11y-theme-by .nav-gallery-link:hover,
+body.a11y-active.a11y-theme-by .back-link:hover {
+    background-color: #FFFF00 !important;
+    color: #071529 !important;
+}
+
+/* ==========================================================================
+   ТЕМА 4: КОРИЧНЕВЫМ ПО БЕЖЕВОМУ (Brown/Beige — комфортный сепия-режим)
+   ========================================================================== */
+body.a11y-active.a11y-theme-bb,
+body.a11y-active.a11y-theme-bb *:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    background-color: #F7EFE2 !important;
+    background-image: none !important;
+    color: #3E2723 !important;
+    border-color: #3E2723 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+body.a11y-active.a11y-theme-bb header {
+    background: #F7EFE2 !important;
+    border-bottom: 3px solid #3E2723 !important;
+}
+
+body.a11y-active.a11y-theme-bb a:not(#a11y-toolbar *) {
+    color: #8D250C !important;
+    text-decoration: underline !important;
+    font-weight: 700 !important;
+}
+
+body.a11y-active.a11y-theme-bb button:not(#a11y-toolbar *),
+body.a11y-active.a11y-theme-bb .action-btn,
+body.a11y-active.a11y-theme-bb .cta-button,
+body.a11y-active.a11y-theme-bb .view-details-btn,
+body.a11y-active.a11y-theme-bb .filter-btn,
+body.a11y-active.a11y-theme-bb .quiz-btn,
+body.a11y-active.a11y-theme-bb .btn-start,
+body.a11y-active.a11y-theme-bb .header-a11y-btn,
+body.a11y-active.a11y-theme-bb .map-link-btn,
+body.a11y-active.a11y-theme-bb .nav-gallery-link,
+body.a11y-active.a11y-theme-bb .back-link {
+    background-color: #F7EFE2 !important;
+    color: #3E2723 !important;
+    border: 2px solid #3E2723 !important;
+}
+
+body.a11y-active.a11y-theme-bb button:not(#a11y-toolbar *):hover,
+body.a11y-active.a11y-theme-bb .action-btn:hover,
+body.a11y-active.a11y-theme-bb .view-details-btn:hover,
+body.a11y-active.a11y-theme-bb .filter-btn:hover,
+body.a11y-active.a11y-theme-bb .quiz-btn:hover,
+body.a11y-active.a11y-theme-bb .btn-start:hover,
+body.a11y-active.a11y-theme-bb .header-a11y-btn:hover,
+body.a11y-active.a11y-theme-bb .map-link-btn:hover,
+body.a11y-active.a11y-theme-bb .nav-gallery-link:hover,
+body.a11y-active.a11y-theme-bb .back-link:hover {
+    background-color: #3E2723 !important;
+    color: #F7EFE2 !important;
+}
+
+/* ==========================================================================
+   МОДАЛЬНЫЕ ОКНА И ОВЕРЛЕИ
+   ========================================================================== */
+body.a11y-active .detail-modal,
+body.a11y-active .chat-overlay,
+body.a11y-active .qr-overlay,
+body.a11y-active .modal {
+    backdrop-filter: none !important;
+}
+
+body.a11y-active.a11y-theme-wb .detail-modal,
+body.a11y-active.a11y-theme-wb .chat-overlay,
+body.a11y-active.a11y-theme-wb .qr-overlay,
+body.a11y-active.a11y-theme-wb .modal {
+    background: rgba(0, 0, 0, 0.75) !important;
+}
+
+body.a11y-active.a11y-theme-bw .detail-modal,
+body.a11y-active.a11y-theme-bw .chat-overlay,
+body.a11y-active.a11y-theme-bw .qr-overlay,
+body.a11y-active.a11y-theme-bw .modal {
+    background: rgba(255, 255, 255, 0.25) !important;
+}
+
+body.a11y-active.a11y-theme-by .detail-modal,
+body.a11y-active.a11y-theme-by .chat-overlay,
+body.a11y-active.a11y-theme-by .qr-overlay,
+body.a11y-active.a11y-theme-by .modal {
+    background: rgba(0, 0, 0, 0.85) !important;
+}
+
+body.a11y-active.a11y-theme-bb .detail-modal,
+body.a11y-active.a11y-theme-bb .chat-overlay,
+body.a11y-active.a11y-theme-bb .qr-overlay,
+body.a11y-active.a11y-theme-bb .modal {
+    background: rgba(62, 39, 35, 0.75) !important;
+}
+
+body.a11y-active .detail-modal-card,
+body.a11y-active .chat-modal,
+body.a11y-active .qr-modal,
+body.a11y-active .modal-content {
+    border: 3px solid currentColor !important;
+    border-radius: 14px !important;
+}
+
+/* Элементы интерфейса */
+body.a11y-active .heroine-tag,
+body.a11y-active .year-badge,
+body.a11y-active .marker-num,
+body.a11y-active .location-card-number {
+    border: 2px solid currentColor !important;
+    border-radius: 20px !important;
+}
+
+/* ==========================================================================
+   РАЗМЕРЫ ШРИФТА (FONT SCALING)
+   ========================================================================== */
+body.a11y-active.a11y-font-normal {
+    font-size: 100% !important;
+}
+
+body.a11y-active.a11y-font-large {
+    font-size: 118% !important;
+}
+body.a11y-active.a11y-font-large p,
+body.a11y-active.a11y-font-large li,
+body.a11y-active.a11y-font-large span:not(#a11y-toolbar *),
+body.a11y-active.a11y-font-large a:not(#a11y-toolbar *),
+body.a11y-active.a11y-font-large div:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    line-height: 1.65 !important;
+}
+body.a11y-active.a11y-font-large h1 { font-size: 2.6rem !important; }
+body.a11y-active.a11y-font-large h2 { font-size: 2.2rem !important; }
+body.a11y-active.a11y-font-large h3 { font-size: 1.8rem !important; }
+
+body.a11y-active.a11y-font-xlarge {
+    font-size: 136% !important;
+}
+body.a11y-active.a11y-font-xlarge p,
+body.a11y-active.a11y-font-xlarge li,
+body.a11y-active.a11y-font-xlarge span:not(#a11y-toolbar *),
+body.a11y-active.a11y-font-xlarge a:not(#a11y-toolbar *),
+body.a11y-active.a11y-font-xlarge div:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    line-height: 1.8 !important;
+}
+body.a11y-active.a11y-font-xlarge h1 { font-size: 3.2rem !important; }
+body.a11y-active.a11y-font-xlarge h2 { font-size: 2.6rem !important; }
+body.a11y-active.a11y-font-xlarge h3 { font-size: 2.1rem !important; }
+
+/* ==========================================================================
+   ШРИФТ БЕЗ ЗАСЕЧЕК (SANS-SERIF ДЛЯ ЧИТАЕМОСТИ)
+   ========================================================================== */
+body.a11y-active.a11y-sans,
+body.a11y-active.a11y-sans *:not(#a11y-toolbar *) {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* ==========================================================================
+   МЕЖБУКВЕННЫЙ И МЕЖСТРОЧНЫЙ ИНТЕРВАЛ
+   ========================================================================== */
+body.a11y-active.a11y-spacing-wide,
+body.a11y-active.a11y-spacing-wide *:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    letter-spacing: 0.07em !important;
+    word-spacing: 0.12em !important;
+    line-height: 1.85 !important;
+}
+
+/* ==========================================================================
+   РЕЖИМЫ ИЗОБРАЖЕНИЙ
+   ========================================================================== */
+body.a11y-active.a11y-img-gray img,
+body.a11y-active.a11y-img-gray video,
+body.a11y-active.a11y-img-gray canvas,
+body.a11y-active.a11y-img-gray .portrait-image,
+body.a11y-active.a11y-img-gray .detail-portrait {
+    filter: grayscale(100%) contrast(120%) !important;
+}
+
+body.a11y-active.a11y-img-off img:not(.a11y-keep),
+body.a11y-active.a11y-img-off .portrait-image,
+body.a11y-active.a11y-img-off .detail-portrait,
+body.a11y-active.a11y-img-off .portrait-container,
+body.a11y-active.a11y-img-off svg:not(.a11y-keep-svg) {
+    display: none !important;
+}
+
+body.a11y-active.a11y-img-off .portrait-card {
+    min-height: 120px !important;
+    padding: 1.5rem !important;
+    border: 2px solid currentColor !important;
+}
+
+/* ==========================================================================
+   ФОКУС И ДОСТУПНОСТЬ ДЛЯ КЛАВИАТУРЫ
+   ========================================================================== */
+body.a11y-active *:focus-visible {
+    outline: 4px solid #FFD700 !important;
+    outline-offset: 3px !important;
+}
+
+/* Отключение декоративных анимаций для снижения нагрузки на зрение */
+body.a11y-active,
+body.a11y-active *:not(#a11y-toolbar):not(#a11y-toolbar *) {
+    animation-duration: 0.001s !important;
+    transition-duration: 0.001s !important;
+}
+
+/* ==========================================================================
+   ПОДСВЕТКА ОЗВУЧИВАЕМОГО ТЕКСТА
+   ========================================================================== */
+.a11y-reading-highlight {
+    background-color: #FFEB3B !important;
+    color: #000000 !important;
+    outline: 2px solid #F57F17 !important;
+}
