@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>3D & AR: Ракета Марины Василевской</title>
+    <title>AR: Ракета Марины Василевской</title>
 
     <!-- A-Frame & AR.js -->
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Philosopher:wght@700&family=Cormorant+Garamond:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap');
 
         * {
             box-sizing: border-box;
@@ -20,54 +20,18 @@
             touch-action: none;
         }
 
-        body {
+        html, body {
             margin: 0;
-            overflow: hidden;
-            background-color: #030712;
-            font-family: 'Cormorant Garamond', serif;
-            color: #FFFFFF;
-        }
-
-        /* Анимированные космические звезды */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
+            padding: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
-            pointer-events: none;
             overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            color: #FFFFFF;
+            background: transparent !important;
         }
 
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: radial-gradient(circle, #60A5FA, rgba(255, 255, 255, 0.95), transparent);
-            border-radius: 50%;
-            animation: float-star 14s infinite linear;
-            opacity: 0;
-        }
-
-        @keyframes float-star {
-            0% {
-                opacity: 0;
-                transform: translateY(100vh) scale(0.5);
-            }
-            15% {
-                opacity: 0.9;
-            }
-            85% {
-                opacity: 0.9;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-50px) scale(1.4);
-            }
-        }
-
-        /* Верхняя панель (Инфо + Переключатель режимов) */
+        /* Верхняя информационная панель */
         .ar-top-bar {
             position: fixed;
             top: 14px;
@@ -75,118 +39,86 @@
             transform: translateX(-50%);
             z-index: 1000;
             width: 92%;
-            max-width: 520px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
             pointer-events: none;
         }
 
         .ar-ui-card {
             width: 100%;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 27, 75, 0.94));
+            background: linear-gradient(135deg, rgba(139, 21, 56, 0.94), rgba(74, 8, 28, 0.96));
             color: #FFFFFF;
             padding: 12px 20px;
             border-radius: 24px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.35),
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.45),
+                        0 0 20px rgba(212, 175, 55, 0.25),
                         inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(96, 165, 250, 0.4);
+            border: 1.5px solid rgba(212, 175, 55, 0.45);
             backdrop-filter: blur(12px);
-            animation: cosmic-glow 4s ease-in-out infinite;
+            -webkit-backdrop-filter: blur(12px);
+            animation: royal-glow 4s ease-in-out infinite;
             pointer-events: auto;
         }
 
-        @keyframes cosmic-glow {
+        @keyframes royal-glow {
             0%, 100% {
-                box-shadow: 0 8px 32px rgba(14, 165, 233, 0.3),
-                            0 0 20px rgba(96, 165, 250, 0.2);
-                border-color: rgba(96, 165, 250, 0.4);
+                box-shadow: 0 8px 32px rgba(139, 21, 56, 0.45),
+                            0 0 20px rgba(212, 175, 55, 0.25);
+                border-color: rgba(212, 175, 55, 0.45);
             }
             50% {
-                box-shadow: 0 8px 35px rgba(14, 165, 233, 0.55),
-                            0 0 35px rgba(56, 189, 248, 0.4);
-                border-color: rgba(147, 197, 253, 0.8);
+                box-shadow: 0 8px 36px rgba(139, 21, 56, 0.65),
+                            0 0 32px rgba(255, 215, 0, 0.45);
+                border-color: rgba(255, 215, 0, 0.75);
             }
         }
 
         .ar-ui-title {
             font-family: 'Philosopher', sans-serif;
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 700;
             margin-bottom: 4px;
-            color: #F0F9FF;
-            text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+            color: #FFF8E7;
+            text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
             letter-spacing: 0.5px;
         }
 
         .ar-ui-subtitle {
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 400;
-            color: #BAE6FD;
-            line-height: 1.3;
-        }
-
-        /* Переключатель режимов: AR Камера и 3D Космос */
-        .mode-switch-box {
-            display: inline-flex;
-            background: rgba(15, 23, 42, 0.88);
-            padding: 4px;
-            border-radius: 30px;
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            pointer-events: auto;
-        }
-
-        .mode-btn {
-            background: transparent;
-            color: #BAE6FD;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-family: 'Philosopher', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .mode-btn.active {
-            background: linear-gradient(135deg, #0284C7, #2563EB);
-            color: #FFFFFF;
-            box-shadow: 0 2px 12px rgba(2, 132, 199, 0.7);
+            color: #F7E7CE;
+            line-height: 1.35;
         }
 
         /* Всплывающая плашка масштаба */
         .zoom-badge {
             position: fixed;
-            top: 145px;
+            top: 100px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(56, 189, 248, 0.5);
+            background: rgba(45, 8, 24, 0.92);
+            border: 1.5px solid rgba(212, 175, 55, 0.55);
             border-radius: 20px;
-            padding: 5px 16px;
-            font-size: 13px;
+            padding: 6px 18px;
+            font-size: 13.5px;
             font-weight: bold;
-            color: #7DD3FC;
-            font-family: sans-serif;
+            color: #FFD700;
+            font-family: 'Philosopher', sans-serif;
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.3);
         }
 
         .zoom-badge.show {
             opacity: 1;
         }
 
-        /* Рамка поиска маркера (для AR режима) */
+        /* Рамка поиска маркера */
         .marker-indicator {
             position: fixed;
             top: 50%;
@@ -201,7 +133,7 @@
         .scan-frame {
             width: 220px;
             height: 220px;
-            border: 2px solid rgba(56, 189, 248, 0.4);
+            border: 2px solid rgba(212, 175, 55, 0.45);
             border-radius: 20px;
             position: relative;
             margin: 0 auto;
@@ -210,12 +142,12 @@
 
         @keyframes scan-pulse {
             0%, 100% {
-                border-color: rgba(56, 189, 248, 0.4);
-                box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+                border-color: rgba(212, 175, 55, 0.45);
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
             }
             50% {
-                border-color: rgba(56, 189, 248, 0.9);
-                box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
+                border-color: rgba(255, 215, 0, 0.95);
+                box-shadow: 0 0 35px rgba(212, 175, 55, 0.55);
             }
         }
 
@@ -223,9 +155,9 @@
         .scan-frame::after {
             content: '';
             position: absolute;
-            width: 24px;
-            height: 24px;
-            border: 3px solid #38BDF8;
+            width: 26px;
+            height: 26px;
+            border: 3.5px solid #D4AF37;
         }
 
         .scan-frame::before {
@@ -233,7 +165,7 @@
             left: -2px;
             border-right: none;
             border-bottom: none;
-            border-top-left-radius: 12px;
+            border-top-left-radius: 14px;
         }
 
         .scan-frame::after {
@@ -241,48 +173,49 @@
             right: -2px;
             border-left: none;
             border-top: none;
-            border-bottom-right-radius: 12px;
+            border-bottom-right-radius: 14px;
         }
 
         .scan-text {
-            margin-top: 14px;
-            color: #F0F9FF;
-            font-size: 14px;
+            margin-top: 15px;
+            color: #FFF8E7;
+            font-size: 14.5px;
             font-family: 'Philosopher', sans-serif;
             font-weight: 600;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(56, 189, 248, 0.5);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(212, 175, 55, 0.5);
             animation: fade-text 2s ease-in-out infinite;
         }
 
         @keyframes fade-text {
-            0%, 100% { opacity: 0.6; }
+            0%, 100% { opacity: 0.65; }
             50% { opacity: 1; }
         }
 
-        /* --- НИЖНЯЯ ПАНЕЛЬ КНОПОК: ВЕРТЕТЬ / ПРИБЛИЖАТЬ / ОТДАЛЯТЬ --- */
+        /* --- НИЖНЯЯ ПАНЕЛЬ КНОПОК КАМЕРЫ --- */
         .controls-dock {
             position: fixed;
-            bottom: 85px;
+            bottom: 82px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
             display: flex;
             align-items: center;
             gap: 10px;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(30, 27, 75, 0.94));
-            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(139, 21, 56, 0.94), rgba(74, 8, 28, 0.96));
+            padding: 8px 18px;
             border-radius: 35px;
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(14, 165, 233, 0.3);
+            border: 1.5px solid rgba(212, 175, 55, 0.45);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 22px rgba(212, 175, 55, 0.3);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             max-width: 95%;
             overflow-x: auto;
         }
 
         .ctrl-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(125, 211, 252, 0.3);
-            color: #F0F9FF;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            color: #FFF8E7;
             width: 44px;
             height: 44px;
             border-radius: 50%;
@@ -299,16 +232,18 @@
 
         .ctrl-btn:hover,
         .ctrl-btn:active {
-            background: linear-gradient(135deg, #0284C7, #2563EB);
-            border-color: #38BDF8;
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            color: #2A081E;
+            border-color: #FFD700;
             transform: scale(1.08);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.7);
         }
 
         .ctrl-btn.active-toggle {
-            background: linear-gradient(135deg, #0284C7, #2563EB);
-            border-color: #38BDF8;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            color: #2A081E;
+            border-color: #FFD700;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
         }
 
         /* Кнопка возврата в галерею */
@@ -318,8 +253,8 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-            color: #FFFFFF;
+            background: linear-gradient(135deg, #8B1538 0%, #54091e 100%);
+            color: #FFF8E7;
             padding: 10px 28px;
             border-radius: 30px;
             text-decoration: none;
@@ -327,9 +262,9 @@
             font-weight: 700;
             font-size: 15px;
             letter-spacing: 0.5px;
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(125, 211, 252, 0.4);
+            box-shadow: 0 6px 20px rgba(139, 21, 56, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1.5px solid rgba(212, 175, 55, 0.55);
             transition: all 0.25s ease;
             white-space: nowrap;
         }
@@ -337,8 +272,8 @@
         .back-btn:hover,
         .back-btn:active {
             transform: translateX(-50%) translateY(2px);
-            box-shadow: 0 3px 12px rgba(2, 132, 199, 0.5);
-            filter: brightness(1.1);
+            box-shadow: 0 3px 14px rgba(212, 175, 55, 0.6);
+            filter: brightness(1.15);
         }
 
         /* Загрузочный экран */
@@ -348,7 +283,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, #0F172A 0%, #030712 100%);
+            background: radial-gradient(circle at center, #26081B 0%, #12040D 100%);
             z-index: 2000;
             display: flex;
             align-items: center;
@@ -362,23 +297,27 @@
             pointer-events: none;
         }
 
-        .rocket-loader {
-            font-size: 48px;
-            animation: rocket-bounce 1.5s ease-in-out infinite;
+        .loader-ring {
+            width: 58px;
+            height: 58px;
+            border: 4px solid rgba(212, 175, 55, 0.25);
+            border-top-color: #D4AF37;
+            border-radius: 50%;
+            animation: spin-loader 1s linear infinite;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.35);
         }
 
-        @keyframes rocket-bounce {
-            0%, 100% { transform: translateY(0) rotate(-45deg); }
-            50% { transform: translateY(-14px) rotate(-45deg); }
+        @keyframes spin-loader {
+            to { transform: rotate(360deg); }
         }
 
         .loading-text {
             margin-top: 18px;
-            color: #F0F9FF;
+            color: #FFF8E7;
             font-size: 18px;
             font-family: 'Philosopher', sans-serif;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
         }
 
         /* Слой захвата жестов (мышь и тачскрин) */
@@ -404,36 +343,24 @@
 
     <!-- Экран загрузки -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="rocket-loader">🚀</div>
-        <div class="loading-text">Загрузка космического корабля...</div>
+        <div class="loader-ring"></div>
+        <div class="loading-text">Загрузка AR корабля Василевской...</div>
     </div>
 
-    <!-- Фоновые космические частицы для 3D режима -->
-    <div class="particles" id="particles"></div>
-
-    <!-- Верхняя панель: заголовок и переключатель AR / 3D -->
+    <!-- Верхняя панель: заголовок и инструкции -->
     <div class="ar-top-bar">
         <div class="ar-ui-card">
-            <div class="ar-ui-title">🚀 Ракета Марины Василевской 🚀</div>
-            <div class="ar-ui-subtitle" id="instructionSubtitle">
-                Вертите ракету пальцем/мышкой • Зум щипком или колесиком
+            <div class="ar-ui-title">✨ Ракета Марины Василевской ✨</div>
+            <div class="ar-ui-subtitle">
+                Наведите камеру на маркер • Управляйте ракетой кнопками снизу или жестами
             </div>
-        </div>
-
-        <div class="mode-switch-box">
-            <button class="mode-btn active" id="btnModeAR" onclick="window.rocketControls.setMode('ar')">
-                📷 AR Камера
-            </button>
-            <button class="mode-btn" id="btnMode3D" onclick="window.rocketControls.setMode('3d')">
-                🌐 3D Космос
-            </button>
         </div>
     </div>
 
     <!-- Индикатор текущего масштаба -->
     <div class="zoom-badge" id="zoomBadge">Масштаб: 100%</div>
 
-    <!-- Индикатор поиска маркера (для AR режима) -->
+    <!-- Индикатор поиска маркера -->
     <div class="marker-indicator" id="markerIndicator">
         <div class="scan-frame"></div>
         <div class="scan-text">📱 Наведите камеру на маркер Василевской</div>
@@ -441,22 +368,22 @@
 
     <!-- ПАНЕЛЬ КНОПОК: ПРИБЛИЖАТЬ, ОТДАЛЯТЬ, ВЕРТЕТЬ -->
     <div class="controls-dock">
-        <button class="ctrl-btn" onclick="window.rocketControls.zoomIn()" title="Приблизить (Zoom In)">
+        <button class="ctrl-btn" onclick="window.arControls.zoomIn()" title="Приблизить (Zoom In)">
             🔍+
         </button>
-        <button class="ctrl-btn" onclick="window.rocketControls.zoomOut()" title="Отдалить (Zoom Out)">
+        <button class="ctrl-btn" onclick="window.arControls.zoomOut()" title="Отдалить (Zoom Out)">
             🔍−
         </button>
-        <button class="ctrl-btn" onclick="window.rocketControls.rotateLeft()" title="Повернуть влево (30°)">
+        <button class="ctrl-btn" onclick="window.arControls.rotateLeft()" title="Повернуть влево (30°)">
             ⟲
         </button>
-        <button class="ctrl-btn" onclick="window.rocketControls.rotateRight()" title="Повернуть вправо (30°)">
+        <button class="ctrl-btn" onclick="window.arControls.rotateRight()" title="Повернуть вправо (30°)">
             ⟳
         </button>
-        <button class="ctrl-btn active-toggle" id="btnAutoSpin" onclick="window.rocketControls.toggleAutoRotate()" title="Авто-вращение вкл/выкл">
+        <button class="ctrl-btn active-toggle" id="btnAutoSpin" onclick="window.arControls.toggleAutoRotate()" title="Авто-вращение вкл/выкл">
             ⏸
         </button>
-        <button class="ctrl-btn" onclick="window.rocketControls.resetView()" title="Сбросить угол и размер">
+        <button class="ctrl-btn" onclick="window.arControls.resetView()" title="Сбросить угол и размер">
             ↺
         </button>
     </div>
@@ -464,115 +391,108 @@
     <!-- Кнопка возврата в галерею -->
     <a href="gallery.html" class="back-btn">← Вернуться в галерею</a>
 
-    <!-- AR / 3D СЦЕНА -->
+    <!-- AR СЦЕНА -->
     <a-scene 
         embedded 
         vr-mode-ui="enabled: false" 
         arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.8;"
         id="scene">
 
-        <!-- ЯРКОЕ ВСЕСТОРОННЕЕ ОСВЕЩЕНИЕ СЦЕНЫ (чтобы текстуры всегда сияли) -->
+        <!-- ЯРКОЕ ОСВЕЩЕНИЕ СЦЕНЫ -->
         <a-entity light="type: ambient; color: #FFFFFF; intensity: 1.6"></a-entity>
-        <a-entity light="type: directional; color: #FFFFFF; intensity: 2.2" position="4 7 5"></a-entity>
-        <a-entity light="type: directional; color: #BAE6FD; intensity: 1.2" position="-4 -2 -3"></a-entity>
+        <a-entity light="type: directional; color: #FFF8E7; intensity: 2.2" position="4 7 5"></a-entity>
+        <a-entity light="type: directional; color: #D4AF37; intensity: 1.2" position="-4 -2 -3"></a-entity>
 
-        <!-- 1. AR Маркер Марины Василевской -->
+        <!-- AR Маркер Марины Василевской -->
         <a-marker 
             type="pattern" 
-            url="pattern-mari.patt" 
+            url="patterns/pattern-mari.patt" 
             raycaster="objects: .clickable" 
-            emitevents="true"
+            emitevents="true" 
             cursor="fuse: false; rayOrigin: mouse;"
             id="arMarker">
             
-            <a-entity id="arRig">
-                <!-- Узел ракеты: начальная ориентация носом ВВЕРХ (-90 deg по X для вертикального маркера) -->
-                <a-entity id="rocketAssembly" position="0 0.1 0" rotation="-90 0 0">
-                    
-                    <!-- 3D Модель ракеты «Союз МС-25» с детальной текстурой -->
-                    <a-entity id="rocketModel" 
-                              gltf-model="url(rocket.glb)" 
-                              scale="0.13 0.13 0.13" 
-                              position="0 0 0" 
-                              rotation="0 0 0">
-                    </a-entity>
+            <!-- Узел ракеты: начальная ориентация носом ВВЕРХ (-90 deg по X для вертикального маркера) -->
+            <a-entity id="rocketAssembly" position="0 0.1 0" rotation="-90 0 0">
+                
+                <!-- 3D Модель ракеты «Союз МС-25» -->
+                <a-entity id="rocketModel" 
+                          gltf-model="url(models/rocket.glb)" 
+                          scale="0.13 0.13 0.13" 
+                          position="0 0 0" 
+                          rotation="0 0 0">
+                </a-entity>
 
-                    <!-- Оранжево-пламенная подсветка сопла -->
-                    <a-light id="engineFlameLight"
-                             type="point" 
-                             color="#F97316" 
-                             intensity="3.0" 
-                             position="0 0.05 0"
-                             distance="4.0">
-                    </a-light>
+                <!-- Оранжево-пламенная подсветка сопла -->
+                <a-light id="engineFlameLight"
+                         type="point" 
+                         color="#F97316" 
+                         intensity="3.0" 
+                         position="0 0.05 0"
+                         distance="4.0">
+                </a-light>
 
-                    <!-- Голубоватое свечение ионизации плазмы -->
-                    <a-light type="point" 
-                             color="#38BDF8" 
-                             intensity="2.0" 
-                             position="0 0.25 0"
-                             distance="3.5">
-                    </a-light>
+                <!-- Золотистое свечение ионизации -->
+                <a-light type="point" 
+                         color="#FFD700" 
+                         intensity="2.0" 
+                         position="0 0.25 0"
+                         distance="3.5">
+                </a-light>
 
-                    <!-- Светящееся орбитальное кольцо у основания ракеты -->
-                    <a-ring id="orbitRing"
-                            color="#38BDF8" 
-                            radius-inner="0.45" 
-                            radius-outer="0.55" 
-                            position="0 0.02 0"
-                            rotation="-90 0 0"
-                            material="shader: flat; opacity: 0.75; transparent: true">
-                    </a-ring>
+                <!-- Светящееся орбитальное кольцо у основания ракеты -->
+                <a-ring id="orbitRing"
+                        color="#D4AF37" 
+                        radius-inner="0.45" 
+                        radius-outer="0.55" 
+                        position="0 0.02 0"
+                        rotation="-90 0 0"
+                        material="shader: flat; opacity: 0.75; transparent: true">
+                </a-ring>
 
-                    <!-- Внешнее звездное кольцо -->
-                    <a-ring id="outerRing"
-                            color="#818CF8" 
-                            radius-inner="0.65" 
-                            radius-outer="0.70" 
-                            position="0 -0.01 0"
-                            rotation="-90 0 0"
-                            material="shader: flat; opacity: 0.5; transparent: true">
-                    </a-ring>
+                <!-- Внешнее звездное кольцо -->
+                <a-ring id="outerRing"
+                        color="#FFD700" 
+                        radius-inner="0.65" 
+                        radius-outer="0.70" 
+                        position="0 -0.01 0"
+                        rotation="-90 0 0"
+                        material="shader: flat; opacity: 0.5; transparent: true">
+                </a-ring>
 
-                    <!-- Мерцающие космические искры вокруг корабля -->
-                    <a-entity id="space-sparkles">
-                        <a-sphere color="#38BDF8" 
-                                  radius="0.018" 
-                                  position="0.35 0.5 0.25"
-                                  material="emissive: #38BDF8; emissiveIntensity: 2.5">
-                        </a-sphere>
-                        <a-sphere color="#F43F5E" 
-                                  radius="0.018" 
-                                  position="-0.32 0.35 -0.28"
-                                  material="emissive: #F43F5E; emissiveIntensity: 2.5">
-                        </a-sphere>
-                        <a-sphere color="#FBBF24" 
-                                  radius="0.018" 
-                                  position="0.28 0.25 -0.32"
-                                  material="emissive: #FBBF24; emissiveIntensity: 2.5">
-                        </a-sphere>
-                    </a-entity>
+                <!-- Мерцающие золотые искры вокруг корабля -->
+                <a-entity id="space-sparkles">
+                    <a-sphere color="#FFD700" 
+                              radius="0.018" 
+                              position="0.35 0.5 0.25"
+                              material="emissive: #FFD700; emissiveIntensity: 2.5">
+                    </a-sphere>
+                    <a-sphere color="#FFF8E7" 
+                              radius="0.018" 
+                              position="-0.32 0.35 -0.28"
+                              material="emissive: #FFF8E7; emissiveIntensity: 2.5">
+                    </a-sphere>
+                    <a-sphere color="#D4AF37" 
+                              radius="0.018" 
+                              position="0.28 0.25 -0.32"
+                              material="emissive: #D4AF37; emissiveIntensity: 2.5">
+                    </a-sphere>
                 </a-entity>
             </a-entity>
         </a-marker>
 
-        <!-- 2. Студийный риг для 3D режима (перед камерой в свободном космосе) -->
-        <a-entity id="studioRig" position="0 -0.4 -2.5" rotation="0 0 0" visible="false"></a-entity>
-
-        <!-- Камера сцены (чистая A-Frame камера для корректной работы AR.js) -->
+        <!-- Камера сцены -->
         <a-entity camera></a-entity>
     </a-scene>
 
     <script>
         // =================================================================
-        // КОНТРОЛЛЕР ИНТЕРАКТИВНОСТИ: ВРАЩЕНИЕ, ЗУМ И ПОЗИЦИЯ
+        // КОНТРОЛЛЕР AR КАМЕРЫ: ВРАЩЕНИЕ, ЗУМ И ИНТЕРАКТИВНОСТЬ
         // =================================================================
         class RocketInteractiveController {
             constructor() {
                 this.assemblyEl = document.getElementById('rocketAssembly');
                 this.modelEl = document.getElementById('rocketModel');
-                this.arRig = document.getElementById('arRig');
-                this.studioRig = document.getElementById('studioRig');
                 this.touchSurface = document.getElementById('touchSurface');
                 this.zoomBadge = document.getElementById('zoomBadge');
                 this.btnAutoSpin = document.getElementById('btnAutoSpin');
@@ -584,12 +504,8 @@
                 this.minScale = 0.035; // Уменьшение до 25%
                 this.maxScale = 0.45;  // Приближение до 350%
 
-                // Параметры вращения
-                // В AR режиме стартуем носом ВВЕРХ (-90° по X), в 3D режиме носом ВВЕРХ (0° по X)
-                const urlParams = new URLSearchParams(window.location.search);
-                this.currentMode = urlParams.get('mode') === '3d' ? '3d' : 'ar';
-                
-                this.rotX = this.currentMode === 'ar' ? -90 : 0;
+                // Параметры вращения: в AR режиме носом ВВЕРХ (-90° по X)
+                this.rotX = -90;
                 this.rotY = 0;
                 this.autoRotate = true;
                 this.autoRotateSpeed = 22; // градусов в секунду
@@ -634,66 +550,7 @@
 
                 // Запуск цикла анимации
                 requestAnimationFrame(this.tick.bind(this));
-
-                // Установка начального режима
-                if (this.currentMode === '3d') {
-                    this.setMode('3d');
-                } else {
-                    this.setMode('ar');
-                }
-            }
-
-            // Переключение режимов: AR Камера (с маркером) vs 3D Космос (свободный)
-            setMode(mode) {
-                this.currentMode = mode;
-                const btn3D = document.getElementById('btnMode3D');
-                const btnAR = document.getElementById('btnModeAR');
-                const indicator = this.markerIndicator;
-                const instructionSubtitle = document.getElementById('instructionSubtitle');
-                const videoEl = document.getElementById('arjs-video') || document.querySelector('.a-canvas ~ video, video');
-
-                if (mode === '3d') {
-                    btn3D.classList.add('active');
-                    btnAR.classList.remove('active');
-                    if (indicator) indicator.style.display = 'none';
-                    instructionSubtitle.textContent = '3D Космос: ракета смотрит вверх, свободно вертите и приближайте';
-
-                    // Переносим ракету в риг свободного космоса перед камерой
-                    this.studioRig.appendChild(this.assemblyEl);
-                    this.studioRig.setAttribute('visible', 'true');
-                    this.assemblyEl.setAttribute('position', '0 0 0');
-                    this.assemblyEl.setAttribute('visible', 'true');
-
-                    // В 3D режиме ракета стоит вертикально (X = 0)
-                    this.rotX = 0;
-                    this.applyTransform();
-
-                    if (videoEl) videoEl.style.display = 'none';
-                    document.body.style.backgroundColor = '#030712';
-                    document.body.style.background = 'radial-gradient(circle at center, #0B1120 0%, #030712 100%)';
-                } else {
-                    btnAR.classList.add('active');
-                    btn3D.classList.remove('active');
-                    instructionSubtitle.textContent = 'AR Камера: наведите на маркер Василевской (ракета смотрит вверх)';
-
-                    // Переносим ракету обратно на маркер
-                    this.arRig.appendChild(this.assemblyEl);
-                    this.studioRig.setAttribute('visible', 'false');
-                    this.assemblyEl.setAttribute('position', '0 0.1 0');
-
-                    // В AR режиме на вертикальном маркере ракета смотрит вверх (X = -90°)
-                    this.rotX = -90;
-                    this.applyTransform();
-
-                    if (videoEl) videoEl.style.display = 'block';
-                    document.body.style.background = 'transparent';
-
-                    const marker = document.getElementById('arMarker');
-                    const isVisible = marker && marker.object3D && marker.object3D.visible;
-                    if (indicator) {
-                        indicator.style.display = isVisible ? 'none' : 'block';
-                    }
-                }
+                this.applyTransform();
             }
 
             // --- ОБРАБОТКА КАСАНИЙ И ЖЕСТОВ МЫШИ/ТАЧСКРИНА ---
@@ -718,7 +575,7 @@
                 const currentPos = { x: e.clientX, y: e.clientY };
 
                 if (this.activePointers.size === 1) {
-                    // ОДИН ПАЛЕЦ / МЫШКА: Свободное вращение по всем осям
+                    // ОДИН ПАЛЕЦ / МЫШКА: Вращение ракеты
                     const dx = currentPos.x - prevPos.x;
                     const dy = currentPos.y - prevPos.y;
 
@@ -802,11 +659,11 @@
 
             resetView() {
                 // Сброс в начальную позицию: носом ВВЕРХ
-                this.rotX = this.currentMode === 'ar' ? -90 : 0;
+                this.rotX = -90;
                 this.rotY = 0;
                 this.setScale(this.baseScale);
                 this.applyTransform();
-                this.showZoomFeedback("Сброс вида (вверх) ↺");
+                this.showZoomFeedback("Сброс вида ↺");
             }
 
             // Установка масштаба ракеты
@@ -875,23 +732,10 @@
 
         // Инициализация при готовности DOM
         window.addEventListener('DOMContentLoaded', () => {
-            window.rocketControls = new RocketInteractiveController();
+            window.arControls = new RocketInteractiveController();
+            window.rocketControls = window.arControls;
+            window.modelControls = window.arControls;
         });
-
-        // Создание фоновых звезд
-        function createParticles() {
-            const container = document.getElementById('particles');
-            if (!container) return;
-            const count = 40;
-            for (let i = 0; i < count; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.animationDelay = Math.random() * 14 + 's';
-                p.style.animationDuration = (10 + Math.random() * 10) + 's';
-                container.appendChild(p);
-            }
-        }
 
         // Слушатели событий маркера для AR режима
         const marker = document.getElementById('arMarker');
@@ -899,26 +743,25 @@
 
         if (marker) {
             marker.addEventListener('markerFound', () => {
-                if (window.rocketControls && window.rocketControls.currentMode === 'ar') {
-                    markerIndicator.style.display = 'none';
-                }
+                if (markerIndicator) markerIndicator.style.display = 'none';
             });
 
             marker.addEventListener('markerLost', () => {
-                if (window.rocketControls && window.rocketControls.currentMode === 'ar') {
-                    markerIndicator.style.display = 'block';
-                }
+                if (markerIndicator) markerIndicator.style.display = 'block';
             });
         }
 
         // Скрытие экрана загрузки
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loader = document.getElementById('loadingOverlay');
-                if (loader) loader.classList.add('hidden');
-                createParticles();
-            }, 600);
-        });
+        function hideLoader() {
+            const loader = document.getElementById('loadingOverlay');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('hidden');
+                setTimeout(() => { loader.style.display = 'none'; }, 600);
+            }
+        }
+
+        window.addEventListener('load', () => setTimeout(hideLoader, 500));
+        setTimeout(hideLoader, 2000);
     </script>
 </body>
 

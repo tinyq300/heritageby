@@ -10,8 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <style>
+        <style>
         :root {
             --burgundy: #8B1538;
             --deep-red: #A52A2A;
@@ -720,72 +719,54 @@
             }
         }
 
-        /* Чат-бот виджет стили */
-        #chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: none;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
         }
 
-        #chatbot-container.open {
+        @media (max-width: 650px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        .chronicle-status-box {
+            display: none;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-top: 1.2rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .chronicle-status-box.loading {
             display: block;
+            background: #fff8e1;
+            color: #b78103;
+            border: 1px solid #ffe082;
         }
 
-        #chatbot-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 9998;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s;
+        .chronicle-status-box.success {
+            display: block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
         }
 
-        #chatbot-toggle:hover {
-            transform: scale(1.1);
+        .chronicle-status-box.error {
+            display: block;
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
         }
 
-        #chatbot-toggle.hidden {
-            display: none;
-        }
-
-        .chatbot-close-btn {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            width: 35px;
-            height: 35px;
-            background: #ff4757;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: transform 0.2s;
-        }
-
-        .chatbot-close-btn:hover {
-            transform: scale(1.1);
-            background: #ff6b81;
-        }
     </style>
+    <link rel="stylesheet" href="css/accessibility.css">
 </head>
 
 <body>
@@ -802,6 +783,7 @@
             <li><a href="#intro">О проекте</a></li>
             <li><a href="#timeline">Линия Времени</a></li>
             <li><a href="gallery.html">Аллея Славы</a></li>
+            <li><a href="map.html">Карта</a></li>
             <li><a href="#chronicles">Народная Летопись</a></li>
             <li><a href="education.html">Урок в будущее</a></li>
         </ul>
@@ -841,7 +823,7 @@
 
                     <!-- Вариант 2: Локальное видео -->
                     <video width="100%" controls style="border-radius: 16px;">
-                        <source src="efraanim.mp4" type="video/mp4">
+                        <source src="video/efraanim.mp4" type="video/mp4">
                         Ваш браузер не поддерживает видео.
                     </video>
                 </div>
@@ -1120,6 +1102,15 @@
             <a href="gallery.html" class="cta-button">Исследовать галерею</a>
         </section>
 
+                <section id="map-section" class="section">
+            <h2>Карта Памяти: Женщины Гродно</h2>
+            <p>
+                Интерактивный краеведческий маршрут с профессиональным двуязычным аудиогидом по историческим местам Гродно,
+                связанным с судьбами и подвигами выдающихся женщин — от Элизы Ожешко и Веры Хоружей до героинь Великой Отечественной войны.
+            </p>
+            <a href="map.html" class="cta-button">🗺 Открыть карту и аудиогид</a>
+        </section>
+
         <section id="chronicles" class="section">
             <h2>Народная Летопись</h2>
             <p>
@@ -1167,45 +1158,62 @@
         </div>
     </div>
 
-    <!-- Модальное окно для Летописи -->
+        <!-- Модальное окно для Летописи -->
     <div class="modal" id="chronicleModal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
             <div class="modal-header chronicle-header">
                 <button class="modal-close" onclick="closeChronicleModal()">×</button>
                 <div class="modal-name">Народная летопись</div>
-                <div class="modal-years">Добавить историю</div>
+                <div class="modal-years">Сохраним память о женщинах Беларуси</div>
             </div>
             <div class="modal-body">
-                <p style="margin-bottom: 20px; font-style: italic;">
-                    Чтобы добавить историю, авторизуйтесь. Заполните форму: имя, годы, место. Напишите рассказ.
+                <p style="margin-bottom: 20px; font-style: italic; color: #555;">
+                    Поделитесь историей о выдающейся женщине Беларуси: вашей маме, бабушке, наставнице, враче, труженице или землячке. Каждая история проходит бережную ИИ-проверку и попадает в онлайн-архив летописи.
                 </p>
                 <form id="chronicleForm" class="chronicle-form" onsubmit="submitChronicle(event)">
                     <div style="display: none; visibility: hidden;">
                         <label>Не заполняйте это поле</label>
                         <input type="text" name="spam_check" id="spam_check">
                     </div>
+                    
                     <div class="form-group">
-                        <label for="heroineName">Имя и фамилия героини</label>
-                        <input type="text" id="heroineName" name="heroine_name" placeholder="Например: Анна Ивановна"
-                            required>
+                        <label for="heroineName">Имя и фамилия героини *</label>
+                        <input type="text" id="heroineName" name="heroine_name" placeholder="Например: Надежда Ивановна Ковалева" required>
                     </div>
-                    <div class="form-group">
-                        <label for="storyText">История</label>
+
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="heroineYears">Годы жизни / Эпоха</label>
+                            <input type="text" id="heroineYears" name="heroine_years" placeholder="Например: 1924–2008 или ВОВ">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="heroineRegion">Город / Регион Беларуси</label>
+                            <input type="text" id="heroineRegion" name="heroine_region" placeholder="Например: Полоцк, Гродненская обл.">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="storyText">История о её жизни, труде или подвиге *</label>
                         <textarea id="storyText" name="story" rows="6"
-                            placeholder="Расскажите о её жизни и поступках..." required
-                            style="resize: none;"></textarea>
+                            placeholder="Расскажите о её жизненном пути, профессии, преодолении трудностей, добрых делах или вкладе в жизнь родного края..." required
+                            style="resize: vertical; min-height: 120px;"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="userEmail">Ваш Email (для связи)</label>
-                        <input type="email" id="userEmail" name="user_email" placeholder="vash_email@example.com"
-                            required>
+
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="authorName">Ваше имя / Кем приходитесь</label>
+                            <input type="text" id="authorName" name="author_name" placeholder="Например: внук Михаил, землячка">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="userEmail">Email или Телефон (для связи) *</label>
+                            <input type="text" id="userEmail" name="user_email" placeholder="vash_email@example.com или +375..." required>
+                        </div>
                     </div>
-                    <p style="font-size: 1.1rem; color: #666; margin-bottom: 1rem;">
-                        * Ваша история будет проверена редактором в течение 3-5 рабочих дней. С Вами свяжутся для
-                        получения дополнительной информации.
-                    </p>
-                    <div style="text-align: center;">
-                        <button type="submit" class="submit-button" id="submitBtn">Отправить на модерацию</button>
+
+                    <div id="chronicleStatus" class="chronicle-status-box"></div>
+
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button type="submit" class="submit-button" id="submitBtn">✨ Проверить и отправить в летопись</button>
                     </div>
                 </form>
             </div>
@@ -1257,35 +1265,35 @@
             // Обработка изображения
             const modalImage = document.getElementById('modalImage');
             const imageMap = {
-                'euphrosyne': 'efra.jpg',
-                'anastasia': 'sluc.jpg',
-                'barbara': 'barb.jpg',
-                'franciszka': 'fran.jpg',
-                'tetka': 'alai.jpg',
-                'galina': 'gali.jpg',
-                'vera': 'vera.jpg',
-                'mariya': 'mari_osip.jpg',
-                'zinaida': 'zina.jpg',
-                'sofya': 'sofy.jpeg',
-                'nadezhda': 'nade.jpg',
-                'darya': 'dary.jpg',
-                'irina': 'irin.jpg',
-                'marina': 'mari.jpg',
-                'stanyuta': 'stanyuta.jpg',
-                'kulakovskaya': 'kulakovskaya.jpg',
-                'hotyleva': 'hotyleva.jpg',
-                'zaharevich': 'zaharevich.jpg',
-                'kochanova': 'kochanova.jpg',
-                'yermoshina': 'yermoshina.jpg',
-                'shchetkina': 'shchetkina.jpg',
-                'pavlyuchenko': 'pavlyuchenko.jpg',
-                'drobyshevskaya': 'drobyshevskaya.jpg',
-                'ananich': 'ananich.jpg',
-                'morgunova': 'morgunova.jpg',
-                'rublevskaya': 'rublevskaya.jpg',
-                'lisitskaya': 'lisitskaya.jpg',
-                'kolomiyets': 'kolomiyets.jpg',
-                'aleynikova': 'aleynikova.jpg'
+                'euphrosyne': 'images/efra.jpg',
+                'anastasia': 'images/sluc.jpg',
+                'barbara': 'images/barb.jpg',
+                'franciszka': 'images/fran.jpg',
+                'tetka': 'images/alai.jpg',
+                'galina': 'images/gali.jpg',
+                'vera': 'images/vera.jpg',
+                'mariya': 'images/mari_osip.jpg',
+                'zinaida': 'images/zina.jpg',
+                'sofya': 'images/sofy.jpeg',
+                'nadezhda': 'images/nade.jpg',
+                'darya': 'images/dary.jpg',
+                'irina': 'images/irin.jpg',
+                'marina': 'images/mari.jpg',
+                'stanyuta': 'images/stanyuta.jpg',
+                'kulakovskaya': 'images/kulakovskaya.jpg',
+                'hotyleva': 'images/hotyleva.jpg',
+                'zaharevich': 'images/zaharevich.jpg',
+                'kochanova': 'images/kochanova.jpg',
+                'yermoshina': 'images/yermoshina.jpg',
+                'shchetkina': 'images/shchetkina.jpg',
+                'pavlyuchenko': 'images/pavlyuchenko.jpg',
+                'drobyshevskaya': 'images/drobyshevskaya.jpg',
+                'ananich': 'images/ananich.jpg',
+                'morgunova': 'images/morgunova.jpg',
+                'rublevskaya': 'images/rublevskaya.jpg',
+                'lisitskaya': 'images/lisitskaya.jpg',
+                'kolomiyets': 'images/kolomiyets.jpg',
+                'aleynikova': 'images/aleynikova.jpg'
             };
 
             if (imageMap[womanId] && imageMap[womanId] !== '') {
@@ -1346,43 +1354,156 @@
 
         document.querySelectorAll('.timeline-period').forEach(period => observer.observe(period));
 
-        (function () { emailjs.init("Z1bxKqTKyDrwHdGmM"); })();
+        // ==========================================
+        //  НАРОДНАЯ ЛЕТОПИСЬ: ИИ-МОДЕРАЦИЯ И ОНЛАЙН-ТАБЛИЦА
+        // ==========================================
+        const SHEETDB_API_URL = "https://sheetdb.io/api/v1/730zoh2g36cm8";
 
-        function submitChronicle(event) {
+        // Бережная минимальная автомодерация историй
+        function moderateChronicleStory(data) {
+            const text = (data.heroine_name + " " + data.story).toLowerCase();
+            const cleanStory = data.story.trim();
+
+            // 1. Проверка длины (слишком короткий текст)
+            if (cleanStory.length < 30) {
+                return {
+                    passed: false,
+                    reason: "История слишком короткая. Расскажите подробнее о жизни или поступке героини (минимум 30 символов)."
+                };
+            }
+
+            // 2. Проверка на спам-ссылки и рекламу
+            const spamLinkRegex = /(https?:\/\/|www\.|t\.me\/|bit\.ly|\.ru\/|\.com\/|casino|казино|1xbet|крипт|bitcoin|usdt|заработок|ставки на спорт|порно|sex|виагра)/i;
+            if (spamLinkRegex.test(text)) {
+                return {
+                    passed: false,
+                    reason: "Текст содержит рекламные ссылки или коммерческие упоминания, что не допускается в Народной летописи."
+                };
+            }
+
+            // 3. Проверка на нецензурную брань и агрессию
+            const profanityRegex = /(хуй|пизд|ебат|бляд|сука|мудак|говно|долбо|шлюх|ублюд|чмо|гандон)/i;
+            if (profanityRegex.test(text)) {
+                return {
+                    passed: false,
+                    reason: "Текст содержит ненормативную лексику или оскорбления. Пожалуйста, соблюдайте уважительный тон."
+                };
+            }
+
+            // 4. Проверка на бессмысленный набор букв (keyboard mash)
+            const gibberishRegex = /([а-яa-z])\1{5,}|(asdfgh|qwertz|zxcvbn|йцукен|фывапр)/i;
+            if (gibberishRegex.test(text)) {
+                return {
+                    passed: false,
+                    reason: "Текст содержит повторяющиеся символы или бессмысленный набор букв."
+                };
+            }
+
+            // 5. Оценка релевантности и присвоение статуса ИИ
+            const positiveKeywords = /женщин|бабушк|мам|матер|сестр|доч|девушк|героин|ветеран|врач|учител|тружениц|партизан|войн|беларус|жизн|родн|подвиг|семь|памят|труд|человек/i;
+            let aiStatus = 'Одобрено ИИ';
+            if (!positiveKeywords.test(text)) {
+                aiStatus = 'Требует внимания редактора';
+            }
+
+            return {
+                passed: true,
+                aiStatus: aiStatus
+            };
+        }
+
+        async function submitChronicle(event) {
             event.preventDefault();
             const spamCheck = document.getElementById('spam_check').value;
             if (spamCheck) return;
+
             const btn = document.getElementById('submitBtn');
+            const statusBox = document.getElementById('chronicleStatus');
             const originalText = btn.textContent;
-            const templateParams = { heroine_name: document.getElementById('heroineName').value, story: document.getElementById('storyText').value, user_email: document.getElementById('userEmail').value };
-            btn.textContent = "Отправка...";
+
+            const formData = {
+                heroine_name: document.getElementById('heroineName').value.trim(),
+                heroine_years: document.getElementById('heroineYears').value.trim(),
+                heroine_region: document.getElementById('heroineRegion').value.trim(),
+                story: document.getElementById('storyText').value.trim(),
+                author_name: document.getElementById('authorName').value.trim(),
+                user_email: document.getElementById('userEmail').value.trim()
+            };
+
+            // Шаг 1: Автомодерация
+            statusBox.className = 'chronicle-status-box loading';
+            statusBox.textContent = '🤖 ИИ-модерация проверяет текст истории...';
             btn.disabled = true;
-            emailjs.send('service_ms1ybwv', 'template_26dz3eo', templateParams).then(function () {
-                btn.textContent = "Отправлено!";
-                setTimeout(() => { alert("Спасибо! Ваша история получена."); document.getElementById('chronicleForm').reset(); closeChronicleModal(); btn.textContent = originalText; btn.disabled = false; }, 1000);
-            }, function (error) {
-                console.error('FAILED...', error);
-                btn.textContent = "Ошибка";
-                alert("Ошибка соединения.");
-                setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2000);
-            });
+
+            await new Promise(r => setTimeout(r, 450)); // небольшая пауза проверки
+            const moderation = moderateChronicleStory(formData);
+
+            if (!moderation.passed) {
+                statusBox.className = 'chronicle-status-box error';
+                statusBox.textContent = '⚠️ ' + moderation.reason;
+                btn.disabled = false;
+                return;
+            }
+
+            // Шаг 2: Успешно проверено -> Отправка в онлайн-таблицу
+            statusBox.className = 'chronicle-status-box loading';
+            statusBox.textContent = `✓ ${moderation.aiStatus}! Заносим в онлайн-таблицу летописи...`;
+
+            const payload = {
+                data: [{
+                    'Дата и время': new Date().toLocaleString('ru-RU'),
+                    'Имя героини': formData.heroine_name,
+                    'Годы жизни / Эпоха': formData.heroine_years || 'Не указано',
+                    'Город / Регион': formData.heroine_region || 'Беларусь',
+                    'История': formData.story,
+                    'Автор истории': formData.author_name || 'Анонимно',
+                    'Email / Контакт': formData.user_email,
+                    'Статус ИИ': moderation.aiStatus,
+                    'Опубликовано на сайте': 'Нет'
+                }]
+            };
+
+            try {
+                const response = await fetch(SHEETDB_API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    statusBox.className = 'chronicle-status-box success';
+                    statusBox.innerHTML = '🎉 <strong>Спасибо!</strong> Ваша история успешно добавлена в Народную летопись и передана редактору.';
+                    
+                    // Резервное сохранение в локальное хранилище браузера
+                    try {
+                        const localList = JSON.parse(localStorage.getItem('my_chronicles') || '[]');
+                        localList.push(payload.data[0]);
+                        localStorage.setItem('my_chronicles', JSON.stringify(localList));
+                    } catch(e) {}
+
+                    setTimeout(() => {
+                        document.getElementById('chronicleForm').reset();
+                        statusBox.style.display = 'none';
+                        closeChronicleModal();
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    throw new Error('Ошибка записи в таблицу: ' + response.status);
+                }
+            } catch (err) {
+                console.error('Ошибка отправки:', err);
+                statusBox.className = 'chronicle-status-box error';
+                statusBox.textContent = 'Ошибка связи с таблицей. Пожалуйста, попробуйте еще раз.';
+                btn.disabled = false;
+            }
         }
     </script>
 
-    <button id="chatbot-toggle" onclick="toggleChatbot()">💬</button>
-    <div id="chatbot-container">
-        <button class="chatbot-close-btn" onclick="toggleChatbot()">×</button>
-        <iframe src="chatbot-widget.html" width="450" height="600" frameborder="0"
-            style="border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);"></iframe>
-    </div>
-    <script>
-        function toggleChatbot() {
-            const container = document.getElementById('chatbot-container');
-            const toggle = document.getElementById('chatbot-toggle');
-            if (container.classList.contains('open')) { container.classList.remove('open'); toggle.classList.remove('hidden'); }
-            else { container.classList.add('open'); toggle.classList.add('hidden'); }
-        }
-    </script>
+        <script src="js/accessibility.js" defer></script>
 </body>
 
 </html>

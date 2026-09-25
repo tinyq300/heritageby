@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карта Гродно – Вечные Образы</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Яндекс.Карты JS API 2.1 -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=04e038ed-b5ac-4c32-a828-4719a81a2b47&lang=ru_RU" type="text/javascript"></script>
+
+    <style>
+        :root {
+            --burgundy: #8B1538;
+            --deep-red: #A52A2A;
+            --cream: #F5F0E8;
+            --gold: #D4AF37;
+            --dark-green: #2F4F2F;
+            --white: #FFFFFF;
+            --charcoal: #2C2C2C;
+            --soft-gray: #E8E4DC;
+            --font-display: 'Philosopher', sans-serif;
+            --font-body: 'Cormorant Garamond', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--cream);
+            color: var(--charcoal);
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: relative;
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--deep-red) 100%);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.3);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .back-link {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--white);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--white);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .nav-gallery-link:hover, .back-link:hover {
+            background: var(--white);
+            color: var(--burgundy);
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .map-layout {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR (список локаций) --- */
+        .sidebar {
+            width: 380px;
+            background: var(--white);
+            border-right: 1px solid var(--soft-gray);
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.2rem 1.5rem;
+            background: var(--cream);
+            border-bottom: 1px solid var(--soft-gray);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--burgundy);
+            margin-bottom: 0.6rem;
+        }
+
+        /* Переключатель языка */
+        .lang-switch {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .lang-btn {
+            padding: 0.3rem 1rem;
+            border: 2px solid var(--burgundy);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--burgundy);
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--burgundy);
+            color: var(--white);
+        }
+
+        .lang-btn:hover {
+            background: var(--burgundy);
+            color: var(--white);
+        }
+
+        /* Карточки локаций в сайдбаре */
+        .location-list {
+            padding: 0.8rem;
+        }
+
+        .location-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.6rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .location-card:hover {
+            background: var(--cream);
+            border-color: var(--gold);
+        }
+
+        .location-card.active {
+            background: #fdf6e3;
+            border-color: var(--burgundy);
+            box-shadow: 0 4px 12px rgba(139, 21, 56, 0.15);
+        }
+
+        .location-card-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--burgundy);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .location-card-info h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.2rem;
+        }
+
+        .location-card-info p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .location-card-info .heroine-tag {
+            display: inline-block;
+            margin-top: 0.4rem;
+            padding: 0.15rem 0.7rem;
+            background: linear-gradient(135deg, var(--burgundy), var(--deep-red));
+            color: var(--white);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* --- MAP CONTAINER --- */
+        #map {
+            flex: 1;
+            min-height: 400px;
+        }
+
+        /* --- INFO PANEL (выезжает снизу при клике на метку) --- */
+        .info-panel {
+            position: absolute;
+            bottom: 0;
+            left: 380px;
+            right: 0;
+            background: var(--white);
+            border-top: 3px solid var(--burgundy);
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s;
+            z-index: 60;
+            max-height: 55vh;
+            overflow-y: auto;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .info-panel.active {
+            transform: translateY(0);
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .info-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.5rem 2rem 1rem;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .info-panel-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--soft-gray);
+            color: var(--charcoal);
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .info-panel-close:hover {
+            background: var(--burgundy);
+            color: var(--white);
+        }
+
+        .info-panel-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--burgundy), var(--gold));
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .info-panel-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .info-panel-subtitle {
+            font-size: 1rem;
+            color: var(--burgundy);
+            font-weight: 600;
+        }
+
+        .info-panel-body {
+            padding: 0 2rem 1.5rem;
+        }
+
+        .info-panel-description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- АУДИОПЛЕЕР --- */
+        .audio-player {
+            background: var(--cream);
+            border-radius: 14px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .audio-player-label {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            color: var(--burgundy);
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .audio-play-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--burgundy), var(--deep-red));
+            color: var(--white);
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .audio-play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(139, 21, 56, 0.4);
+        }
+
+        .audio-play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .audio-progress-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .audio-progress-bar {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--soft-gray);
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .audio-progress-bar::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--burgundy);
+            cursor: pointer;
+        }
+
+        .audio-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* --- КНОПКА МАРШРУТА --- */
+        .route-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--dark-green), #3a6b3a);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .route-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(47, 79, 47, 0.4);
+        }
+
+        .route-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .route-info {
+            margin-top: 0.8rem;
+            padding: 0.8rem 1.2rem;
+            background: #e8f5e9;
+            border-radius: 10px;
+            color: #2e7d32;
+            font-size: 1rem;
+            display: none;
+        }
+
+        .route-info.active {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        /* --- МОБИЛЬНАЯ КНОПКА САЙДБАРА --- */
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 70;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: var(--white);
+            color: var(--burgundy);
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- NO API KEY OVERLAY --- */
+        .api-key-notice {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            z-index: 80;
+        }
+
+        .api-key-notice h2 {
+            font-family: var(--font-display);
+            color: var(--burgundy);
+            margin-bottom: 1rem;
+        }
+
+        .api-key-notice p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 1.2rem;
+        }
+
+        .api-key-notice code {
+            display: inline-block;
+            background: var(--cream);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: var(--burgundy);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .back-link {
+                position: static;
+                transform: none;
+                display: inline-block;
+                margin-bottom: 0.5rem;
+                font-size: 0.95rem;
+                padding: 0.4rem 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .sidebar {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                transform: translateX(-100%);
+                z-index: 90;
+                box-shadow: 8px 0 32px rgba(0, 0, 0, 0.15);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .info-panel {
+                left: 0;
+            }
+
+            .sidebar {
+                width: 320px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .sidebar {
+                width: 100%;
+            }
+
+            header {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    
+        
+        /* --- ВЫНОСИМ КАСТОМНЫЕ МЕТКИ ПОВЕРХ EVENTS-PANE ДЛЯ МГНОВЕННЫХ КЛИКОВ --- */
+        [class*="places-pane"] {
+            z-index: 3500 !important;
+            pointer-events: none !important;
+        }
+
+        [class*="places-pane"] .custom-map-marker {
+            pointer-events: auto !important;
+        }
+
+        /* --- ЭЛЕГАНТНЫЕ МЕТКИ НА КАРТЕ --- */
+        .custom-map-marker {
+            position: relative;
+            width: 46px;
+            height: 56px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .custom-map-marker:hover {
+            transform: translateY(-8px) scale(1.12);
+            z-index: 9999 !important;
+        }
+
+        .custom-map-marker.active {
+            transform: translateY(-10px) scale(1.18);
+            z-index: 10000 !important;
+        }
+
+        /* Пульсирующий золотой ореол */
+        .marker-pulse {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.5) 0%, rgba(212, 175, 55, 0) 70%);
+            animation: markerPulseAnim 2.4s infinite;
+            pointer-events: none;
+        }
+
+        .custom-map-marker.active .marker-pulse {
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.85) 0%, rgba(212, 175, 55, 0) 70%);
+            animation: markerPulseAnim 1.4s infinite;
+        }
+
+        @keyframes markerPulseAnim {
+            0% { transform: scale(0.8); opacity: 0.85; }
+            50% { transform: scale(1.45); opacity: 0.15; }
+            100% { transform: scale(0.8); opacity: 0.85; }
+        }
+
+        /* Тело метки — роскошный бордово-золотой медальон */
+        .marker-badge {
+            position: relative;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B1538 0%, #54091e 100%);
+            border: 2.5px solid #D4AF37;
+            box-shadow: 0 4px 14px rgba(139, 21, 56, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            transition: all 0.25s ease;
+        }
+
+        .custom-map-marker:hover .marker-badge {
+            border-color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.75), inset 0 2px 6px rgba(255, 255, 255, 0.4);
+        }
+
+        .custom-map-marker.active .marker-badge {
+            background: linear-gradient(135deg, #D4AF37 0%, #b8860b 100%);
+            border-color: #FFFFFF;
+            color: #2C2C2C;
+            box-shadow: 0 8px 28px rgba(212, 175, 55, 0.9);
+        }
+
+        .marker-icon {
+            font-size: 1.15rem;
+            line-height: 1;
+            margin-bottom: 2px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        .marker-num {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #FFFFFF;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 1px 6px;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.6);
+        }
+
+        .custom-map-marker.active .marker-num {
+            background: #8B1538;
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+        }
+
+        /* Острый носик метки вниз */
+        .marker-beak {
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 10px solid #54091e;
+            margin: -1px auto 0;
+            transition: border-top-color 0.25s ease;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+        }
+
+        .custom-map-marker.active .marker-beak {
+            border-top-color: #b8860b;
+        }
+
+        /* Мягкая тень на карте */
+        .marker-shadow {
+            width: 22px;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 50%;
+            margin: 2px auto 0;
+            filter: blur(1.5px);
+        }
+
+        /* Всплывающая подсказка с названием при наведении */
+        .marker-tooltip {
+            position: absolute;
+            bottom: 66px;
+            left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            background: rgba(30, 18, 24, 0.96);
+            backdrop-filter: blur(8px);
+            color: #FFFFFF;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-family: 'Philosopher', sans-serif;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+            border: 1.5px solid #D4AF37;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+        }
+
+        .tooltip-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 2px;
+        }
+
+        .tooltip-heroine {
+            font-size: 0.8rem;
+            color: #D4AF37;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+        }
+
+        .tooltip-action {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 3px;
+        }
+
+        .marker-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(30, 18, 24, 0.96) transparent transparent transparent;
+        }
+
+        .custom-map-marker:hover .marker-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+    </style>
+    <link rel="stylesheet" href="css/accessibility.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="back-link">← На главную</a>
+        <h1>Карта Гродно</h1>
+        <div class="subtitle">Маршрут «Женщины Гродно» · 8 остановок · 2–3 часа пешком</div>
+        <a href="gallery.html" class="nav-gallery-link" style="position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); color: var(--white); text-decoration: none; font-family: var(--font-display); font-size: 1.1rem; padding: 0.5rem 1.5rem; border: 2px solid var(--white); border-radius: 50px; transition: all 0.3s;">🏛 Аллея Славы</a>
+    </header>
+
+    <div class="map-layout">
+
+        <!-- Кнопка открытия сайдбара на мобильных -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()" title="Список мест">☰</button>
+
+        <!-- Боковая панель со списком мест -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">📍 Места памяти</div>
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="ru" onclick="switchLang('ru')">RU</button>
+                    <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+            <div class="location-list" id="locationList">
+                <!-- Карточки генерируются из JS -->
+            </div>
+        </div>
+
+        <!-- Яндекс.Карта -->
+        <div id="map"></div>
+
+        <!-- Информационная панель (выезжает снизу при клике на метку) -->
+        <div class="info-panel" id="infoPanel">
+            <div class="info-panel-header">
+                <div class="info-panel-icon" id="infoPanelIcon">🏛</div>
+                <div>
+                    <div class="info-panel-title" id="infoPanelTitle">Название места</div>
+                    <div class="info-panel-subtitle" id="infoPanelSubtitle">Героиня</div>
+                </div>
+                <button class="info-panel-close" onclick="closeInfoPanel()">×</button>
+            </div>
+            <div class="info-panel-body">
+                <div class="info-panel-description" id="infoPanelDescription">
+                    Описание места и его связь с историей героини...
+                </div>
+
+                <!-- Аудиогид -->
+                <div class="audio-player" id="audioPlayer">
+                    <div class="audio-player-label">🎧 <span id="audioLabel">Аудиогид</span></div>
+                    <div class="audio-controls">
+                        <button class="audio-play-btn" id="audioPlayBtn" onclick="toggleAudio()" disabled>
+                            ▶
+                        </button>
+                        <div class="audio-progress-wrapper">
+                            <input type="range" class="audio-progress-bar" id="audioProgress" min="0" max="100"
+                                value="0" oninput="seekAudio(this.value)">
+                            <div class="audio-time">
+                                <span id="audioCurrentTime">0:00</span>
+                                <span id="audioDuration">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопка маршрута -->
+                <button class="route-btn" id="routeBtn" onclick="buildRoute()">
+                    🚶 <span id="routeBtnText">Построить маршрут сюда</span>
+                </button>
+
+                <div class="route-info" id="routeInfo">
+                    <span>🚶</span>
+                    <span id="routeDetails"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Уведомление об API-ключе (показывается если ключ не задан) -->
+        <div class="api-key-notice" id="apiKeyNotice" style="display: none;">
+            <h2>🗺 Яндекс.Карты</h2>
+            <p>
+                Для работы карты нужен бесплатный API-ключ Яндекс.Карт.<br>
+                Получите его в <a href="https://developer.tech.yandex.ru/" target="_blank">Кабинете Разработчика</a>
+                и вставьте в файл <code>map.html</code> (строка 16).
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        //  ДАННЫЕ ЛОКАЦИЙ (ЗАГЛУШКИ — БУДУТ ЗАМЕНЕНЫ)
+        // ==========================================
+        
+        const routeIntro = {
+            id: 'intro',
+            icon: '🎧',
+            name: {
+                ru: 'Вступление: Гродно — город с женским лицом',
+                en: "Introduction: Grodno — A City with a Woman's Face"
+            },
+            heroine: {
+                ru: 'Исторический очерк: Гродно сквозь века',
+                en: 'Historical Essay: Grodno Through the Centuries'
+            },
+            description: {
+                ru: 'Гродно — один из древнейших городов Беларуси (летопись 1128 г.). За почти тысячелетнюю историю город был резиденцией великих князей и польских королей, пережил войны и разделы, но всегда оставался местом, где рождались сильные женщины. Сегодня мы пройдём по улицам, которые хранят память о писательницах, подпольщицах, лётчицах и просветительницах.',
+                en: 'Grodno is one of the oldest cities in Belarus (chronicles 1128). Over nearly a thousand years it served as a royal residence and survived wars and partitions, always remaining a cradle of remarkable women. Today we walk streets preserving memories of writers, underground heroines, pilots, and educators.'
+            },
+            coords: [53.6773, 23.8300], // Start at Zhiliber Park
+            audio: { ru: 'audio/ru/intro.mp3', en: 'audio/en/intro.mp3' }
+        };
+
+        const routeConclusion = {
+            id: 'conclusion',
+            icon: '🏁',
+            name: {
+                ru: 'Заключение: Вечный Гродно',
+                en: 'Conclusion: Eternal Grodno'
+            },
+            heroine: {
+                ru: 'Наследие героинь Беларуси',
+                en: 'Heritage of Belarusian Heroines'
+            },
+            description: {
+                ru: 'Маршрут завершён. Вы прошли по улицам Гродно, которые помнят Элизу Ожешко, Ольгу Соломову, Ольгу Санфирову, игуменью Гавриилу и Веру Хоружую. Их судьбы — пример мужества, таланта и любви к родной земле. Спасибо за внимание! До новых встреч на улицах вечного Гродно.',
+                en: 'The tour is complete. You walked streets remembering Eliza Orzeszkowa, Olga Solomova, Olga Sanfirova, Abbess Gavriila, and Vera Khoruzhaya. Their lives exemplify courage, talent, and love for their homeland. Thank you, and see you again in eternal Grodno!'
+            },
+            coords: [53.6770, 23.8290],
+            audio: { ru: 'audio/ru/conclusion.mp3', en: 'audio/en/conclusion.mp3' }
+        };
+
+        const locations = [
+            {
+                id: 1,
+                coords: [53.6835, 23.8340],
+                icon: '🧜',
+                name: {
+                    ru: 'Скульптура «Городничанка»',
+                    en: 'Sculpture "Gorodnichanka"'
+                },
+                heroine: {
+                    ru: 'Собирательный образ женщины-горожанки',
+                    en: 'Collective image of a Grodno woman'
+                },
+                description: {
+                    ru: 'Установлена 11 сентября 2008 года к 880-летию Гродно (скульптор Владимир Пантелеев). В народе известна как «Русалка». Это собирательный образ женщины-горожанки, символизирующий красоту, загадочность и связь с историей города. Скульптура стоит на берегу ручья Городничанка в парке Жилибера — здесь начинается наш маршрут.',
+                    en: 'Unveiled on September 11, 2008 for Grodno\'s 880th anniversary by sculptor Vladimir Panteleev. Popularly known as "The Mermaid." It is a collective embodiment of a city woman, symbolizing beauty, mystery, and connection to the city\'s history. Standing by the Gorodnichanka stream in Zhiliber Park, it marks the start of our journey.'
+                },
+                audio: { ru: 'audio/ru/stop1.mp3', en: 'audio/en/stop1.mp3' }
+            },
+            {
+                id: 2,
+                coords: [53.6828, 23.8350],
+                icon: '⭐',
+                name: {
+                    ru: 'Братская могила в парке Жилибера',
+                    en: 'Mass Grave in Zhiliber Park'
+                },
+                heroine: {
+                    ru: 'Ольга Соломова и Ольга Санфирова',
+                    en: 'Olga Solomova & Olga Sanfirova'
+                },
+                description: {
+                    ru: 'Мемориал советским воинам и партизанам у Вечного огня в парке Жилибера. Здесь захоронены две великие женщины: Ольга Соломова (1920–1944) — руководитель комсомольского подполья, Почётный гражданин Гродно, и Ольга Санфирова (1917–1944) — Герой Советского Союза, командир эскадрильи полка «ночных ведьм» (630 боевых вылетов).',
+                    en: 'Memorial to Soviet soldiers and partisans at the Eternal Flame in Zhiliber Park. Two heroines rest here: Olga Solomova (1920–1944), leader of the wartime underground resistance and Honorary Citizen of Grodno; and Olga Sanfirova (1917–1944), Hero of the Soviet Union, squadron commander in the legendary "Night Witches" regiment (630 combat flights).'
+                },
+                audio: { ru: 'audio/ru/stop2.mp3', en: 'audio/en/stop2.mp3' }
+            },
+            {
+                id: 3,
+                coords: [53.6840, 23.8362],
+                icon: '📖',
+                name: {
+                    ru: 'Памятник Элизе Ожешко',
+                    en: 'Monument to Eliza Orzeszkowa'
+                },
+                heroine: {
+                    ru: 'Элиза Ожешко (1841–1910)',
+                    en: 'Eliza Orzeszkowa (1841–1910)'
+                },
+                description: {
+                    ru: 'Старейший сохранившийся памятник Гродно, открытый 20 октября 1929 года у северной аллеи парка Жилибера (скульптор Ромуальд Зерых). Установлен на народные пожертвования гродненцев. Элиза Ожешко — классик литературы («Хам», «Над Неманом»), дважды номинантка Нобелевской премии, защитница повстанцев 1863 года и просветительница.',
+                    en: 'The oldest surviving monument in Grodno, unveiled on October 20, 1929 by sculptor Romuald Zerykh. Funded through spontaneous donations from Grodno citizens. Eliza Orzeszkowa was a classic literary author ("The Peasants", "On the Niemen"), twice nominated for the Nobel Prize, defender of 1863 insurgents, and educator.'
+                },
+                audio: { ru: 'audio/ru/stop3.mp3', en: 'audio/en/stop3.mp3' }
+            },
+            {
+                id: 4,
+                coords: [53.6845, 23.8375],
+                icon: '🛤',
+                name: {
+                    ru: 'Улица Элизы Ожешко',
+                    en: 'Eliza Orzeszkowa Street'
+                },
+                heroine: {
+                    ru: 'Элиза Ожешко (1841–1910)',
+                    en: 'Eliza Orzeszkowa (1841–1910)'
+                },
+                description: {
+                    ru: 'Выход из парка Жилибера прямо на историческую улицу Ожешко (ранее Роскошь, Муравьевская, Садовая). Названа в честь писательницы в 1929 году. Это одна из красивейших улиц Гродно, соединяющая вокзал с центром, с уникальной исторической застройкой эпохи рубежа XIX–XX веков.',
+                    en: 'Step out of Zhiliber Park onto historic Orzeszkowa Street (formerly Roskosh, Muravyovskaya, Sadovaya). Named after the writer in 1929, this is one of Grodno\'s most scenic avenues connecting the train station with the center, showcasing turn-of-the-century architecture.'
+                },
+                audio: { ru: 'audio/ru/stop4.mp3', en: 'audio/en/stop4.mp3' }
+            },
+            {
+                id: 5,
+                coords: [53.6853, 23.8402],
+                icon: '🏠',
+                name: {
+                    ru: 'Дом-музей Элизы Ожешко',
+                    en: 'Eliza Orzeszkowa House Museum'
+                },
+                heroine: {
+                    ru: 'Элиза Ожешко (1841–1910)',
+                    en: 'Eliza Orzeszkowa (1841–1910)'
+                },
+                description: {
+                    ru: 'Ул. Ожешко, 17. Аутентичный деревянный особняк, где писательница прожила последние 15 лет жизни (1895–1910), писала свои главные романы, переписывалась со Львом Толстым и принимала культурную элиту города. В музее открыта мемориальная экспозиция с личными вещами и редкими гербариями.',
+                    en: '17 Ozheshko Street. The wooden single-story manor where the writer lived her final 15 years (1895–1910), penned her greatest works, corresponded with Leo Tolstoy, and hosted Grodno\'s cultural elite. Features a memorial exhibition with personal artifacts and her original herbariums.'
+                },
+                audio: { ru: 'audio/ru/stop5.mp3', en: 'audio/en/stop5.mp3' }
+            },
+            {
+                id: 6,
+                coords: [53.6820, 23.8310],
+                icon: '🌟',
+                name: {
+                    ru: 'Улица Веры Хоружей',
+                    en: 'Vera Khoruzhaya Street'
+                },
+                heroine: {
+                    ru: 'Вера Хоружая (1903–1942)',
+                    en: 'Vera Khoruzhaya (1903–1942)'
+                },
+                description: {
+                    ru: 'Улица в историческом центре Гродно названа в честь Героя Советского Союза, партизанки и разведчицы. Вера Хоружая владела несколькими языками, действовала в подполье под десятком псевдонимов. С первых дней войны сражалась в партизанском отряде, казнена фашистами в 1942 году.',
+                    en: 'Located in Grodno\'s historic center, named in honor of the Hero of the Soviet Union, intelligence operative, and partisan. Vera Khoruzhaya spoke several languages and operated under numerous aliases. Liaison to the front line, she was captured and executed by the Nazis in 1942.'
+                },
+                audio: { ru: 'audio/ru/stop6.mp3', en: 'audio/en/stop6.mp3' }
+            },
+            {
+                id: 7,
+                coords: [53.6772, 23.8262],
+                icon: '⛪',
+                name: {
+                    ru: 'Свято-Рождество-Богородичный монастырь',
+                    en: 'Nativity of the Theotokos Convent'
+                },
+                heroine: {
+                    ru: 'Игуменья Гавриила (Рисицкая)',
+                    en: 'Abbess Gavriila (Risitskaya)'
+                },
+                description: {
+                    ru: 'Ул. Давида Городенского, 3 (у слияния Городничанки и Немана, возле Старого Замка). Основан в 1635 году. Игуменья Гавриила вступила в монастырь в 1914 году, стала настоятельницей в 1953 г. и сумела сберечь монашескую общину в Жировичах в годы гонений на Церковь. Сегодня монастырь возрождён.',
+                    en: '3 David Gorodensky Street (at the confluence of the Gorodnichanka and Neman rivers, near Old Castle). Founded in 1635. Abbess Gavriila entered the convent in 1914, became abbess in 1953, and preserved the monastic sisterhood through years of Soviet religious persecution.'
+                },
+                audio: { ru: 'audio/ru/stop7.mp3', en: 'audio/en/stop7.mp3' }
+            },
+            {
+                id: 8,
+                coords: [53.6575, 23.7880],
+                icon: '🎓',
+                name: {
+                    ru: 'Гимназия №3 им. Ольги Соломовой',
+                    en: 'Gymnasium No. 3 named after Olga Solomova'
+                },
+                heroine: {
+                    ru: 'Ольга Соломова (1920–1944)',
+                    en: 'Olga Solomova (1920–1944)'
+                },
+                description: {
+                    ru: 'Ул. Ольги Соломовой, 58. Гимназия носит имя подпольщицы. Во дворе установлен памятный бюст Ольги Соломовой, в здании работает Музей Боевой Славы. Молодая учительница показала пример самоотверженности, встав на защиту родного края. Здесь завершается наш маршрут.',
+                    en: '58 Olga Solomova Street. Named after the legendary underground resistance fighter. Features a courtyard memorial bust and the Museum of Military Glory. The young teacher gave her life defending her land and people, providing a fitting culmination to our tour.'
+                },
+                audio: { ru: 'audio/ru/stop8.mp3', en: 'audio/en/stop8.mp3' }
+            }
+        ];
+
+        // ==========================================
+        //  СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+        // ==========================================
+        let currentLang = 'ru';
+        let map = null;
+        let markers = [];
+        let selectedLocation = null;
+        let userPosition = null;
+        let audioElement = new Audio();
+        let isPlaying = false;
+
+        // ==========================================
+        //  ИНИЦИАЛИЗАЦИЯ КАРТЫ (Яндекс.Карты API 2.1)
+        // ==========================================
+        const streetRouteCoordinates = [[53.6835,23.834],[53.68341,23.83399],[53.68337,23.83398],[53.6834,23.83414],[53.68341,23.83453],[53.68337,23.83458],[53.68332,23.83462],[53.68332,23.83463],[53.68332,23.83463],[53.68332,23.83464],[53.68332,23.83464],[53.68332,23.83465],[53.68331,23.83465],[53.68331,23.83465],[53.68329,23.83474],[53.68324,23.83498],[53.68319,23.83499],[53.6831,23.83501],[53.68306,23.83503],[53.68281,23.83512],[53.68306,23.83503],[53.6831,23.83522],[53.68312,23.83534],[53.68317,23.83536],[53.68322,23.83542],[53.68324,23.83546],[53.68326,23.83552],[53.68332,23.83549],[53.6834,23.83544],[53.68341,23.83554],[53.68348,23.83581],[53.68353,23.83576],[53.68355,23.83571],[53.68356,23.83564],[53.68357,23.83558],[53.68359,23.83554],[53.6836,23.83554],[53.68362,23.83553],[53.68364,23.83551],[53.68369,23.83543],[53.68371,23.83539],[53.68374,23.83537],[53.6838,23.83537],[53.68386,23.83545],[53.68391,23.83551],[53.68403,23.83558],[53.68401,23.83569],[53.68398,23.83586],[53.68397,23.83604],[53.68397,23.8362],[53.68398,23.83628],[53.684,23.83647],[53.68404,23.83663],[53.6841,23.83677],[53.68412,23.83684],[53.68414,23.83701],[53.68417,23.83725],[53.6842,23.83735],[53.68422,23.83744],[53.68423,23.83747],[53.6842,23.83758],[53.68426,23.83755],[53.68429,23.83752],[53.68447,23.83739],[53.68429,23.83752],[53.68426,23.83755],[53.6842,23.83758],[53.68411,23.83775],[53.68409,23.83785],[53.68407,23.83795],[53.68408,23.83807],[53.6842,23.83845],[53.68434,23.83898],[53.68435,23.83906],[53.68464,23.84012],[53.68471,23.84013],[53.68474,23.84024],[53.68478,23.84036],[53.68487,23.84033],[53.68507,23.84034],[53.6853,23.84032],[53.68507,23.84034],[53.68487,23.84033],[53.68478,23.84036],[53.68474,23.84024],[53.68471,23.84013],[53.68464,23.84012],[53.68435,23.83906],[53.68434,23.83898],[53.6842,23.83845],[53.68408,23.83807],[53.68397,23.8377],[53.68394,23.8376],[53.68382,23.83713],[53.6838,23.837],[53.68355,23.83609],[53.68348,23.83581],[53.68341,23.83554],[53.6834,23.83544],[53.68341,23.83536],[53.68335,23.83517],[53.68332,23.83505],[53.68332,23.83504],[53.68331,23.83504],[53.68327,23.83502],[53.68324,23.83498],[53.6831,23.83447],[53.68308,23.83442],[53.68284,23.83353],[53.68268,23.83297],[53.68264,23.83255],[53.68262,23.83234],[53.68259,23.83233],[53.68257,23.8323],[53.68253,23.83227],[53.68234,23.83212],[53.68233,23.83211],[53.68232,23.83204],[53.6823,23.83185],[53.68218,23.83176],[53.68209,23.8317],[53.68208,23.83165],[53.68206,23.83158],[53.68194,23.83149],[53.68182,23.8314],[53.68179,23.83137],[53.68169,23.83129],[53.68171,23.83123],[53.6818,23.83097],[53.68182,23.83093],[53.68185,23.83086],[53.68186,23.83084],[53.68185,23.83086],[53.68182,23.83093],[53.6818,23.83097],[53.68171,23.83123],[53.68169,23.83129],[53.68158,23.83119],[53.68155,23.83116],[53.68147,23.83141],[53.68104,23.83104],[53.68053,23.83058],[53.68047,23.83053],[53.68044,23.83051],[53.6803,23.8304],[53.68024,23.83036],[53.68006,23.83022],[53.68004,23.8302],[53.67991,23.83011],[53.67947,23.82978],[53.67945,23.82977],[53.67915,23.82955],[53.67899,23.82943],[53.67895,23.82941],[53.67894,23.8294],[53.67892,23.82938],[53.67888,23.82935],[53.67884,23.82932],[53.67883,23.82932],[53.67876,23.82928],[53.67854,23.82919],[53.67823,23.82908],[53.67762,23.82889],[53.67755,23.82887],[53.6776,23.828],[53.67761,23.8279],[53.67764,23.8271],[53.6775,23.8271],[53.67749,23.82702],[53.67737,23.82608],[53.67729,23.82613],[53.67729,23.82613],[53.67737,23.82608],[53.67749,23.82702],[53.6775,23.8271],[53.67731,23.82709],[53.67729,23.8271],[53.67728,23.82712],[53.6772,23.82728],[53.67717,23.82758],[53.67681,23.82751],[53.67663,23.82746],[53.6766,23.82746],[53.67654,23.82735],[53.6762,23.82781],[53.67617,23.82779],[53.67603,23.82768],[53.6759,23.82827],[53.67589,23.82834],[53.67588,23.82842],[53.67585,23.82841],[53.67578,23.82839],[53.6757,23.82836],[53.67561,23.82841],[53.67558,23.82842],[53.67542,23.82845],[53.67532,23.82847],[53.6745,23.82861],[53.67442,23.82861],[53.67435,23.82859],[53.67423,23.82856],[53.67414,23.82851],[53.67399,23.82841],[53.6739,23.82831],[53.67384,23.82824],[53.67379,23.82818],[53.67153,23.82538],[53.67147,23.8253],[53.67118,23.82497],[53.6705,23.82414],[53.67041,23.82401],[53.67038,23.82393],[53.67038,23.82388],[53.67039,23.82381],[53.67033,23.82375],[53.67026,23.82368],[53.66975,23.82314],[53.66965,23.82309],[53.66942,23.82281],[53.66931,23.82257],[53.66928,23.8222],[53.66924,23.82185],[53.66922,23.82174],[53.66922,23.82153],[53.66924,23.82123],[53.66932,23.82082],[53.66934,23.82072],[53.66936,23.82059],[53.66935,23.82053],[53.66947,23.81994],[53.66968,23.81883],[53.66978,23.8183],[53.66968,23.81823],[53.66959,23.81818],[53.66959,23.81812],[53.66952,23.81806],[53.66941,23.81797],[53.66884,23.81749],[53.66859,23.81728],[53.66848,23.81721],[53.66806,23.81693],[53.66763,23.81661],[53.667,23.81613],[53.66656,23.8158],[53.66622,23.81553],[53.66601,23.81536],[53.66593,23.81529],[53.66588,23.81522],[53.66588,23.81505],[53.6659,23.81492],[53.6659,23.81466],[53.66588,23.81453],[53.66573,23.81361],[53.66557,23.81266],[53.6653,23.81095],[53.66528,23.8108],[53.66483,23.80794],[53.66482,23.80788],[53.66481,23.80782],[53.66433,23.80472],[53.66397,23.80247],[53.66393,23.80221],[53.6639,23.80214],[53.66375,23.80202],[53.66372,23.80192],[53.66371,23.80188],[53.6637,23.80185],[53.66367,23.80174],[53.66372,23.80161],[53.66372,23.80146],[53.66366,23.80103],[53.66365,23.80094],[53.66352,23.80003],[53.66342,23.79943],[53.66313,23.79739],[53.66309,23.79701],[53.66309,23.79696],[53.66336,23.79519],[53.66337,23.79509],[53.66339,23.795],[53.6633,23.79497],[53.66343,23.79413],[53.6634,23.79407],[53.66342,23.79356],[53.66338,23.79336],[53.66318,23.79292],[53.66308,23.79285],[53.66289,23.79272],[53.66271,23.79259],[53.66272,23.79247],[53.66255,23.79237],[53.6624,23.79227],[53.66194,23.79196],[53.66196,23.79185],[53.66184,23.79176],[53.66156,23.79154],[53.66112,23.79115],[53.66094,23.79099],[53.66055,23.79068],[53.66022,23.79058],[53.65951,23.79016],[53.65886,23.78974],[53.65905,23.78884],[53.6581,23.78813],[53.65755,23.78777]];
+
+        function initMap() {
+            if (typeof ymaps === 'undefined') {
+                document.getElementById('apiKeyNotice').style.display = 'block';
+                renderLocationList();
+                return;
+            }
+
+            ymaps.ready(function () {
+                // Центр Гродно
+                map = new ymaps.Map('map', {
+                    center: [53.6775, 23.8290],
+                    zoom: 15,
+                    controls: ['zoomControl', 'geolocationControl', 'typeSelector']
+                });
+
+                // Реальный пешеходный маршрут по улицам и аллеям Гродно
+                // Золотой контур-подложка
+                const routeGlow = new ymaps.Polyline(streetRouteCoordinates, {}, {
+                    strokeColor: '#D4AF37',
+                    strokeWidth: 7,
+                    strokeOpacity: 0.45
+                });
+                map.geoObjects.add(routeGlow);
+
+                // Основная бордовая пешеходная линия по улицам
+                const routeLine = new ymaps.Polyline(streetRouteCoordinates, {
+                    hintContent: currentLang === 'ru'
+                        ? '🚶 Пешеходный маршрут по улицам Гродно (6.7 км)'
+                        : '🚶 Walking route along Grodno streets (6.7 km)'
+                }, {
+                    strokeColor: '#8B1538',
+                    strokeWidth: 4,
+                    strokeOpacity: 0.9,
+                    strokeStyle: 'shortdash'
+                });
+                map.geoObjects.add(routeLine);
+
+                // Кастомный макет для роскошных меток в историческом стиле с надёжным кликом
+                const customMarkerLayout = ymaps.templateLayoutFactory.createClass(
+                    '<div class="custom-map-marker $[properties.activeClass]" data-id="$[properties.id]">' +
+                        '<div class="marker-pulse"></div>' +
+                        '<div class="marker-badge">' +
+                            '<span class="marker-icon">$[properties.icon]</span>' +
+                            '<span class="marker-num">$[properties.number]</span>' +
+                        '</div>' +
+                        '<div class="marker-beak"></div>' +
+                        '<div class="marker-shadow"></div>' +
+                        '<div class="marker-tooltip">' +
+                            '<div class="tooltip-title">$[properties.number]. $[properties.title]</div>' +
+                            '<div class="tooltip-heroine">$[properties.heroine]</div>' +
+                            '<div class="tooltip-action">🎧 $[properties.clickHint]</div>' +
+                        '</div>' +
+                    '</div>',
+                    {
+                        build: function () {
+                            customMarkerLayout.superclass.build.call(this);
+                            const el = this.getParentElement();
+                            if (el) {
+                                const markerDom = el.querySelector('.custom-map-marker');
+                                if (markerDom) {
+                                    this._markerClick = (e) => {
+                                        e.stopPropagation();
+                                        const id = this.getData().properties.get('id');
+                                        selectLocation(id);
+                                    };
+                                    markerDom.addEventListener('click', this._markerClick);
+                                }
+                            }
+                        },
+                        clear: function () {
+                            const el = this.getParentElement();
+                            if (el && this._markerClick) {
+                                const markerDom = el.querySelector('.custom-map-marker');
+                                if (markerDom) {
+                                    markerDom.removeEventListener('click', this._markerClick);
+                                }
+                            }
+                            customMarkerLayout.superclass.clear.call(this);
+                        }
+                    }
+                );
+
+                // Добавляем стилизованные метки
+                locations.forEach((loc, idx) => {
+                    const clickHint = currentLang === 'ru' ? 'Нажмите, чтобы слушать' : 'Click to listen';
+
+                    const placemark = new ymaps.Placemark(loc.coords, {
+                        id: loc.id,
+                        number: idx + 1,
+                        icon: loc.icon,
+                        title: loc.name[currentLang],
+                        heroine: loc.heroine[currentLang],
+                        clickHint: clickHint,
+                        activeClass: ''
+                    }, {
+                        iconLayout: customMarkerLayout,
+                        iconOffset: [-23, -54],
+                        openBalloonOnClick: false,
+                        cursor: 'pointer'
+                    });
+
+                    placemark.events.add('click', function () {
+                        selectLocation(loc.id);
+                    });
+
+                    map.geoObjects.add(placemark);
+                    markers.push(placemark);
+                });
+
+                // Запрашиваем геопозицию пользователя
+                requestUserLocation();
+
+                document.getElementById('apiKeyNotice').style.display = 'none';
+            });
+
+            renderLocationList();
+        }
+
+        // ==========================================
+        //  ГЕОПОЗИЦИЯ ПОЛЬЗОВАТЕЛЯ
+        // ==========================================
+        function requestUserLocation() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        userPosition = [pos.coords.latitude, pos.coords.longitude];
+                        console.log('Геопозиция получена:', userPosition);
+                    },
+                    err => {
+                        console.log('Геопозиция недоступна:', err.message);
+                        // По умолчанию: Советская площадь Гродно
+                        userPosition = [53.6784, 23.8298];
+                    },
+                    { enableHighAccuracy: true, timeout: 8000 }
+                );
+            } else {
+                userPosition = [53.6784, 23.8298];
+            }
+        }
+
+        // ==========================================
+        //  ПОСТРОЕНИЕ ПЕШЕХОДНОГО МАРШРУТА
+        //  (открывает пешеходный маршрут в Яндекс.Картах — бесплатно)
+        // ==========================================
+        function buildRoute() {
+            if (!selectedLocation) return;
+
+            const startPoint = userPosition || [53.6784, 23.8298];
+            const endPoint = selectedLocation.coords;
+
+            // Пешеходный маршрут в Яндекс.Картах (rtt=pd = pedestrian)
+            const yandexMapsUrl =
+                `https://yandex.by/maps/?rtext=${startPoint[0]},${startPoint[1]}~${endPoint[0]},${endPoint[1]}&rtt=pd`;
+
+            window.open(yandexMapsUrl, '_blank');
+
+            // Показываем подсказку
+            const routeInfo = document.getElementById('routeInfo');
+            const routeDetails = document.getElementById('routeDetails');
+            routeDetails.textContent = currentLang === 'ru'
+                ? 'Пешеходный маршрут открыт в Яндекс.Картах'
+                : 'Pedestrian route opened in Yandex Maps';
+            routeInfo.classList.add('active');
+        }
+
+        // ==========================================
+        //  ВЫБОР ЛОКАЦИИ
+        // ==========================================
+        function selectLocation(id) {
+            let loc = null;
+            if (id === 'intro') {
+                loc = routeIntro;
+            } else if (id === 'conclusion') {
+                loc = routeConclusion;
+            } else {
+                loc = locations.find(l => l.id == id);
+            }
+            if (!loc) return;
+
+            selectedLocation = loc;
+
+            // Обновляем инфо-панель
+            document.getElementById('infoPanelIcon').textContent = loc.icon;
+            document.getElementById('infoPanelTitle').textContent = loc.name[currentLang];
+            document.getElementById('infoPanelSubtitle').textContent = loc.heroine[currentLang];
+            document.getElementById('infoPanelDescription').textContent = loc.description[currentLang];
+
+            // Аудиогид
+            const audioSrc = loc.audio[currentLang];
+            const playBtn = document.getElementById('audioPlayBtn');
+            const audioLabel = document.getElementById('audioLabel');
+
+            stopAudio();
+
+            if (audioSrc) {
+                audioElement.src = audioSrc;
+                playBtn.disabled = false;
+                audioLabel.textContent = currentLang === 'ru' 
+                    ? `Аудиогид (${currentLang.toUpperCase()})` 
+                    : `Audio Guide (${currentLang.toUpperCase()})`;
+            } else {
+                playBtn.disabled = true;
+                audioLabel.textContent = currentLang === 'ru'
+                    ? 'Аудиогид (скоро будет доступен)'
+                    : 'Audio Guide (coming soon)';
+            }
+
+            // Кнопка маршрута
+            const routeBtn = document.getElementById('routeBtn');
+            routeBtn.querySelector('#routeBtnText').textContent =
+                currentLang === 'ru' ? 'Построить пешеходный маршрут' : 'Build walking route';
+            routeBtn.onclick = buildRoute;
+            routeBtn.disabled = false;
+            document.getElementById('routeInfo').classList.remove('active');
+
+            // Открываем панель
+            document.getElementById('infoPanel').classList.add('active');
+
+            // Подсвечиваем карточку в списке
+            // Подсвечиваем активную метку на карте
+            if (markers.length) {
+                markers.forEach(p => {
+                    const isActive = p.properties.get('id') === id;
+                    p.properties.set('activeClass', isActive ? 'active' : '');
+                });
+            }
+
+            document.querySelectorAll('.location-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.id == id);
+            });
+
+            // Центрируем карту
+            if (map && loc.coords) {
+                map.setCenter(loc.coords, 16, { duration: 500 });
+            }
+
+            // Закрываем сайдбар на мобильных
+            if (window.innerWidth <= 900) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+
+        // ==========================================
+        //  АУДИОПЛЕЕР
+        // ==========================================
+        function toggleAudio() {
+            if (isPlaying) {
+                audioElement.pause();
+                isPlaying = false;
+                document.getElementById('audioPlayBtn').textContent = '▶';
+            } else {
+                audioElement.play().catch(e => console.warn('Audio play error:', e));
+                isPlaying = true;
+                document.getElementById('audioPlayBtn').textContent = '⏸';
+            }
+        }
+
+        function stopAudio() {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+            isPlaying = false;
+            document.getElementById('audioPlayBtn').textContent = '▶';
+            document.getElementById('audioProgress').value = 0;
+            document.getElementById('audioCurrentTime').textContent = '0:00';
+            document.getElementById('audioDuration').textContent = '—';
+        }
+
+        function seekAudio(value) {
+            if (audioElement.duration) {
+                audioElement.currentTime = (value / 100) * audioElement.duration;
+            }
+        }
+
+        audioElement.addEventListener('timeupdate', () => {
+            if (audioElement.duration) {
+                const progress = (audioElement.currentTime / audioElement.duration) * 100;
+                document.getElementById('audioProgress').value = progress;
+                document.getElementById('audioCurrentTime').textContent = formatTime(audioElement.currentTime);
+            }
+        });
+
+        audioElement.addEventListener('loadedmetadata', () => {
+            document.getElementById('audioDuration').textContent = formatTime(audioElement.duration);
+        });
+
+        audioElement.addEventListener('ended', () => {
+            isPlaying = false;
+            document.getElementById('audioPlayBtn').textContent = '▶';
+            document.getElementById('audioProgress').value = 0;
+        });
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // ==========================================
+        //  ПАНЕЛЬ ИНФОРМАЦИИ
+        // ==========================================
+        function closeInfoPanel() {
+            document.getElementById('infoPanel').classList.remove('active');
+            selectedLocation = null;
+            stopAudio();
+            document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
+            // Сбрасываем активные маркеры на карте
+            document.querySelectorAll('.custom-map-marker').forEach(m => {
+                m.classList.remove('active');
+            });
+        }
+
+        // ==========================================
+        //  ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА
+        // ==========================================
+        function switchLang(lang) {
+            currentLang = lang;
+
+            // Обновляем кнопки
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Обновляем тексты интерфейса
+            const titleEl = document.querySelector('header h1');
+            if (titleEl) titleEl.textContent = lang === 'ru' ? 'Карта Гродно' : 'Map of Grodno';
+
+            const subEl = document.querySelector('.subtitle');
+            if (subEl) subEl.textContent = lang === 'ru' 
+                ? 'Маршрут «Женщины Гродно» · 8 остановок · 2–3 часа пешком' 
+                : 'Tour "Women of Grodno" · 8 stops · 2–3 hours on foot';
+
+            const sideTitleEl = document.querySelector('.sidebar-title');
+            if (sideTitleEl) sideTitleEl.textContent = lang === 'ru' ? '📍 Места памяти' : '📍 Heritage Sites';
+
+            const backEl = document.querySelector('.back-link');
+            if (backEl) backEl.textContent = lang === 'ru' ? '← На главную' : '← Home';
+
+            // Перерисовываем список
+            renderLocationList();
+
+            // Обновляем балуны меток на карте
+            if (map && markers.length) {
+                markers.forEach((p, idx) => {
+                    const loc = locations[idx];
+                    p.properties.set('title', loc.name[lang]);
+                    p.properties.set('heroine', loc.heroine[lang]);
+                    p.properties.set('clickHint', lang === 'ru' ? 'Нажмите, чтобы слушать' : 'Click to listen');
+                    p.properties.set('hintContent', `${idx + 1}. ${loc.name[lang]}`);
+                    p.properties.set('balloonContentHeader', `<strong>${idx + 1}. ${loc.name[lang]}</strong>`);
+                    p.properties.set('balloonContentBody', `
+                        <div style="font-family: inherit; font-size: 0.95rem; line-height: 1.5; padding: 4px;">
+                            <div style="color: #8B1538; font-weight: 700; margin-bottom: 4px;">${loc.heroine[lang]}</div>
+                            <div style="color: #444; margin-bottom: 8px;">${loc.description[lang].substring(0, 140)}...</div>
+                            <button onclick="selectLocation(${loc.id})" style="background: linear-gradient(135deg, #8B1538, #A52A2A); color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">
+                                🎧 ${lang === 'ru' ? 'Открыть аудиогид' : 'Open audio guide'}
+                            </button>
+                        </div>
+                    `);
+                });
+            }
+
+            // Обновляем открытую панель если есть
+            if (selectedLocation) {
+                selectLocation(selectedLocation.id);
+            }
+        }
+
+        // ==========================================
+        //  СПИСОК ЛОКАЦИЙ В САЙДБАРЕ
+        // ==========================================
+        function renderLocationList() {
+            const list = document.getElementById('locationList');
+            list.innerHTML = '';
+
+            locations.forEach((loc, idx) => {
+                const card = document.createElement('div');
+                card.className = 'location-card';
+                card.dataset.id = loc.id;
+                card.onclick = () => selectLocation(loc.id);
+
+                card.innerHTML = `
+                    <div class="location-card-number">${idx + 1}</div>
+                    <div class="location-card-info">
+                        <h3>${loc.name[currentLang]}</h3>
+                        <p>${loc.description[currentLang].substring(0, 80)}${loc.description[currentLang].length > 80 ? '…' : ''}</p>
+                        <span class="heroine-tag">${loc.heroine[currentLang]}</span>
+                    </div>
+                `;
+
+                list.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        //  МОБИЛЬНЫЙ САЙДБАР
+        // ==========================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // ==========================================
+        //  ЗАПУСК
+        // ==========================================
+        initMap();
+    </script>
+
+    <script src="js/accessibility.js" defer></script>
+</body>
+
+</html>
