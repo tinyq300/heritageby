@@ -536,6 +536,9 @@
         <button class="ctrl-btn" onclick="window.arControls.rotateRight()" title="Повернуть вправо (30°)">
             ⟳
         </button>
+        <button class="ctrl-btn" onclick="window.arControls.faceFront()" title="Повернуть крест лицом к себе">
+            ✨
+        </button>
         <button class="ctrl-btn active-toggle" id="btnAutoSpin" onclick="window.arControls.toggleAutoRotate()" title="Авто-вращение вкл/выкл">
             ⏸
         </button>
@@ -575,7 +578,7 @@
                 <!-- 3D Модель Креста Евфросинии Полоцкой -->
                 <a-entity id="mainModel" 
                           gltf-model="url(models/sample.glb)" 
-                          scale="0.5 0.5 0.5" 
+                          scale="1.0 1.0 1.0" 
                           position="0 0 0" 
                           rotation="0 0 0">
                 </a-entity>
@@ -648,14 +651,14 @@
                 this.markerIndicator = document.getElementById('markerIndicator');
 
                 // Параметры масштаба (зума)
-                this.baseScale = 0.5;
-                this.currentScale = 0.5;
-                this.minScale = 0.12;  // Уменьшение до 24%
-                this.maxScale = 1.6;   // Приближение до 320%
+                this.baseScale = 1.0;
+                this.currentScale = 1.0;
+                this.minScale = 0.35;  // Уменьшение до 24%
+                this.maxScale = 3.5;   // Приближение до 320%
 
                 // Параметры вращения
                 this.rotX = 0;
-                this.rotY = 0;
+                this.rotY = 90;
                 this.autoRotate = true;
                 this.autoRotateSpeed = 20; // градусов в секунду
 
@@ -663,7 +666,7 @@
                 this.isPointerDown = false;
                 this.activePointers = new Map();
                 this.initialPinchDistance = 0;
-                this.scaleAtPinchStart = 0.5;
+                this.scaleAtPinchStart = 1.0;
                 this.inactivityTimer = null;
                 this.lastTime = performance.now();
 
@@ -728,8 +731,9 @@
                     const dx = currentPos.x - prevPos.x;
                     const dy = currentPos.y - prevPos.y;
 
-                    this.rotY += dx * 0.45;
-                    this.rotX += dy * 0.35;
+                    this.stopAutoRotate();
+                    this.rotY += dx * 0.5;
+                    this.rotX = Math.max(-45, Math.min(45, this.rotX + dy * 0.35));
 
                     this.applyTransform();
                 } else if (this.activePointers.size >= 2) {
@@ -783,16 +787,32 @@
                 this.pauseAutoRotateTemporarily();
             }
 
+            stopAutoRotate() {
+                this.autoRotate = false;
+                if (this.btnAutoSpin) {
+                    this.btnAutoSpin.textContent = '▶';
+                    this.btnAutoSpin.classList.remove('active-toggle');
+                }
+            }
+
             rotateLeft() {
+                this.stopAutoRotate();
                 this.rotY -= 30;
                 this.applyTransform();
-                this.pauseAutoRotateTemporarily();
             }
 
             rotateRight() {
+                this.stopAutoRotate();
                 this.rotY += 30;
                 this.applyTransform();
-                this.pauseAutoRotateTemporarily();
+            }
+
+            faceFront() {
+                this.stopAutoRotate();
+                this.rotY = 90;
+                this.rotX = 0;
+                this.applyTransform();
+                this.showZoomFeedback("Лицевая сторона ✨");
             }
 
             toggleAutoRotate() {
@@ -808,7 +828,7 @@
 
             resetView() {
                 this.rotX = 0;
-                this.rotY = 0;
+                this.rotY = 90;
                 this.setScale(this.baseScale);
                 this.applyTransform();
                 this.showZoomFeedback("Сброс вида ↺");

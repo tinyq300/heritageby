@@ -536,6 +536,9 @@
         <button class="ctrl-btn" onclick="window.arControls.rotateRight()" title="Повернуть вправо (30°)">
             ⟳
         </button>
+        <button class="ctrl-btn" onclick="window.arControls.faceFront()" title="Фронтальный вид ракеты">
+            🚀
+        </button>
         <button class="ctrl-btn active-toggle" id="btnAutoSpin" onclick="window.arControls.toggleAutoRotate()" title="Авто-вращение вкл/выкл">
             ⏸
         </button>
@@ -568,13 +571,12 @@
             cursor="fuse: false; rayOrigin: mouse;"
             id="arMarker">
             
-            <!-- Узел ракеты: начальная ориентация носом ВВЕРХ (-90 deg по X для вертикального маркера) -->
-            <a-entity id="rocketAssembly" position="0 0.1 0" rotation="-90 0 0">
-                
-                <!-- 3D Модель ракеты «Союз МС-25» -->
+            <!-- Узел ракеты: начальная ориентация носом ВВЕРХ -->
+            <a-entity id="rocketAssembly" position="0 0.02 0" rotation="0 0 0">
+                <!-- 3D Модель Ракеты: вертикальная, центрированная ось вращения -->
                 <a-entity id="rocketModel" 
                           gltf-model="url(models/rocket.glb)" 
-                          scale="0.13 0.13 0.13" 
+                          scale="0.045 0.045 0.045" 
                           position="0 0 0" 
                           rotation="0 0 0">
                 </a-entity>
@@ -654,14 +656,14 @@
                 this.btnAutoSpin = document.getElementById('btnAutoSpin');
                 this.markerIndicator = document.getElementById('markerIndicator');
 
-                // Параметры масштаба (зума)
-                this.baseScale = 0.13;
-                this.currentScale = 0.13;
-                this.minScale = 0.035; // Уменьшение до 25%
-                this.maxScale = 0.45;  // Приближение до 350%
+                // Параметры масштаба (зума) ракеты
+                this.baseScale = 0.045;
+                this.currentScale = 0.045;
+                this.minScale = 0.015; // Уменьшение до 33%
+                this.maxScale = 0.16;  // Приближение до 350%
 
-                // Параметры вращения: в AR режиме носом ВВЕРХ (-90° по X)
-                this.rotX = -90;
+                // Параметры вращения: вертикально носом вверх
+                this.rotX = 0;
                 this.rotY = 0;
                 this.autoRotate = true;
                 this.autoRotateSpeed = 22; // градусов в секунду
@@ -670,7 +672,7 @@
                 this.isPointerDown = false;
                 this.activePointers = new Map();
                 this.initialPinchDistance = 0;
-                this.scaleAtPinchStart = 0.13;
+                this.scaleAtPinchStart = 0.045;
                 this.inactivityTimer = null;
                 this.lastTime = performance.now();
 
@@ -731,12 +733,13 @@
                 const currentPos = { x: e.clientX, y: e.clientY };
 
                 if (this.activePointers.size === 1) {
-                    // ОДИН ПАЛЕЦ / МЫШКА: Вращение ракеты
+                    // ОДИН ПАЛЕЦ / МЫШКА: Вращение ракеты вокруг вертикальной оси
                     const dx = currentPos.x - prevPos.x;
                     const dy = currentPos.y - prevPos.y;
 
-                    this.rotY += dx * 0.45;
-                    this.rotX += dy * 0.35;
+                    this.stopAutoRotate();
+                    this.rotY += dx * 0.5;
+                    this.rotX = Math.max(-35, Math.min(35, this.rotX + dy * 0.35));
 
                     this.applyTransform();
                 } else if (this.activePointers.size >= 2) {
@@ -790,16 +793,32 @@
                 this.pauseAutoRotateTemporarily();
             }
 
+            stopAutoRotate() {
+                this.autoRotate = false;
+                if (this.btnAutoSpin) {
+                    this.btnAutoSpin.textContent = '▶';
+                    this.btnAutoSpin.classList.remove('active-toggle');
+                }
+            }
+
             rotateLeft() {
+                this.stopAutoRotate();
                 this.rotY -= 30;
                 this.applyTransform();
-                this.pauseAutoRotateTemporarily();
             }
 
             rotateRight() {
+                this.stopAutoRotate();
                 this.rotY += 30;
                 this.applyTransform();
-                this.pauseAutoRotateTemporarily();
+            }
+
+            faceFront() {
+                this.stopAutoRotate();
+                this.rotY = 0;
+                this.rotX = 0;
+                this.applyTransform();
+                this.showZoomFeedback("Фронтальный вид 🚀");
             }
 
             toggleAutoRotate() {
@@ -814,8 +833,7 @@
             }
 
             resetView() {
-                // Сброс в начальную позицию: носом ВВЕРХ
-                this.rotX = -90;
+                this.rotX = 0;
                 this.rotY = 0;
                 this.setScale(this.baseScale);
                 this.applyTransform();
