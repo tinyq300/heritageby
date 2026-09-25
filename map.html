@@ -761,6 +761,97 @@
             transform: translateX(-50%) translateY(0);
         }
 
+    
+        /* --- RESPONSIVE HEADER & MOBILE OPTIMIZATIONS --- */
+        .header-nav-row {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            pointer-events: none;
+        }
+
+        .header-nav-row a {
+            pointer-events: auto;
+            color: var(--white);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--white);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .header-nav-row a:hover {
+            background: var(--white);
+            color: var(--burgundy);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 0.75rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.6rem !important;
+            }
+
+            .header-nav-row {
+                position: static !important;
+                transform: none !important;
+                padding: 0 !important;
+                width: 100% !important;
+                pointer-events: auto !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                gap: 8px !important;
+            }
+
+            .header-nav-row a {
+                padding: 0.4rem 0.8rem !important;
+                font-size: 0.85rem !important;
+                white-space: nowrap !important;
+            }
+
+            h1 {
+                font-size: 1.6rem !important;
+                margin-bottom: 0.2rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .subtitle {
+                font-size: 0.88rem !important;
+                line-height: 1.3 !important;
+            }
+
+            .sidebar-toggle {
+                top: 12px !important;
+                left: 12px !important;
+                width: 44px !important;
+                height: 44px !important;
+                z-index: 1000 !important;
+            }
+
+            .sidebar {
+                width: 85% !important;
+                max-width: 320px !important;
+                z-index: 9999 !important;
+            }
+
+            .info-panel {
+                left: 0 !important;
+                right: 0 !important;
+                max-height: 55vh !important;
+                z-index: 2500 !important;
+            }
+        }
+
     </style>
     <link rel="stylesheet" href="css/accessibility.css">
 </head>
@@ -768,10 +859,14 @@
 <body>
 
     <header>
-        <a href="index.html" class="back-link">← На главную</a>
-        <h1>Карта Гродно</h1>
-        <div class="subtitle">Маршрут «Женщины Гродно» · 8 остановок · 2–3 часа пешком</div>
-        <a href="gallery.html" class="nav-gallery-link" style="position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); color: var(--white); text-decoration: none; font-family: var(--font-display); font-size: 1.1rem; padding: 0.5rem 1.5rem; border: 2px solid var(--white); border-radius: 50px; transition: all 0.3s;">🏛 Аллея Славы</a>
+        <div class="header-nav-row">
+            <a href="index.html" class="back-link">← На главную</a>
+            <a href="gallery.html" class="nav-gallery-link">🏛 Аллея Славы</a>
+        </div>
+        <div class="header-titles">
+            <h1>Карта Гродно</h1>
+            <div class="subtitle">Маршрут «Женщины Гродно» · 8 остановок · 2–3 часа пешком</div>
+        </div>
     </header>
 
     <div class="map-layout">
@@ -1275,6 +1370,7 @@
 
             // Открываем панель
             document.getElementById('infoPanel').classList.add('active');
+            document.body.classList.add('modal-open');
 
             // Подсвечиваем карточку в списке
             // Подсвечиваем активную метку на карте
@@ -1360,6 +1456,7 @@
         // ==========================================
         function closeInfoPanel() {
             document.getElementById('infoPanel').classList.remove('active');
+            document.body.classList.remove('modal-open');
             selectedLocation = null;
             stopAudio();
             document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
@@ -1455,7 +1552,8 @@
         //  МОБИЛЬНЫЙ САЙДБАР
         // ==========================================
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+            const sbOpen = document.getElementById('sidebar').classList.toggle('open');
+            if (sbOpen) document.body.classList.add('sidebar-open'); else document.body.classList.remove('sidebar-open');
         }
 
         // ==========================================

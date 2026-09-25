@@ -765,6 +765,131 @@
             border: 1px solid #ffcdd2;
         }
 
+    
+        /* --- INTRO GRID & RESPONSIVE MOBILE OPTIMIZATIONS --- */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (max-width: 850px) {
+            .intro-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.75rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 2.5rem 1rem !important;
+            }
+
+            h1 {
+                font-size: 2rem !important;
+                letter-spacing: 1px !important;
+                line-height: 1.2 !important;
+            }
+
+            .subtitle {
+                font-size: 1.05rem !important;
+            }
+
+            .year-badge {
+                font-size: 0.8rem !important;
+                padding: 0.35rem 0.9rem !important;
+            }
+
+            nav {
+                position: static !important;
+                padding: 0.6rem 0.75rem !important;
+            }
+
+            nav ul {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                gap: 0.5rem !important;
+                padding: 4px 2px !important;
+                justify-content: flex-start !important;
+            }
+
+            nav ul::-webkit-scrollbar {
+                display: none !important;
+            }
+
+            nav ul li {
+                flex-shrink: 0 !important;
+            }
+
+            nav ul li a {
+                display: inline-block !important;
+                padding: 0.4rem 0.8rem !important;
+                background: rgba(139, 21, 56, 0.08) !important;
+                border-radius: 20px !important;
+                font-size: 0.88rem !important;
+                white-space: nowrap !important;
+                text-decoration: none !important;
+            }
+
+            .container {
+                padding: 1.25rem 0.75rem !important;
+            }
+
+            .section {
+                padding: 1.5rem 1rem !important;
+                margin-bottom: 2rem !important;
+                border-radius: 16px !important;
+            }
+
+            .section h2 {
+                font-size: 1.65rem !important;
+                line-height: 1.3 !important;
+                margin-bottom: 1rem !important;
+            }
+
+            .section p {
+                font-size: 1.05rem !important;
+                line-height: 1.6 !important;
+            }
+
+            .timeline-container {
+                padding: 1rem 0 !important;
+            }
+
+            .timeline-line {
+                left: 1.2rem !important;
+            }
+
+            .period-marker {
+                left: 1.2rem !important;
+                width: 30px !important;
+                height: 30px !important;
+            }
+
+            .period-content,
+            .timeline-period:nth-child(odd) .period-content,
+            .timeline-period:nth-child(even) .period-content {
+                margin-left: 2.8rem !important;
+                margin-right: 0.25rem !important;
+                width: calc(100% - 3.2rem) !important;
+                padding: 1.2rem 1rem !important;
+                border-radius: 14px !important;
+                text-align: left !important;
+            }
+
+            .period-header h3 {
+                font-size: 1.3rem !important;
+            }
+
+            .period-years {
+                font-size: 0.95rem !important;
+            }
+        }
+
     </style>
     <link rel="stylesheet" href="css/accessibility.css">
 </head>
@@ -792,7 +917,7 @@
     <div class="container">
         <!-- Текст из PDF стр. 4 -->
         <section id="intro" class="section">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+            <div class="intro-grid">
                 <!-- Текстовая часть -->
                 <div>
                     <h2>Добро пожаловать в пространство «Вечных Образов»</h2>

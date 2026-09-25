@@ -64,11 +64,8 @@
             opacity: 0.95;
         }
 
-        .back-link {
-            position: absolute;
-            left: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
+        .back-link,
+        .map-link-btn {
             color: var(--white);
             text-decoration: none;
             font-family: var(--font-display);
@@ -79,7 +76,8 @@
             transition: all 0.3s;
         }
 
-        .back-link:hover {
+        .back-link:hover,
+        .map-link-btn:hover {
             background: var(--white);
             color: var(--burgundy);
         }
@@ -782,6 +780,144 @@
                 margin: 1rem;
             }
         }
+    
+        /* --- RESPONSIVE HEADER & MOBILE OPTIMIZATIONS --- */
+        .header-nav-row {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            pointer-events: none;
+        }
+
+        .header-nav-row a,
+        .back-link,
+        .map-link-btn {
+            pointer-events: auto;
+            color: var(--white);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--white);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .header-nav-row a:hover,
+        .back-link:hover,
+        .map-link-btn:hover {
+            background: var(--white);
+            color: var(--burgundy);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1.25rem 1rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.75rem !important;
+            }
+
+            .header-nav-row {
+                position: static !important;
+                transform: none !important;
+                width: 100% !important;
+                padding: 0 !important;
+                pointer-events: auto !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                gap: 8px !important;
+            }
+
+            .header-nav-row a,
+            .back-link,
+            .map-link-btn {
+                position: static !important;
+                transform: none !important;
+                padding: 0.4rem 0.85rem !important;
+                font-size: 0.88rem !important;
+                white-space: nowrap !important;
+            }
+
+            .header-titles {
+                width: 100%;
+                text-align: center;
+            }
+
+            h1 {
+                font-size: 1.85rem !important;
+                letter-spacing: 1px !important;
+                margin-bottom: 0.25rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .subtitle {
+                font-size: 0.95rem !important;
+                line-height: 1.35 !important;
+            }
+
+            .gallery-container {
+                padding: 1.5rem 1rem !important;
+            }
+
+            .intro-text {
+                font-size: 1.05rem !important;
+                line-height: 1.6 !important;
+                margin: 0 auto 2rem !important;
+            }
+
+            .portraits-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+                margin-bottom: 2rem !important;
+            }
+
+            .portrait-container {
+                height: 380px !important;
+            }
+
+            .detail-header {
+                padding: 2rem 1rem 1.5rem !important;
+            }
+
+            .detail-header h2 {
+                font-size: 1.7rem !important;
+                padding: 0 1.5rem !important;
+            }
+
+            .close-modal {
+                top: 0.8rem !important;
+                right: 0.8rem !important;
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 1.5rem !important;
+            }
+
+            .detail-body {
+                padding: 1.25rem !important;
+            }
+
+            .detail-quote {
+                font-size: 1.1rem !important;
+                padding: 1rem !important;
+            }
+
+            .action-buttons {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .action-btn {
+                width: 100% !important;
+            }
+        }
     </style>
     <link rel="stylesheet" href="css/accessibility.css">
 </head>
@@ -789,10 +925,14 @@
 <body>
 
     <header>
-        <a href="index.html" class="back-link">← На главную</a>
-        <h1>Аллея Славы</h1>
-        <div class="subtitle">Интерактивный пантеон героинь Беларуси</div>
-        <a href="map.html" class="map-link-btn" style="position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); color: var(--white); text-decoration: none; font-family: var(--font-display); font-size: 1.1rem; padding: 0.5rem 1.5rem; border: 2px solid var(--white); border-radius: 50px; transition: all 0.3s;">🗺 Карта Гродно</a>
+        <div class="header-nav-row">
+            <a href="index.html" class="back-link">← На главную</a>
+            <a href="map.html" class="map-link-btn">🗺 Карта Гродно</a>
+        </div>
+        <div class="header-titles">
+            <h1>Аллея Славы</h1>
+            <div class="subtitle">Интерактивный пантеон героинь Беларуси</div>
+        </div>
     </header>
 
     <div class="gallery-container">
@@ -2203,11 +2343,13 @@
             }
 
             document.getElementById('detailModal').classList.add('active');
+            document.body.classList.add('modal-open');
             document.body.style.overflow = 'hidden';
         }
 
         function closeDetailModal() {
             document.getElementById('detailModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
             document.body.style.overflow = 'auto';
         }
 
@@ -2220,6 +2362,7 @@
             const targetUrl = baseUrl + (h.arLink || 'ar-view.html');
 
             document.getElementById('qrOverlay').classList.add('active');
+            document.body.classList.add('modal-open');
             toggleMarkerMode(false);
 
             const markerImgEl = document.getElementById('markerImageFull');
@@ -2251,7 +2394,7 @@
             }
         }
 
-        function closeQR() { document.getElementById('qrOverlay').classList.remove('active'); }
+        function closeQR() { document.getElementById('qrOverlay').classList.remove('active'); document.body.classList.remove('modal-open'); }
 
         // ==========================================
         //  НАСТРОЙКИ ИИ И ПРОВАЙДЕРОВ
@@ -2432,6 +2575,7 @@
             }
 
             document.getElementById('chatOverlay').classList.add('active');
+            document.body.classList.add('modal-open');
             document.getElementById('chatMessages').innerHTML = '';
             document.getElementById('chatSettingsPanel').classList.remove('active');
             currentChatHistory = [];
@@ -2443,6 +2587,7 @@
 
         function closeChat() { 
             document.getElementById('chatOverlay').classList.remove('active');
+            document.body.classList.remove('modal-open');
             document.getElementById('chatSettingsPanel').classList.remove('active');
         }
 
