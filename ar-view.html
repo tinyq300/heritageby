@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>AR: Крест Евфросинии Полоцкой</title>
 
-    <!-- A-Frame & AR.js -->
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <!-- A-Frame & AR.js (Локальные файлы + надежные CDN-резервы) -->
+    <script src="js/aframe.min.js"></script>
+    <script>if (!window.AFRAME) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.3.0/aframe.min.js"><\/script>');</script>
+    <script src="js/aframe-ar.js"></script>
+    <script>if (!window.THREEx || !window.THREEx.ArToolkitContext) document.write('<script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@master/aframe/build/aframe-ar.js"><\/script>');</script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap');
@@ -334,10 +336,166 @@
         #touchSurface:active {
             cursor: grabbing;
         }
+    
+        /* --- ФИКС ДЛЯ ОТОБРАЖЕНИЯ ВИДЕОПОТОКА КАМЕРЫ НА ТЕЛЕФОНАХ --- */
+        #arjs-video {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            object-fit: cover !important;
+            z-index: 1 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .a-canvas {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 2 !important;
+        }
+
+        a-scene {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 2 !important;
+        }
+
+        /* Модальное окно разрешения камеры */
+        .camera-permission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 4, 13, 0.94);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .camera-permission-modal.active {
+            display: flex !important;
+        }
+
+        .camera-modal-card {
+            background: linear-gradient(135deg, #2d0b16 0%, #1a050d 100%);
+            border: 2px solid rgba(212, 175, 55, 0.7);
+            border-radius: 24px;
+            padding: 28px 22px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            color: #FFFFFF;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.35);
+        }
+
+        .camera-modal-icon {
+            font-size: 52px;
+            margin-bottom: 12px;
+            display: block;
+            animation: pulse-cam 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-cam {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 22px rgba(212, 175, 55, 0.9)); }
+        }
+
+        .camera-modal-card h3 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 22px;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .camera-modal-card p {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #F5F0E8;
+            margin-bottom: 18px;
+        }
+
+        .btn-cam-action {
+            display: inline-block;
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            color: #1A050D;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .btn-cam-action:active {
+            transform: scale(0.97);
+        }
+
+        .camera-help-steps {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-top: 14px;
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: #E8E4DC;
+            border-left: 3px solid #D4AF37;
+        }
+
+        .camera-help-steps b {
+            color: #FFD700;
+        }
+
     </style>
 </head>
 
 <body>
+
+    <!-- Модальное окно разрешения и проверки камеры -->
+    <div id="cameraModal" class="camera-permission-modal">
+        <div class="camera-modal-card">
+            <span class="camera-modal-icon">📷</span>
+            <h3 id="cameraModalTitle">Включите камеру для AR</h3>
+            <p id="cameraModalDesc">
+                Для отображения 3D-реликвии в реальном мире браузеру необходим доступ к камере телефона.
+            </p>
+            <button class="btn-cam-action" id="btnRequestCamera" onclick="requestCameraManual()">
+                📷 Разрешить доступ к камере
+            </button>
+            <div id="cameraHelpBox" class="camera-help-steps" style="display: none;">
+                <b>Если доступ был заблокирован:</b><br>
+                1. Нажмите на значок <b>🔒 (замочек)</b> или <b>⚙️</b> слева в строке адреса браузера.<br>
+                2. Перейдите в <b>«Разрешения» → «Камера»</b> и выберите <b>«Разрешить»</b>.<br>
+                3. Нажмите кнопку «Обновить страницу» ниже.
+                <button class="btn-cam-action" style="margin-top: 12px; background: transparent; color: #FFF; border: 1.5px solid #D4AF37;" onclick="location.reload()">
+                    🔄 Обновить страницу
+                </button>
+            </div>
+            <a href="gallery.html" style="display: block; margin-top: 14px; color: #D4AF37; font-size: 14px; text-decoration: underline;">
+                ← Вернуться в галерею
+            </a>
+        </div>
+    </div>
+
     <!-- Сенсорный слой для вращения и зума мышь/тач -->
     <div id="touchSurface"></div>
 
@@ -752,6 +910,87 @@
 
         window.addEventListener('load', () => setTimeout(hideLoader, 500));
         setTimeout(hideLoader, 2000);
+    
+        // --- ДИАГНОСТИКА И ПРЯМОЙ ЗАПУСК КАМЕРЫ ---
+        let cameraChecked = false;
+        async function checkCameraStatus() {
+            if (cameraChecked) return;
+            const video = document.getElementById('arjs-video');
+            const modal = document.getElementById('cameraModal');
+            const helpBox = document.getElementById('cameraHelpBox');
+            const modalTitle = document.getElementById('cameraModalTitle');
+            const modalDesc = document.getElementById('cameraModalDesc');
+
+            if (video && video.readyState >= 2 && !video.paused) {
+                if (modal) modal.classList.remove('active');
+                return;
+            }
+
+            if (navigator.permissions && navigator.permissions.query) {
+                try {
+                    const res = await navigator.permissions.query({ name: 'camera' });
+                    if (res.state === 'denied') {
+                        modalTitle.textContent = 'Доступ к камере заблокирован';
+                        modalDesc.innerHTML = 'В браузере сохранен запрет на использование камеры для этого сайта.';
+                        helpBox.style.display = 'block';
+                        modal.classList.add('active');
+                        return;
+                    }
+                    res.onchange = () => {
+                        if (res.state === 'granted') {
+                            location.reload();
+                        }
+                    };
+                } catch (_) {}
+            }
+
+            setTimeout(() => {
+                const v = document.getElementById('arjs-video');
+                if (!v || v.paused || v.readyState < 2) {
+                    modal.classList.add('active');
+                } else {
+                    modal.classList.remove('active');
+                }
+            }, 2500);
+        }
+
+        async function requestCameraManual() {
+            const modal = document.getElementById('cameraModal');
+            const helpBox = document.getElementById('cameraHelpBox');
+            const modalTitle = document.getElementById('cameraModalTitle');
+            const modalDesc = document.getElementById('cameraModalDesc');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: false,
+                    video: { facingMode: { ideal: 'environment' } }
+                });
+                modal.classList.remove('active');
+                const video = document.getElementById('arjs-video');
+                if (video) {
+                    video.srcObject = stream;
+                    video.play().catch(e => console.log('play err:', e));
+                } else {
+                    location.reload();
+                }
+            } catch (err) {
+                console.error("Camera request failed:", err);
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    modalTitle.textContent = 'Камера заблокирована в браузере';
+                    modalDesc.innerHTML = 'Разрешите доступ к камере в настройках сайта:';
+                    helpBox.style.display = 'block';
+                } else {
+                    modalTitle.textContent = 'Ошибка запуска камеры';
+                    modalDesc.innerHTML = 'Не удалось запустить видеопоток: ' + (err.message || 'устройство недоступно');
+                    helpBox.style.display = 'block';
+                }
+            }
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(checkCameraStatus, 1500);
+        });
+
     </script>
 </body>
 
