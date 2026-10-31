@@ -1,0 +1,9 @@
+{
+  "project_id": "appgprj_6ae649324cd48191a88c5fac2031b4fd",
+  "origin": "https://heritageby-chat-api.ornateball.chatgpt.site",
+  "frontend_origin": "https://tinyq300.github.io",
+  "chat_path": "/api/chat",
+  "health_path": "/health",
+  "provider": "OpenRouter",
+  "default_model": "openrouter/free"
+}

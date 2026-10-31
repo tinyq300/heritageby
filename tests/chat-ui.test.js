@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const heroines = require('../js/heroines.js');
 const policy = require('../js/chat-policy.js');
 
-function ui(fetchImpl) {
+function ui(fetchImpl, config) {
     const nodes = new Map();
     function element() {
         const classes = new Set();
@@ -18,7 +18,8 @@ function ui(fetchImpl) {
         getElementById(id) { if (!nodes.has(id)) nodes.set(id, element()); return nodes.get(id); },
         createElement: element, addEventListener() {} };
     const context = vm.createContext({ document, heroines, currentHeroineId: 'euphrosyne', HeritageChat: policy,
-        location: { protocol: 'http:', search: '' }, URLSearchParams, AbortController, setTimeout, clearTimeout, fetch: fetchImpl });
+        location: { protocol: 'http:', search: '', hostname: config ? 'tinyq300.github.io' : 'localhost' },
+        HeritageChatConfig: config, URL, URLSearchParams, AbortController, setTimeout, clearTimeout, fetch: fetchImpl });
     vm.runInContext(fs.readFileSync(require.resolve('../js/chat.js'), 'utf8'), context);
     return { context, document, nodes };
 }
@@ -65,4 +66,20 @@ test('HTML пользователя отображается как текст',
     const message = page.nodes.get('chatMessages').children[1].children[0];
     assert.equal(message.textContent, payload);
     assert.equal(message.innerHTML, undefined);
+});
+
+test('GitHub Pages отправляет вопросы в HTTPS API без браузерных ключей и cookies', async () => {
+    let sent;
+    const page = ui(async (url, options) => {
+        sent = { url, ...options };
+        return { ok: true, json: async () => ({ answer: 'Крест создан в 1161 году.', source: 'ai' }) };
+    }, { apiBaseUrl: 'https://example.chatgpt.site' });
+    page.context.startChat();
+    page.document.getElementById('chatInput').value = 'Расскажи про крест';
+    await page.context.sendMessage();
+    assert.equal(sent.url, 'https://example.chatgpt.site/api/chat');
+    assert.equal(sent.credentials, 'omit');
+    assert.equal(sent.headers.Authorization, undefined);
+    assert.equal(JSON.parse(sent.body).heroineId, 'euphrosyne');
+    assert.match(page.nodes.get('chatMessages').children.at(-1).children[1].textContent, /Ответ ИИ/);
 });

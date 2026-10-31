@@ -47,9 +47,9 @@ function addMessage(sender, text, source = '') {
     content.className = 'message-content';
     content.textContent = text;
     message.appendChild(content);
-    if (source === 'reference') {
+    if (source === 'reference' || source === 'ai') {
         const caption = document.createElement('small');
-        caption.textContent = 'Из исторической справки';
+        caption.textContent = source === 'ai' ? 'Ответ ИИ по исторической справке' : 'Из исторической справки';
         caption.style.cssText = 'display:block;margin:5px 8px;color:#75695e;font-size:0.8rem';
         message.appendChild(caption);
     }
@@ -75,11 +75,15 @@ async function sendMessage() {
     let timeout;
     try {
         if (decision.kind === 'topic' && location.protocol !== 'file:') {
-            timeout = setTimeout(() => session.controller.abort(), 16000);
-            const response = await fetch('/api/chat', {
+            timeout = setTimeout(() => session.controller.abort(), 30000);
+            const localPreview = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+            const configuredOrigin = localPreview ? '' : globalThis.HeritageChatConfig?.apiBaseUrl;
+            const endpoint = configuredOrigin ? new URL('/api/chat', configuredOrigin) : '/api/chat';
+            if (configuredOrigin && endpoint.protocol !== 'https:') throw new Error('The public API must use HTTPS');
+            const response = await fetch(endpoint.toString(), {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ heroineId: session.heroineId, message: text, history: session.history }),
-                signal: session.controller.signal
+                signal: session.controller.signal, credentials: 'omit'
             });
             if (response.ok) {
                 const result = await response.json();
