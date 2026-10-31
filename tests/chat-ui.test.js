@@ -83,3 +83,20 @@ test('GitHub Pages отправляет вопросы в HTTPS API без бр�
     assert.equal(JSON.parse(sent.body).heroineId, 'euphrosyne');
     assert.match(page.nodes.get('chatMessages').children.at(-1).children[1].textContent, /Ответ ИИ/);
 });
+
+test('вопрос без совпадения по словам доходит до API, знакомство остаётся доступным сразу', async () => {
+    let requests = 0;
+    const page = ui(async () => {
+        requests++;
+        return { ok: true, json: async () => ({ answer: 'Я переписывала книги.', source: 'ai' }) };
+    });
+    page.context.startChat();
+    page.document.getElementById('chatInput').value = 'кто ты такая?';
+    await page.context.sendMessage();
+    assert.equal(requests, 0);
+    assert.match(page.nodes.get('chatMessages').children.at(-1).children[0].textContent, /Евфросиния/);
+    page.document.getElementById('chatInput').value = 'Как вы зарабатывали на жизнь?';
+    await page.context.sendMessage();
+    assert.equal(requests, 1);
+    assert.match(page.nodes.get('chatMessages').children.at(-1).children[1].textContent, /Ответ ИИ/);
+});

@@ -29,7 +29,7 @@ async function answerChat(body, { apiKey = '', model = 'openrouter/free', fetchI
         .map(({ role, content }) => ({ role, content }));
     const fallback = { status: 200, body: { answer: policy.localReply(body.message, heroine, history), source: 'reference' } };
     const decision = policy.classify(body.message, heroine, history);
-    if (!apiKey || heroine.needsReview || decision.kind !== 'topic') return fallback;
+    if (!apiKey || heroine.needsReview || !['topic', 'candidate'].includes(decision.kind)) return fallback;
     try {
         const response = await fetchImpl('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',

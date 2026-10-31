@@ -74,7 +74,7 @@ async function sendMessage() {
     const decision = HeritageChat.classify(text, heroine, session.history);
     let timeout;
     try {
-        if (decision.kind === 'topic' && location.protocol !== 'file:') {
+        if (['topic', 'candidate'].includes(decision.kind) && location.protocol !== 'file:') {
             timeout = setTimeout(() => session.controller.abort(), 30000);
             const localPreview = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
             const configuredOrigin = localPreview ? '' : globalThis.HeritageChatConfig?.apiBaseUrl;
@@ -100,7 +100,7 @@ async function sendMessage() {
         if (chatSession === session) {
             showTyping(false);
             addMessage('bot', answer, source);
-            if (['topic', 'identity'].includes(decision.kind)) {
+            if (['topic', 'identity', 'candidate'].includes(decision.kind)) {
                 session.history.push({ role: 'user', content: text }, { role: 'assistant', content: answer });
                 session.history = session.history.slice(-8);
             }
