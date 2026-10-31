@@ -553,6 +553,8 @@
             position: relative;
         }
 
+        .modal-quote.summary::before { content: none; }
+
         .modal-quote::before {
             content: '“';
             position: absolute;
@@ -1043,10 +1045,9 @@
                         <div class="period-description">Время формирования национального театрального искусства.</div>
                         <div class="women-list">
                             <div class="woman-card" onclick="openModal('galina')">
-                                <div class="woman-name">Галина Горецкая</div>
-                                <div class="woman-years">1910–1988</div>
-                                <div class="woman-description">Актриса, одна из основоположниц белорусского
-                                    национального театрального искусства в БССР, народная артистка БССР.</div>
+                                <div class="woman-name">Галина Макарова</div>
+                                <div class="woman-years">1919–1993</div>
+                                <div class="woman-description">Актриса театра и кино, народная артистка СССР (1980). Купаловский театр, фильмы «Вдовы» и «Белые росы».</div>
                             </div>
                         </div>
                     </div>
@@ -1062,10 +1063,9 @@
                             Родины.</div>
                         <div class="women-list">
                             <div class="woman-card" onclick="openModal('vera')">
-                                <div class="woman-name">Вера Хорева</div>
-                                <div class="woman-years">1923–1943</div>
-                                <div class="woman-description">Подпольщица, секретарь Минского подпольного горкома
-                                    комсомола. Казнена нацистами. Герой Советского Союза (посмертно).</div>
+                                <div class="woman-name">Вера Хоружая</div>
+                                <div class="woman-years">1903–1942</div>
+                                <div class="woman-description">Участница подпольного и партизанского движения, автор «Писем на волю». В 1942 году работала в оккупированном Витебске.</div>
                             </div>
                             <div class="woman-card" onclick="openModal('mariya')">
                                 <div class="woman-name">Мария Осипова</div>
@@ -1208,8 +1208,8 @@
                             </div>
                             <div class="woman-card" onclick="openModal('irina')">
                                 <div class="woman-name">Ирина Богданович</div>
-                                <div class="woman-years">1957–2024</div>
-                                <div class="woman-description">Директор Национальной библиотеки Беларуси (2000–2024), заслуженный работник культуры.</div>
+                                <div class="woman-years">род. 1956</div>
+                                <div class="woman-description">Белорусская поэтесса, переводчица с польского языка и литературовед. Автор сборников «Фрэскі», «Сармацкі альбом».</div>
                             </div>
                         </div>
                     </div>
@@ -1275,6 +1275,7 @@
                 <img id="modalImage" src="" alt="">
 
                 <div class="modal-description" id="modalDescription"></div>
+                <div id="modalSources"></div>
 
                 <div class="modal-quote">
                     <span id="modalQuote"></span>
@@ -1345,6 +1346,8 @@
         </div>
     </div>
 
+    <script src="js/heroines.js"></script>
+    <script src="js/person-sources.js"></script>
     <script>
         const womenData = {
             euphrosyne: { name: 'Евфросиния Полоцкая', years: 'ок. 1104–1167', description: 'Княжна, первая восточнославянская просветительница, основательница монастырей, школ и библиотек. Канонизирована как святая.', quote: '«Не жалейте своих сокровищ на просвещение и благотворительность, ибо только так мы можем оставить след в вечности.»' },
@@ -1352,8 +1355,8 @@
             barbara: { name: 'Барбара Радзивилл', years: '1520–1551', description: 'Королева польская и великая княгиня литовская, одна из самых романтических и трагических фигур эпохи. Объект культурного мифа и покровительница искусств.', quote: '«Настоящая любовь побеждает все преграды, даже если она должна закончиться трагедией.»' },
             franciszka: { name: 'Франциска Урсула Радзивилл', years: '1705–1753', description: 'Первая женщина-драматург в истории белорусской и польской литературы, писала на польском языке. Основательница домашнего театра в Несвиже.', quote: '«Театр – это зеркало жизни, и каждая женщина имеет право держать его в своих руках.»' },
             tetka: { name: 'Алоиза Пашкевич (Тётка)', years: '1876–1916', description: 'Одна из основательниц современной белорусской литературы, поэтесса, писательница, общественно-политическая деятельница.', quote: '«Язык – это душа народа, и мы должны сохранить его для будущих поколений.»' },
-            galina: { name: 'Галина Горецкая', years: '1910–1988', description: 'Актриса, одна из основоположниц белорусского национального театрального искусства в БССР, народная артистка БССР.', quote: '«Театр – это место, где рождается душа народа.»' },
-            vera: { name: 'Вера Хорева', years: '1923–1943', description: 'Подпольщица, секретарь Минского подпольного горкома комсомола. Казнена нацистами. Герой Советского Союза (посмертно).', quote: '«Свобода дороже всего, и я готова отдать за неё свою жизнь.»' },
+            galina: { ...HeritageHeroines.galina, description: HeritageHeroines.galina.bio },
+            vera: { ...HeritageHeroines.vera, description: HeritageHeroines.vera.bio },
             mariya: { name: 'Мария Осипова', years: '1908–1999', description: 'Участница минского подполья, руководитель операции по ликвидации гауляйтера Вильгельма Кубе. Герой Советского Союза.', quote: '«Я сделала то, что должна была сделать. За Родину, за народ.»' },
             zinaida: { name: 'Зинаида Туснолобова-Марченко', years: '1920–1980', description: 'Санинструктор, вынесла с поля боя 128 раненых бойцов. После тяжелого ранения и ампутации конечностей стала символом мужества. Герой Советского Союза.', quote: '«Боль и страдания не могут сломить дух человека, если у него есть вера в победу.»' },
             sofya: { name: 'Софья Ковалевская', years: '1850–1891', description: 'Выдающийся математик, первая в мире женщина – профессор математики. Родовое имение Полибино находилось в Витебской губернии.', quote: '«Математика – это поэзия логических идей, и каждая женщина может стать её творцом.»' },
@@ -1375,7 +1378,7 @@
             kolomiyets: { name: 'Эмилия Ивановна Коломиец', years: 'род. 1949', description: 'Микробиолог, биотехнолог, член-корреспондент НАН Беларуси (2004), доктор биологических наук, профессор, Заслуженный деятель науки Республики Беларусь. Многолетний директор Института микробиологии НАНБ и генеральный директор ГНПО «Химический синтез и биотехнологии».', quote: '«Биотехнологии — это экологическое будущее планеты и основа здорового развития сельского хозяйства.»' },
             rublevskaya: { name: 'Людмила Ивановна Рублевская', years: 'род. 1965', description: 'Белорусская писательница, поэтесса, журналист, литературный критик. Автор более 50 книг (исторические романы, сага о Прантише Вырвиче, пьесы, стихи). Член Союза писателей Беларуси, лауреат Национальной литературной премии.', quote: '«Гісторыя — гэта не сухія даты, гэта жывыя чалавечыя лёсы, каханне, мужнасць і таямніцы мінулага.»' },
             lisitskaya: { name: 'Тамара Григорьевна Лисицкая', years: 'род. 1974', description: 'Белорусская теле- и радиоведущая, телережиссёр, сценарист, популярная писательница. Ведущая ночного телепроекта «12 или На ночь глядя», автор серии современных романов.', quote: '«Творчество — это искренний диалог со зрителем и читателем, умение делиться светом и эмоциями.»' },
-            irina: { name: 'Ирина Богданович', years: '1957–2024', description: 'Директор Национальной библиотеки Беларуси (2000–2024), заслуженный работник культуры. Руководила строительством и становлением нового здания библиотеки как современного культурного центра страны.', quote: '«Книги – это сокровища, которые мы должны сохранить для будущих поколений.»' }
+            irina: { ...HeritageHeroines.irina, description: HeritageHeroines.irina.bio }
         };
 
         function openModal(womanId) {
@@ -1385,7 +1388,9 @@
             document.getElementById('modalName').textContent = woman.name;
             document.getElementById('modalYears').textContent = woman.years;
             document.getElementById('modalDescription').textContent = woman.description;
+            HeritageSources.render(document.getElementById('modalSources'), woman);
             document.getElementById('modalQuote').textContent = woman.quote;
+            document.querySelector('.modal-quote').classList.toggle('summary', woman.quoteKind === 'summary');
 
             // Обработка изображения
             const modalImage = document.getElementById('modalImage');
@@ -1395,14 +1400,14 @@
                 'barbara': 'images/barb.jpg',
                 'franciszka': 'images/fran.jpg',
                 'tetka': 'images/alai.jpg',
-                'galina': 'images/gali.jpg',
-                'vera': 'images/vera.jpg',
+                'galina': HeritageHeroines.galina.img,
+                'vera': HeritageHeroines.vera.img,
                 'mariya': 'images/mari_osip.jpg',
                 'zinaida': 'images/zina.jpg',
                 'sofya': 'images/sofy.jpeg',
                 'nadezhda': 'images/nade.jpg',
                 'darya': 'images/dary.jpg',
-                'irina': 'images/irin.jpg',
+                'irina': HeritageHeroines.irina.img,
                 'marina': 'images/mari.jpg',
                 'stanyuta': 'images/stanyuta.jpg',
                 'kulakovskaya': 'images/kulakovskaya.jpg',
@@ -1423,7 +1428,8 @@
 
             if (imageMap[womanId] && imageMap[womanId] !== '') {
                 modalImage.src = imageMap[womanId];
-                modalImage.alt = woman.name;
+                modalImage.alt = woman.imageAlt || woman.name;
+                modalImage.style.objectPosition = woman.imagePosition || 'center';
                 modalImage.style.display = 'block';
             } else {
                 modalImage.style.display = 'none';
